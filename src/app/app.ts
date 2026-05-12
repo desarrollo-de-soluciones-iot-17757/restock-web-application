@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { Layout } from './shared/presentation/components/layout/layout';
+import { RouterOutlet } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -7,20 +7,14 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './app.html',
   standalone: true,
   styleUrl: './app.css',
-  imports: [Layout],
+  imports: [RouterOutlet],
 })
 export class App {
   protected readonly title = signal('restock-web-application');
-  /**
-   * Translation service instance.
-   */
-  private translate: TranslateService;
 
-  /**
-   * Creates an instance of App and sets up translation.
-   */
+  private readonly translate = inject(TranslateService);
+
   constructor() {
-    this.translate = inject(TranslateService);
     this.translate.addLangs(['en', 'es']);
     this.translate.use('en');
   }
