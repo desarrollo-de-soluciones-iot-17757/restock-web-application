@@ -1,10 +1,13 @@
 import { Routes } from '@angular/router';
-import { SystemPreferences } from './views/system-preferences/system-preferences';
+
 
 export const profilesRoutes: Routes = [
   {
-    path: '',
-    component: SystemPreferences,
-    title: 'System Preferences',
+    path: 'register',
+    loadComponent: () =>
+      import('./views/registration-personal-profile/registration-personal-profile').then(
+        (m) => m.RegistrationPersonalProfile
+      ),
+    title: 'Create your Account',
   },
 ];
