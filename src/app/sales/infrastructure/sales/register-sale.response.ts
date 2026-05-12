@@ -1,6 +1,6 @@
 import { BaseResource, BaseResponse } from '../../../shared/infrastructure/base-response';
 
-export interface SalesResource extends BaseResource {
+export interface RegisterSaleResource extends BaseResource {
   saleId: string;
   branchId: string;
   customerName: string;
@@ -9,5 +9,4 @@ export interface SalesResource extends BaseResource {
   currencySymbol: string;
 }
 
-
-export interface RegisterSaleResponse extends BaseResponse, SalesResource {}
+export interface RegisterSaleResponse extends BaseResponse, RegisterSaleResource {}
