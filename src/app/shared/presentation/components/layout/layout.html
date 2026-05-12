@@ -1,14 +1,13 @@
-<mat-toolbar>
-  <mat-toolbar-row>
-    <h1>ACME Learning Center</h1>
-    <div class="mat-spacer"></div>
-    @for (option of options(); track option.label) {
-      <a mat-button [routerLink]="option.link" routerLinkActive="active">{{ option.label | translate }}</a>
-    }
-    <!-- To include when authentication is implemented -->
-    <!-- <app-authentication-section/> -->
-    <app-language-switcher/>
-  </mat-toolbar-row>
-</mat-toolbar>
-<router-outlet/>
-<app-footer-content/>
+<div class="shell">
+  <app-navigator [navItems]="navItems()" />
+  <div class="content-shell">
+    <app-top-bar
+      [userName]="userName()"
+      [userAvatarUrl]="userAvatarUrl()"
+      [searchPlaceholder]="searchPlaceholder()"
+    />
+    <main class="page-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
