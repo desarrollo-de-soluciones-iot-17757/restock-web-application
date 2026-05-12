@@ -171,7 +171,7 @@
         <div class="avatar-section">
           <div class="avatar-wrapper">
             <img
-              [src]="photoUrl() || 'https://placehold.co/96x96'"
+              [src]="avatarUrl() || 'https://placehold.co/96x96'"
               class="avatar-img"
               alt="Profile photo" />
             <button class="avatar-edit-btn" type="button" aria-label="Edit photo">
@@ -212,18 +212,18 @@
           </div>
         </div>
 
-        <!-- Email -->
+        <!-- Gender -->
         <div class="field-group">
-          <label class="field-label" for="email">EMAIL ADDRESS</label>
+          <label class="field-label" for="gender">GENDER</label>
           <div class="field-with-icon">
-            <span class="field-with-icon__icon material-icons">mail_outline</span>
+            <span class="field-with-icon__icon material-icons">person_outline</span>
             <input
-              id="email"
+              id="gender"
               class="field-input field-input--indented"
-              type="email"
-              [ngModel]="email()"
-              (ngModelChange)="email.set($event)"
-              placeholder="Email address" />
+              type="text"
+              [ngModel]="gender()"
+              (ngModelChange)="gender.set($event)"
+              placeholder="Gender" />
           </div>
         </div>
 
@@ -253,21 +253,24 @@
         </div>
       </div>
 
-      <!-- Assigned Branch sidebar -->
+      <!-- Business sidebar -->
       <div class="side-column">
         <div class="card">
-          <p class="section-label">ASSIGNED BRANCH</p>
-          @for (b of assignedBranches(); track b.name) {
+          <p class="section-label">BUSINESS</p>
+          @if (businessLoading()) {
+            <p class="branch-empty">Loading…</p>
+          }
+          @for (b of businesses(); track b.id) {
             <div class="branch-item">
-              <span class="material-icons branch-item__icon">account_tree</span>
+              <span class="material-icons branch-item__icon">business</span>
               <div class="branch-item__info">
-                <span class="branch-item__name">{{ b.name }}</span>
-                <span class="branch-item__status">Status: {{ b.status }}</span>
+                <span class="branch-item__name">{{ b.companyName }}</span>
+                <span class="branch-item__status">{{ b.mainLocation }}</span>
               </div>
             </div>
           }
-          @if (assignedBranches().length === 0 && !profileLoading()) {
-            <p class="branch-empty">No branches assigned yet.</p>
+          @if (businesses().length === 0 && !businessLoading()) {
+            <p class="branch-empty">No businesses found.</p>
           }
         </div>
       </div>
