@@ -1,7 +1,8 @@
 import { UpperCasePipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AssignedBranch, Profile } from '../../../domain/model/profile.entity';
+import { Profile } from '../../../domain/model/profile.entity';
+import { Business } from '../../../domain/model/business.entity';
 import { ProfilesApi } from '../../../infrastructure/profiles-api';
 
 @Component({
@@ -47,42 +48,59 @@ export class SystemPreferences implements OnInit {
   readonly branches = ['Main Branch', 'Branch North', 'Branch South', 'Branch East', 'Branch West'];
 
   // ── Profile tab ──
-  profileId = signal<number>(1);
+  profileEntityId = signal('');
   firstName = signal('');
   lastName = signal('');
-  email = signal('');
   phone = signal('');
-  photoUrl = signal('');
-  assignedBranches = signal<AssignedBranch[]>([]);
+  avatarUrl = signal('');
+  gender = signal('');
+  birthDate = signal('');
   profileLoading = signal(false);
+
+  // ── Businesses tab ──
+  businesses = signal<Business[]>([]);
+  businessLoading = signal(false);
 
   private savedProfile: Partial<Profile> = {};
 
   ngOnInit(): void {
-    this.loadProfile();
+    this.loadProfiles();
+    this.loadBusinesses();
   }
 
-  private loadProfile(): void {
+  private loadProfiles(): void {
     this.profileLoading.set(true);
-    this.profilesApi.getProfile(this.profileId()).subscribe({
-      next: (profile: Profile) => {
-        this.applyProfile(profile);
-        this.savedProfile = { ...profile };
+    this.profilesApi.getProfiles().subscribe({
+      next: (profiles: Profile[]) => {
+        if (profiles.length > 0) {
+          this.applyProfile(profiles[0]);
+          this.savedProfile = { ...profiles[0] };
+        }
         this.profileLoading.set(false);
       },
-      error: (_err: unknown) => {
-        this.profileLoading.set(false);
+      error: () => this.profileLoading.set(false),
+    });
+  }
+
+  private loadBusinesses(): void {
+    this.businessLoading.set(true);
+    this.profilesApi.getBusinesses().subscribe({
+      next: (businesses: Business[]) => {
+        this.businesses.set(businesses);
+        this.businessLoading.set(false);
       },
+      error: () => this.businessLoading.set(false),
     });
   }
 
   private applyProfile(profile: Profile): void {
+    this.profileEntityId.set(profile.id);
     this.firstName.set(profile.firstName);
     this.lastName.set(profile.lastName);
-    this.email.set(profile.email);
     this.phone.set(profile.phone);
-    this.photoUrl.set(profile.photoUrl);
-    this.assignedBranches.set(profile.assignedBranches);
+    this.avatarUrl.set(profile.avatarUrl);
+    this.gender.set(profile.gender);
+    this.birthDate.set(profile.birthDate);
   }
 
   // ── Actions ──
@@ -111,15 +129,16 @@ export class SystemPreferences implements OnInit {
 
   saveProfileChanges(): void {
     const profile: Profile = {
-      id: String(this.profileId()),
+      id: this.profileEntityId(),
+      userId: '',
       firstName: this.firstName(),
       lastName: this.lastName(),
-      email: this.email(),
       phone: this.phone(),
-      photoUrl: this.photoUrl(),
-      assignedBranches: this.assignedBranches(),
+      avatarUrl: this.avatarUrl(),
+      gender: this.gender(),
+      birthDate: this.birthDate(),
     };
-    this.profilesApi.updateProfile(profile, this.profileId()).subscribe({
+    this.profilesApi.updateProfile(profile, 0).subscribe({
       next: (updated: Profile) => {
         this.savedProfile = { ...updated };
       },
