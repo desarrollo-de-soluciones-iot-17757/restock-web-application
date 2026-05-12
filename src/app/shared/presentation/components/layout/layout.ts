@@ -1,33 +1,28 @@
 import { Component, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
-import { TranslatePipe } from '@ngx-translate/core';
-import { LanguageSwitcher } from '../language-switcher/language-switcher';
+import { RouterOutlet } from '@angular/router';
+import { NavItem } from '../navigator/nav-item.model';
+import { Navigator } from '../navigator/navigator';
+import { TopBar } from '../top-bar/top-bar';
 
-/**
- * Main shell component that hosts top-level navigation and routed content.
- */
 @Component({
   selector: 'app-layout',
-  imports: [
-    RouterOutlet,
-    RouterLink,
-    MatToolbarModule,
-    MatButtonModule,
-    RouterLinkActive,
-    TranslatePipe,
-    LanguageSwitcher,
-    // AuthenticationSection
-  ],
+  standalone: true,
+  imports: [RouterOutlet, Navigator, TopBar],
   templateUrl: './layout.html',
   styleUrl: './layout.css',
 })
 export class Layout {
-  /**
-   * Array of navigation options for the application's menu.
-   */
-  options = signal([
-
+  navItems = signal<NavItem[]>([
+    { label: 'Overview', icon: 'grid_view', link: '/' },
+    { label: 'Inventory', icon: 'inventory_2', link: '/inventory' },
+    { label: 'Recipes', icon: 'restaurant_menu', link: '/recipes' },
+    { label: 'Sales', icon: 'trending_up', link: '/sales' },
+    { label: 'Alerts', icon: 'notifications', link: '/alerts' },
+    { label: 'Devices', icon: 'router', link: '/devices' },
+    { label: 'Settings', icon: 'settings', link: '/settings' },
   ]);
+
+  userName = signal('Alex Chen');
+  userAvatarUrl = signal<string | null>(null);
+  searchPlaceholder = signal('Search recipes, ingredients, or SKUs...');
 }
