@@ -19,9 +19,19 @@ export interface RegisterDeviceResource extends BaseResource {
   macAddress: string;
 
   /**
+   * The name of the assigned supply of the device.
+   */
+  assignedSupplyName: string;
+
+  /**
    * The network state of the created device.
    */
   networkState: string;
+
+  /**
+   * The health percentage of the device's sensor.
+   */
+  sensorHealthPercentage: number;
 }
 
 /**

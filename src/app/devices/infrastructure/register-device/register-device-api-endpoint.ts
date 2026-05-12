@@ -4,6 +4,7 @@ import { RegisterDeviceAssembler } from './register-device.assembler';
 import { RegisterDeviceCommand } from '../../domain/model/register-device.command';
 import { catchError, map, Observable } from 'rxjs';
 import { RegisterDeviceResource, RegisterDeviceResponse } from './register-device.response';
+import {Device} from '../../domain/model/device.entity';
 
 /**
  * Endpoint for the device registration operation.
@@ -41,7 +42,7 @@ export class RegisterDeviceApiEndpoint extends ErrorHandlingEnabledBaseType {
    * 3. On success, converts the RegisterDeviceResponse to a RegisterDeviceResource for application use.
    * 4. On failure, transforms the error into a meaningful error message in the system.
    */
-  registerDevice(registerDeviceCommand: RegisterDeviceCommand): Observable<RegisterDeviceResource> {
+  registerDevice(registerDeviceCommand: RegisterDeviceCommand): Observable<Device> {
     const registerDeviceRequest = this.assembler.toRequestFromCommand(registerDeviceCommand);
     return this.http
       .post<RegisterDeviceResponse>(registerDeviceApiEndpointUrl, registerDeviceRequest)
