@@ -257,10 +257,10 @@
       <div class="side-column">
         <div class="card">
           <p class="section-label">BUSINESS</p>
-          @if (businessLoading()) {
+          @if (profileLoading()) {
             <p class="branch-empty">Loading…</p>
           }
-          @for (b of businesses(); track b.id) {
+          @if (business(); as b) {
             <div class="branch-item">
               <span class="material-icons branch-item__icon">business</span>
               <div class="branch-item__info">
@@ -269,8 +269,8 @@
               </div>
             </div>
           }
-          @if (businesses().length === 0 && !businessLoading()) {
-            <p class="branch-empty">No businesses found.</p>
+          @if (!business() && !profileLoading()) {
+            <p class="branch-empty">No business found.</p>
           }
         </div>
       </div>

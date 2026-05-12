@@ -1,9 +1,9 @@
 import { UpperCasePipe } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Profile } from '../../../domain/model/profile.entity';
-import { Business } from '../../../domain/model/business.entity';
 import { ProfilesApi } from '../../../infrastructure/profiles-api';
+import { ProfilesStore } from '../../../application/profiles.store';
 
 @Component({
   selector: 'app-system-preferences',
@@ -12,7 +12,8 @@ import { ProfilesApi } from '../../../infrastructure/profiles-api';
   templateUrl: './system-preferences.html',
   styleUrl: './system-preferences.css',
 })
-export class SystemPreferences implements OnInit {
+export class SystemPreferences {
+  private readonly store = inject(ProfilesStore);
   private readonly profilesApi = inject(ProfilesApi);
 
   activeTab = signal<'general' | 'profile' | 'branches'>('general');
@@ -47,7 +48,7 @@ export class SystemPreferences implements OnInit {
 
   readonly branches = ['Main Branch', 'Branch North', 'Branch South', 'Branch East', 'Branch West'];
 
-  // ── Profile tab ──
+  // ── Profile tab (local editable copies) ──
   profileEntityId = signal('');
   firstName = signal('');
   lastName = signal('');
@@ -55,41 +56,22 @@ export class SystemPreferences implements OnInit {
   avatarUrl = signal('');
   gender = signal('');
   birthDate = signal('');
-  profileLoading = signal(false);
 
-  // ── Businesses tab ──
-  businesses = signal<Business[]>([]);
-  businessLoading = signal(false);
+  readonly profileLoading = computed(() => this.store.loading());
+  readonly business = computed(() => this.store.business());
 
   private savedProfile: Partial<Profile> = {};
 
-  ngOnInit(): void {
-    this.loadProfiles();
-    this.loadBusinesses();
-  }
+  constructor() {
+    this.store.load();
 
-  private loadProfiles(): void {
-    this.profileLoading.set(true);
-    this.profilesApi.getProfiles().subscribe({
-      next: (profiles: Profile[]) => {
-        if (profiles.length > 0) {
-          this.applyProfile(profiles[0]);
-          this.savedProfile = { ...profiles[0] };
-        }
-        this.profileLoading.set(false);
-      },
-      error: () => this.profileLoading.set(false),
-    });
-  }
-
-  private loadBusinesses(): void {
-    this.businessLoading.set(true);
-    this.profilesApi.getBusinesses().subscribe({
-      next: (businesses: Business[]) => {
-        this.businesses.set(businesses);
-        this.businessLoading.set(false);
-      },
-      error: () => this.businessLoading.set(false),
+    // Populate form fields once the store resolves the profile
+    effect(() => {
+      const profile = this.store.profile();
+      if (profile && !this.profileEntityId()) {
+        this.applyProfile(profile);
+        this.savedProfile = { ...profile };
+      }
     });
   }
 
@@ -130,7 +112,7 @@ export class SystemPreferences implements OnInit {
   saveProfileChanges(): void {
     const profile: Profile = {
       id: this.profileEntityId(),
-      userId: '',
+      userId: this.store.profile()?.userId ?? '',
       firstName: this.firstName(),
       lastName: this.lastName(),
       phone: this.phone(),
