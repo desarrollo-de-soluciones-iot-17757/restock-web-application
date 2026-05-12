@@ -55,8 +55,9 @@ export const appRoutes: Routes = [
       {
         path: 'settings',
         loadComponent: () =>
-          import('./shared/presentation/views/placeholder-page/placeholder-page').then((m) => m.PlaceholderPage),
-        data: { titleKey: 'nav.settings' },
+          import('./profiles/presentation/views/system-preferences/system-preferences').then(
+            (m) => m.SystemPreferences,
+          ),
         title: `${baseTitle} · Settings`,
       },
     ],

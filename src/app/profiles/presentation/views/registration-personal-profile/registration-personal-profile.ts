@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registration-personal-profile',
@@ -13,6 +14,8 @@ export class RegistrationPersonalProfile {
   @Output() skipped = new EventEmitter<void>();
   @Output() cancelled = new EventEmitter<void>();
   @Output() next = new EventEmitter<typeof this.form.value>();
+
+  private readonly router = inject(Router);
 
   readonly countries = [
     'United States', 'Canada', 'Mexico', 'Argentina', 'Brazil',
@@ -56,6 +59,7 @@ export class RegistrationPersonalProfile {
 
   onNext(): void {
     this.next.emit(this.form.value);
+    void this.router.navigate(['/profiles/register/business']);
   }
 
   private loadAvatarFile(file: File): void {
