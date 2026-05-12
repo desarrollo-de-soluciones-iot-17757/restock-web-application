@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, map, startWith } from 'rxjs';
+import { ProfilesStore } from '../../../../profiles/application/profiles.store';
 import type { NavItem } from '../navigator/nav-item.model';
 import { Navigator } from '../navigator/navigator';
 import { TopBar } from '../top-bar/top-bar';
@@ -15,6 +16,7 @@ import { TopBar } from '../top-bar/top-bar';
 })
 export class Layout {
   private readonly router = inject(Router);
+  private readonly profilesStore = inject(ProfilesStore);
 
   private readonly currentUrl = toSignal(
     this.router.events.pipe(
@@ -51,6 +53,14 @@ export class Layout {
     { labelKey: 'nav.settings', icon: 'settings', link: '/settings' },
   ]);
 
-  userName = signal('Alex Chen');
-  userAvatarUrl = signal<string | null>(null);
+  userName = computed(() => {
+    const p = this.profilesStore.profile();
+    return p ? `${p.firstName} ${p.lastName}` : '';
+  });
+
+  userAvatarUrl = computed(() => this.profilesStore.profile()?.avatarUrl ?? null);
+
+  constructor() {
+    this.profilesStore.load();
+  }
 }

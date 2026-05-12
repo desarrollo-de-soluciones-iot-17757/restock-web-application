@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { Layout } from './shared/presentation/components/layout/layout';
+import { profilesRoutes } from './profiles/presentation/profiles.routes';
 import { resourceInventoryRoutes } from './resource/presentation/resource.routes';
 
 const baseTitle = 'RestockWebApplication';
@@ -18,6 +19,10 @@ export const appRoutes: Routes = [
       {
         path: 'inventory',
         children: resourceInventoryRoutes,
+      },
+      {
+        path: 'profiles',
+        children: profilesRoutes,
       },
       {
         path: 'recipes',
