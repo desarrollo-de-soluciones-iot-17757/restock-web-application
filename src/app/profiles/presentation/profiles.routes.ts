@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 
+
 export const profilesRoutes: Routes = [
   {
     path: 'register',
