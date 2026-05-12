@@ -64,7 +64,7 @@ export abstract class BaseApiEndpoint<
   /**
    * Loads one record by identifier and maps it to a domain entity.
    */
-  getById(id: number): Observable<TEntity> {
+  getById(id: string): Observable<TEntity> {
     return this.http.get<TResource>(`${this.endpointUrl}/${id}`).pipe(
       map((resource) => this.assembler.toEntityFromResource(resource)),
       catchError(this.handleError('Failed to fetch entity')),
@@ -96,7 +96,7 @@ export abstract class BaseApiEndpoint<
   /**
    * Deletes one record by identifier.
    */
-  delete(id: number): Observable<void> {
+  delete(id: string): Observable<void> {
     return this.http
       .delete<void>(`${this.endpointUrl}/${id}`)
       .pipe(catchError(this.handleError('Failed to delete entity')));
