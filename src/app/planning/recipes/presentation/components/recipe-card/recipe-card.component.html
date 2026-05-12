@@ -1,0 +1,41 @@
+<div class="recipe-card" (click)="goToDetail()">
+
+    <div class="image-wrapper">
+
+        <img [src]="recipe.imageUrl" />
+
+        <span class="badge" [ngClass]="recipe.status.toLowerCase().replace(' ', '-')">
+            {{ recipe.status }}
+        </span>
+
+    </div>
+
+    <div class="content">
+
+        <div class="header-row">
+
+            <h3>{{ recipe.name }}</h3>
+
+            <button (click)="edit.emit()">
+                <i class="ri-more-2-fill"></i>
+            </button>
+
+        </div>
+
+        <p>
+            {{ recipe.description }}
+        </p>
+
+        <div class="price-section">
+
+            <span>UNIT PRICE</span>
+
+            <strong>
+                S/ {{ recipe.sellingPrice | number:'1.2-2' }}
+            </strong>
+
+        </div>
+
+    </div>
+
+</div>

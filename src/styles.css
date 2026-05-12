@@ -8,8 +8,16 @@ html, body {
 body {
   margin: 0;
   font-family: Inter, "Helvetica Neue", sans-serif;
+  background: #F9FAFB;
 }
 
 .container-with-spacing {
   margin: 10px; /* Applies margin to all sides */
 }/* You can add global styles to this file, and also import other style files */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}

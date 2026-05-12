@@ -1,0 +1,148 @@
+<div class="page">
+
+    <app-top-header></app-top-header>
+  
+    <div
+      class="container"
+      *ngIf="recipe"
+    >
+  
+      <div class="hero-section">
+  
+        <img
+          [src]="recipe.imageUrl"
+          class="recipe-image"
+        />
+  
+        <div class="recipe-info">
+  
+          <div class="top-row">
+  
+            <div>
+              <span class="sku">
+                SKU: {{ recipe.sku }}
+              </span>
+  
+              <h1>
+                {{ recipe.name }}
+              </h1>
+  
+              <p>
+                {{ recipe.description }}
+              </p>
+            </div>
+  
+            <div class="actions">
+  
+              <button class="edit-btn">
+                Edit Recipe
+              </button>
+  
+              <button class="publish-btn">
+                Publish Changes
+              </button>
+  
+            </div>
+  
+          </div>
+  
+          <div class="stats-row">
+  
+            <div class="stat-card gray">
+  
+              <span>Selling Price</span>
+  
+              <h2>
+                S/ {{ recipe.sellingPrice | number:'1.2-2' }}
+              </h2>
+  
+            </div>
+  
+            <div class="stat-card green">
+  
+              <span>Estimated Cost</span>
+  
+              <h2>
+                S/ {{ recipe.estimatedCost | number:'1.2-2' }}
+              </h2>
+  
+            </div>
+  
+          </div>
+  
+        </div>
+  
+      </div>
+  
+      <div class="ingredients-section">
+  
+        <div class="ingredients-header">
+  
+          <h2>Linked Ingredients</h2>
+  
+          <button>
+            + Add Ingredient
+          </button>
+  
+        </div>
+  
+        <table>
+  
+          <thead>
+            <tr>
+              <th>Ingredient</th>
+              <th>Quantity</th>
+              <th>Unit</th>
+              <th>Total Cost</th>
+            </tr>
+          </thead>
+  
+          <tbody>
+  
+            <tr *ngFor="let ingredient of ingredients">
+  
+              <td>
+                {{ ingredient.name }}
+              </td>
+  
+              <td>
+                {{ ingredient.quantity }}
+              </td>
+  
+              <td>
+                {{ ingredient.unit }}
+              </td>
+  
+              <td class="green-text">
+                S/ {{ ingredient.price }}
+              </td>
+  
+            </tr>
+  
+          </tbody>
+  
+        </table>
+  
+        <div class="bottom-row">
+  
+          <button class="delete-btn">
+            🗑 Delete Recipe
+          </button>
+  
+          <div class="total-box">
+  
+            <span>Total Ingredient Cost</span>
+  
+            <h3>
+              S/ {{ totalIngredientsCost }}
+            </h3>
+  
+          </div>
+  
+        </div>
+  
+      </div>
+  
+    </div>
+  
+  </div>

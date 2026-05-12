@@ -1,0 +1,54 @@
+<div class="page">
+
+    <app-top-header></app-top-header>
+
+    <div class="container">
+
+        <div class="title-row">
+
+            <div>
+                <h1>Recipe Catalog</h1>
+                <p>Manage and optimize your restaurant recipes.</p>
+            </div>
+
+            <button class="add-btn" (click)="showCreateModal = true">
+                + Add Recipe
+            </button>
+
+        </div>
+
+        <div class="metrics-grid">
+
+            <div class="metric-card">
+                <span>Total Recipes</span>
+                <h2>{{ metrics?.totalRecipes }}</h2>
+            </div>
+
+            <div class="metric-card">
+                <span>Cost Fluctuation</span>
+                <h2 class="danger">
+                    {{ metrics?.costFluctuation }}%
+                </h2>
+            </div>
+
+            <div class="metric-card">
+                <span>Inventory Alerts</span>
+                <h2 class="red">
+                    {{ metrics?.lowInventoryAlerts }}
+                </h2>
+            </div>
+
+        </div>
+
+        <div class="recipes-grid">
+
+            <app-recipe-card *ngFor="let recipe of recipes" [recipe]="recipe">
+            </app-recipe-card>
+
+        </div>
+
+    </div>
+
+</div>
+<app-recipe-form-modal *ngIf="showCreateModal" (close)="showCreateModal = false" (recipeCreated)="load()">
+</app-recipe-form-modal>

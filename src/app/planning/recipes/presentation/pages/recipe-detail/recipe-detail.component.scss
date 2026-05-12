@@ -1,0 +1,190 @@
+.page {
+    min-height: 100vh;
+    background: #F9FAFB;
+  }
+  
+  .container {
+    padding: 32px;
+  }
+  
+  .hero-section {
+    display: flex;
+    gap: 28px;
+    margin-bottom: 32px;
+  }
+  
+  .recipe-image {
+    width: 420px;
+    height: 320px;
+    border-radius: 24px;
+    object-fit: cover;
+  }
+  
+  .recipe-info {
+    flex: 1;
+  }
+  
+  .top-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 28px;
+  }
+  
+  .sku {
+    color: #6B7280;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  
+  h1 {
+    margin-top: 10px;
+    font-size: 42px;
+    font-weight: 800;
+    color: #111827;
+  }
+  
+  p {
+    margin-top: 12px;
+    color: #6B7280;
+    max-width: 700px;
+    line-height: 1.7;
+  }
+  
+  .actions {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .edit-btn {
+    height: 46px;
+    padding: 0 20px;
+    border-radius: 14px;
+    border: 1px solid #D1D5DB;
+    background: white;
+    cursor: pointer;
+  }
+  
+  .publish-btn {
+    height: 46px;
+    padding: 0 20px;
+    border-radius: 14px;
+    border: none;
+    background: #0F766E;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  
+  .stats-row {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .stat-card {
+    flex: 1;
+    border-radius: 20px;
+    padding: 24px;
+  
+    span {
+      color: #6B7280;
+      font-size: 14px;
+    }
+  
+    h2 {
+      margin-top: 12px;
+      font-size: 34px;
+      font-weight: 800;
+    }
+  }
+  
+  .gray {
+    background: #F3F4F6;
+  }
+  
+  .green {
+    background: #ECFDF5;
+  
+    h2 {
+      color: #059669;
+    }
+  }
+  
+  .ingredients-section {
+    background: white;
+    border-radius: 24px;
+    padding: 32px;
+    border: 1px solid #E5E7EB;
+  }
+  
+  .ingredients-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  
+    h2 {
+      font-size: 28px;
+      font-weight: 700;
+    }
+  
+    button {
+      border: none;
+      background: transparent;
+      color: #0F766E;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  thead {
+    border-bottom: 1px solid #E5E7EB;
+  }
+  
+  th {
+    text-align: left;
+    padding-bottom: 16px;
+    color: #6B7280;
+  }
+  
+  td {
+    padding: 20px 0;
+    border-bottom: 1px solid #F3F4F6;
+  }
+  
+  .green-text {
+    color: #059669;
+    font-weight: 700;
+  }
+  
+  .bottom-row {
+    margin-top: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .delete-btn {
+    border: none;
+    background: transparent;
+    color: #DC2626;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  
+  .total-box {
+    text-align: right;
+  
+    span {
+      color: #6B7280;
+    }
+  
+    h3 {
+      margin-top: 8px;
+      font-size: 28px;
+      color: #059669;
+    }
+  }

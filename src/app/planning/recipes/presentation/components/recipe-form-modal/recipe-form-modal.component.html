@@ -1,0 +1,41 @@
+<div class="overlay">
+
+    <div class="modal">
+
+        <button class="close-btn" (click)="closeModal()">
+            ✕
+        </button>
+
+        <h2>Create Recipe</h2>
+
+        <div class="form-group">
+
+            <label>Recipe Name</label>
+
+            <input type="text" [(ngModel)]="recipeName" />
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Estimated Cost</label>
+
+            <input type="number" [(ngModel)]="estimatedCost" />
+
+        </div>
+
+        <div class="footer">
+
+            <button class="cancel-btn" (click)="closeModal()">
+                Cancel
+            </button>
+
+            <button class="save-btn" (click)="saveRecipe()">
+                Save Recipe
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
