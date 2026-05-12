@@ -1,6 +1,7 @@
 import { Currency } from '../../../shared/domain/model/currency.entity';
 import { SaleItem } from './sale-item.entity';
 import { AdditionalSupply } from './additional-supply.entity';
+import { Customer } from './customer.entity';
 
 /**
  * Command to register a sale.
@@ -60,7 +61,7 @@ export class RegisterSaleCommand {
    * Gets the name of the customer.
    * @returns The name of the customer.
    */
-  get customerName() : string {
+  get customerName() : Customer {
     return this.customerName;
   }
 
@@ -68,7 +69,7 @@ export class RegisterSaleCommand {
    * Sets the name of the customer.
    * @param customerName - The name of the customer.
    */
-  set customerName (customerName: string) {
+  set customerName (customerName: Customer) {
     this.customerName = customerName;
   }
 
@@ -142,7 +143,7 @@ export class RegisterSaleCommand {
    * The name of the customer.
    * @private Name is stored as a string to allow for flexibility in naming conventions.
    */
-  private _customerName: string;
+  private _customerName: Customer;
 
   /**
    * The currency of the sale.
@@ -169,7 +170,7 @@ export class RegisterSaleCommand {
   constructor(resource: {
     businessId: string;
     branchId: string;
-    customerName: string;
+    customerName: Customer;
     registeredByUserId: string;
     currency: Currency;
     listOfItems: SaleItem[];
