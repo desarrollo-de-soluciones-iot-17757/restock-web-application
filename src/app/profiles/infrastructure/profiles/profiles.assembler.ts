@@ -8,8 +8,8 @@ import { ProfileResource } from './profiles.response';
 export class ProfilesAssembler implements BaseAssembler<Profile, ProfileResource, BaseResponse> {
   toEntityFromResource(resource: ProfileResource): Profile {
     return {
-      id: resource._id ?? String(resource.id),
-      userId: resource.user_id ?? '',
+      id: resource.id ?? String(resource.id),
+      userId: resource.id ?? '',
       firstName: resource.name ?? '',
       lastName: resource.last_name ?? '',
       phone: resource.phone_number ?? '',
@@ -21,9 +21,7 @@ export class ProfilesAssembler implements BaseAssembler<Profile, ProfileResource
 
   toResourceFromEntity(entity: Profile): ProfileResource {
     return {
-      id: 0,
-      _id: entity.id,
-      user_id: entity.userId,
+      id: entity.userId,
       name: entity.firstName,
       last_name: entity.lastName,
       phone_number: entity.phone,

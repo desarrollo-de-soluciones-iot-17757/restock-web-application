@@ -38,7 +38,7 @@ export const appRoutes: Routes = [
       {
         path: 'sales',
         loadComponent: () =>
-          import('./shared/presentation/views/placeholder-page/placeholder-page').then((m) => m.PlaceholderPage),
+          import('./sales/presentation/view/sales-list/sales-list').then((m) => m.SalesList),
         data: { titleKey: 'nav.sales' },
         title: `${baseTitle} · Sales`,
       },
