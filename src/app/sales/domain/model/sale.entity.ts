@@ -3,12 +3,13 @@ import { Currency } from '../../../shared/domain/model/currency.entity';
 import { SaleItem } from './sale-item.entity';
 import { SaleTotal } from './sale-total.entity';
 import { SaleStatus } from './sale-status.enum';
+import { AdditionalSupply } from './additional-supply.entity';
+import { Customer } from './customer.entity';
 
 /**
- * Represents a sale in the sales entity.
+ * Represents a sale in the register-sale entity.
  */
 export class Sale implements BaseEntity {
-
   /**
    * The unique identifier of the sale.
    * @private Id is stored as a string to allow for flexibility in naming conventions.
@@ -34,10 +35,16 @@ export class Sale implements BaseEntity {
   private _registeredByUserId: string;
 
   /**
+   * The customer of the sale.
+   * @private Customer is stored as a Customer object.
+   */
+  private _customer: Customer;
+
+  /**
    * The currency of the sale.
    * @private Currency is stored as a Currency object.
    */
-  private _Currency: Currency;
+  private _currency: Currency;
 
   /**
    * The items in the sale.
@@ -49,7 +56,7 @@ export class Sale implements BaseEntity {
    * The additional supplies in the sale.
    * @private AdditionalSupplies is stored as an array of any objects.
    */
-  private _additionalSupplies: any[] = [];
+  private _additionalSupplies: AdditionalSupply[] = [];
 
   /**
    * The total amount of the sale.
@@ -78,9 +85,10 @@ export class Sale implements BaseEntity {
     businessId: string;
     branchId: string;
     registeredByUserId: string;
+    customer: Customer;
     currency: Currency;
     saleItems: SaleItem[];
-    additionalSupplies: any[];
+    additionalSupplies: AdditionalSupply[];
     saleTotal: SaleTotal;
     saleStatus: SaleStatus;
     date: Date;
@@ -89,7 +97,8 @@ export class Sale implements BaseEntity {
     this._businessId = Sale.businessId;
     this._branchId = Sale.branchId;
     this._registeredByUserId = Sale.registeredByUserId;
-    this._Currency = Sale.currency;
+    this._customer = Sale.customer;
+    this._currency = Sale.currency;
     this._saleItems = Sale.saleItems;
     this._additionalSupplies = Sale.additionalSupplies;
     this._saleTotal = Sale.saleTotal;
@@ -102,14 +111,14 @@ export class Sale implements BaseEntity {
    * @returns The sale's id.
    */
   get id(): string {
-    return this.id;
+    return this._id;
   }
 
   /**
    * Getter for the sale's businessId.
    * @returns The sale's businessId.
    */
-  get businessId() : string {
+  get businessId(): string {
     return this._businessId;
   }
 
@@ -117,7 +126,7 @@ export class Sale implements BaseEntity {
    * Getter for the sale's branchId.
    * @returns The sale's branchId.
    */
-  get branchId() : string {
+  get branchId(): string {
     return this._branchId;
   }
 
@@ -125,16 +134,63 @@ export class Sale implements BaseEntity {
    * Getter for the sale's registeredByUserId.
    * @returns The sale's registeredByUserId.
    */
-  get registeredByUserId() : string {
+  get registeredByUserId(): string {
     return this._registeredByUserId;
+  }
+
+  /**
+   * Getter for the sale's customer.
+   * @returns The sale's customer.
+   */
+  get customer(): Customer {
+    return this._customer;
   }
 
   /**
    * Getter for the sale's currency.
    * @returns The sale's currency.
    */
-  get currency() : Currency {
-    return this._Currency;
+  get currency(): Currency {
+    return this._currency;
   }
 
+  /**
+   * Getter for the sale's saleItems.
+   * @returns The sale's saleItems.
+   */
+  get saleItems(): SaleItem[] {
+    return this._saleItems;
+  }
+
+  /**
+   * Getter for the sale's additionalSupplies.
+   * @returns The sale's additionalSupplies.
+   */
+  get additionalSupplies(): AdditionalSupply[] {
+    return this._additionalSupplies;
+  }
+
+  /**
+   * Getter for the sale's saleTotal.
+   * @returns The sale's saleTotal.
+   */
+  get saleTotal(): SaleTotal {
+    return this._saleTotal;
+  }
+
+  /**
+   * Getter for the sale's saleStatus.
+   * @returns The sale's saleStatus.
+   */
+  get saleStatus(): SaleStatus {
+    return this._saleStatus;
+  }
+
+  /**
+   * Getter for the sale's date.
+   * @returns The sale's date.
+   */
+  get date(): Date {
+    return this._date;
+  }
 }

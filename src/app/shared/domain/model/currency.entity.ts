@@ -10,18 +10,11 @@ export class Currency {
   private _code: string;
 
   /**
-   * The symbol of the currency (e.g., "$", "€").
-   * @private Symbol is stored as a string to allow for flexibility in currency symbols.
-   */
-  private _symbol: string;
-
-  /**
    * Create a Currency
    * @param currency - An object containing the code and symbol of the currency.
    */
-  constructor(currency: { code: string; symbol: string }) {
+  constructor(currency: { code: string }) {
     this._code = currency.code;
-    this._symbol = currency.symbol;
   }
 
   /**
@@ -30,13 +23,5 @@ export class Currency {
    */
   get code(): string {
     return this._code;
-  }
-
-  /**
-   * Getter for the currency symbol.
-   * @returns The symbol of the currency.
-   */
-  get symbol(): string {
-    return this._symbol;
   }
 }

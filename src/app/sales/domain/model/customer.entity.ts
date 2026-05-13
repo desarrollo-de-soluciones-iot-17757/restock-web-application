@@ -1,5 +1,5 @@
 /**
- * Represents a customer in the sales entity.
+ * Represents a customer in the register-sale entity.
  */
 export class Customer {
 
