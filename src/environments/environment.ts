@@ -6,8 +6,8 @@ export const environment = {
   production: true,
 
   // Base API URL
-  platformProviderApiBaseUrl: 'https://',
+  platformProviderApiBaseUrl: 'http://localhost:3000/api/v1/',
 
   // Sales Management API
-  platformProviderSalesEndpointsPath: '/sales',
+  platformProviderSalesEndpointsPath: 'sales',
 };

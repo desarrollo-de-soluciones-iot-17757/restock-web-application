@@ -8,5 +8,5 @@ const salesRoutes = () => import('./sales/presentation/sales.routes').then((m) =
  * Root route configuration that composes bounded-context routes.
  */
 export const appRoutes: Routes = [
-  { path: 'sale', loadChildren: salesRoutes },
+  { path: 'sales', loadChildren: salesRoutes },
 ];
