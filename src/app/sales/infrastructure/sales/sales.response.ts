@@ -5,7 +5,6 @@ import { BaseResource, BaseResponse } from '../../../shared/infrastructure/base-
  * Represents a single sale record.
  */
 export interface SaleResource extends BaseResource {
-  id: string;
   branchId: string;
   businessId: string;
   registeredByUserId: string;
@@ -17,15 +16,27 @@ export interface SaleResource extends BaseResource {
   date: string;
 }
 
+/**
+ * CustomerResource
+ * Represents a customer in a sale.
+ */
 export interface CustomerResource {
   name: string;
 }
 
+/**
+ * CurrencyResource
+ * Represents a currency in a sale.
+ */
 export interface CurrencyResource {
   code: string;
   symbol: string;
 }
 
+/**
+ * SaleItemResource
+ * Represents an item in a sale.
+ */
 export interface SaleItemResource {
   itemId: string;
   nameSnapshot: string;
@@ -34,6 +45,10 @@ export interface SaleItemResource {
   lineTotal: number;
 }
 
+/**
+ * SaleTotalResource
+ * Represents the total amount of a sale.
+ */
 export interface SaleTotalResource {
   subTotal: number;
   tax: number;

@@ -1,4 +1,4 @@
-import { SaleResource, SalesResponse } from './sale.response';
+import { SaleResource, SalesResponse } from './sales.response';
 import { BaseAssembler } from '../../../shared/infrastructure/base-assembler';
 import { Sale } from '../../domain/model/sale.entity';
 import { Currency } from '../../../shared/domain/model/currency.entity';
@@ -10,7 +10,7 @@ import { SaleItem } from '../../domain/model/sale-item.entity';
 /**
  * Assembler class responsible for converting between domain models, request objects, and response objects related to get-sale-by-branch-id.
  */
-export class SaleAssembler implements BaseAssembler<Sale, SaleResource, SalesResponse> {
+export class SalesAssembler implements BaseAssembler<Sale, SaleResource, SalesResponse> {
 
   /**
    * Maps an array of SaleResource objects to an array of Sale entities.

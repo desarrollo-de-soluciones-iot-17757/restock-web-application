@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { SaleAssembler } from './sale.assembler';
-import { SaleResource, SalesResponse } from './sale.response';
+import { SalesAssembler } from './sales.assembler';
+import { SaleResource, SalesResponse } from './sales.response';
 import { BaseApiEndpoint } from '../../../shared/infrastructure/base-api-endpoint';
 import { Sale } from '../../domain/model/sale.entity';
 import { map, Observable } from 'rxjs';
@@ -17,14 +17,14 @@ export class SalesApiEndpoint extends BaseApiEndpoint<
   Sale,
   SaleResource,
   SalesResponse,
-  SaleAssembler
+  SalesAssembler
 > {
   /**
    * Constructor for SalesApiEndpoint.
    * @param http - The HttpClient instance for making HTTP requests.
    */
   constructor(http: HttpClient) {
-    super(http, salesApiEndpointUrl, new SaleAssembler());
+    super(http, salesApiEndpointUrl, new SalesAssembler());
   }
 
   /**
@@ -33,23 +33,12 @@ export class SalesApiEndpoint extends BaseApiEndpoint<
    * @returns An Observable that emits an array of Sale entities.
    */
   getSalesByBranchId(branchId: string): Observable<Sale[]> {
-    // json-server returns a plain array for the resource (e.g. [ {...} ])
-    // but our assembler expects a SalesResponse with a `sales` array.
-    // Normalize the response here to keep the assembler contract.
     return this.http
-      .get<any>(this.endpointUrl, {
+      .get<SalesResponse>(this.endpointUrl, {
         params: {
           branchId,
         },
       })
-      .pipe(
-        map((response) => {
-          // If the server returned an array, wrap it into the expected shape.
-          const normalized: SalesResponse = Array.isArray(response)
-            ? ({ sales: response } as SalesResponse)
-            : response;
-          return this.assembler.toEntitiesFromResponse(normalized);
-        })
-      );
+      .pipe(map((response) => this.assembler.toEntitiesFromResponse(response)));
   }
 }

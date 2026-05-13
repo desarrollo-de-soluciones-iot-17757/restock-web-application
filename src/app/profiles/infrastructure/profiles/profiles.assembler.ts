@@ -9,7 +9,7 @@ export class ProfilesAssembler implements BaseAssembler<Profile, ProfileResource
   toEntityFromResource(resource: ProfileResource): Profile {
     return {
       id: resource.id ?? String(resource.id),
-      userId: resource.id ?? '',
+      userId: resource.user_id ?? '',
       firstName: resource.name ?? '',
       lastName: resource.last_name ?? '',
       phone: resource.phone_number ?? '',
@@ -21,7 +21,8 @@ export class ProfilesAssembler implements BaseAssembler<Profile, ProfileResource
 
   toResourceFromEntity(entity: Profile): ProfileResource {
     return {
-      id: entity.userId,
+      id: entity.id,
+      user_id: entity.userId,
       name: entity.firstName,
       last_name: entity.lastName,
       phone_number: entity.phone,
