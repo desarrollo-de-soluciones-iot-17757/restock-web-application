@@ -7,6 +7,28 @@ const baseTitle = 'RestockWebApplication';
 
 export const appRoutes: Routes = [
   {
+    path: 'sign-up',
+    loadComponent: () =>
+      import('./iam/presentation/views/sign-up-form/sign-up-form').then((m) => m.SignUpForm),
+    title: `${baseTitle} · Sign Up`,
+  },
+  {
+    path: 'sign-up/account',
+    loadComponent: () =>
+      import('./profiles/presentation/views/registration-personal-profile/registration-personal-profile').then(
+        (m) => m.RegistrationPersonalProfile,
+      ),
+    title: 'Create your Account',
+  },
+  {
+    path: 'sign-up/business',
+    loadComponent: () =>
+      import('./profiles/presentation/views/registration-business-details/registration-business-details').then(
+        (m) => m.RegistrationBusinessDetails,
+      ),
+    title: 'Business details',
+  },
+  {
     path: '',
     component: Layout,
     children: [
@@ -42,9 +64,7 @@ export const appRoutes: Routes = [
       {
         path: 'sales',
         loadComponent: () =>
-          import('./sales/presentation/view/sales-list/sales-list').then(
-            (m) => m.SalesList,
-          ),
+          import('./sales/presentation/view/sales-list/sales-list').then((m) => m.SalesList),
         data: { titleKey: 'nav.sales' },
         title: `${baseTitle} · Sales`,
       },
