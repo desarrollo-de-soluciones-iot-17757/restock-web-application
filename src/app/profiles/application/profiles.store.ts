@@ -1,11 +1,11 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Profile } from '../domain/model/profile.entity';
 import { Business } from '../domain/model/business.entity';
-import { ProfilesApi } from '../infrastructure/profiles-api';
+import { PROFILES_REPOSITORY } from './ports/profiles.repository';
 
 @Injectable({ providedIn: 'root' })
 export class ProfilesStore {
-  private readonly api = inject(ProfilesApi);
+  private readonly api = inject(PROFILES_REPOSITORY);
   private loaded = false;
 
   readonly profile = signal<Profile | null>(null);

@@ -18,4 +18,14 @@ export const environment = {
      */
     batchInventoryHttpPath: '/inventory/batch-inventory',
   },
+  iamApi: {
+    /**
+     * URL for sign-up endpoint. When null, uses simulated repository.
+     */
+    signUpUrl: null as string | null,
+    /**
+     * URL for sign-up conflict endpoint (e.g., duplicate email).
+     */
+    signUpConflictUrl: null as string | null,
+  },
 };

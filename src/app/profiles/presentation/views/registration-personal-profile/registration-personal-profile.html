@@ -23,8 +23,8 @@
         </svg>
         <span class="brand-name">RESTOCK</span>
       </div>
-      <h1 class="heading-1">Create your Account</h1>
-      <p class="heading-subtitle">Join the network of professional IoT inventory managers.</p>
+      <h1 class="heading-1">{{ 'profiles.registrationPersonalProfile.heading' | translate }}</h1>
+      <p class="heading-subtitle">{{ 'profiles.registrationPersonalProfile.subtitle' | translate }}</p>
     </header>
 
     <!-- Form -->
@@ -33,41 +33,41 @@
       <!-- Section 1: Personal Details -->
       <section class="form-section">
         <div class="section-info">
-          <h2 class="section-title">Personal Details</h2>
-          <p class="section-description">How should we address you within the system?</p>
+          <h2 class="section-title">{{ 'profiles.registrationPersonalProfile.personalDetailsTitle' | translate }}</h2>
+          <p class="section-description">{{ 'profiles.registrationPersonalProfile.personalDetailsDescription' | translate }}</p>
         </div>
         <div class="section-fields">
           <div class="fields-row">
             <div class="field-group">
-              <label class="field-label" for="firstName">FIRST NAME</label>
+              <label class="field-label" for="firstName">{{ 'profiles.registrationPersonalProfile.firstNameLabel' | translate }}</label>
               <input
                 id="firstName"
                 class="field-input"
                 formControlName="firstName"
-                placeholder="e.g. Elena"
+                placeholder="{{ 'profiles.registrationPersonalProfile.firstNamePlaceholder' | translate }}"
                 autocomplete="given-name"
               />
             </div>
             <div class="field-group">
-              <label class="field-label" for="lastName">LAST NAME</label>
+              <label class="field-label" for="lastName">{{ 'profiles.registrationPersonalProfile.lastNameLabel' | translate }}</label>
               <input
                 id="lastName"
                 class="field-input"
                 formControlName="lastName"
-                placeholder="e.g. Kovac"
+                placeholder="{{ 'profiles.registrationPersonalProfile.lastNamePlaceholder' | translate }}"
                 autocomplete="family-name"
               />
             </div>
           </div>
           <div class="field-group">
-            <label class="field-label" for="phoneNumber">PHONE NUMBER</label>
+            <label class="field-label" for="phoneNumber">{{ 'profiles.registrationPersonalProfile.phoneNumberLabel' | translate }}</label>
             <div class="phone-input-wrapper">
-              <span class="phone-prefix">+1</span>
+              <span class="phone-prefix">+51</span>
               <input
                 id="phoneNumber"
                 class="field-input phone-field"
                 formControlName="phoneNumber"
-                placeholder="(555) 000-0000"
+                placeholder="{{ 'profiles.registrationPersonalProfile.phoneNumberPlaceholder' | translate }}"
                 type="tel"
                 autocomplete="tel"
               />
@@ -81,33 +81,33 @@
       <!-- Section 2: Location -->
       <section class="form-section">
         <div class="section-info">
-          <h2 class="section-title">Location</h2>
-          <p class="section-description">Specify the primary region for regional IoT node deployment.</p>
+          <h2 class="section-title">{{ 'profiles.registrationPersonalProfile.locationTitle' | translate }}</h2>
+          <p class="section-description">{{ 'profiles.registrationPersonalProfile.locationDescription' | translate }}</p>
         </div>
         <div class="section-fields">
           <div class="field-group">
-            <label class="field-label" for="address">ADDRESS</label>
+            <label class="field-label" for="address">{{ 'profiles.registrationPersonalProfile.addressLabel' | translate }}</label>
             <input
               id="address"
               class="field-input"
               formControlName="address"
-              placeholder="123 Industrial Ave, Suite 400"
+              placeholder="{{ 'profiles.registrationPersonalProfile.addressPlaceholder' | translate }}"
               autocomplete="street-address"
             />
           </div>
           <div class="fields-row">
             <div class="field-group">
-              <label class="field-label" for="city">CITY</label>
+              <label class="field-label" for="city">{{ 'profiles.registrationPersonalProfile.cityLabel' | translate }}</label>
               <input
                 id="city"
                 class="field-input"
                 formControlName="city"
-                placeholder="San Francisco"
+                placeholder="{{ 'profiles.registrationPersonalProfile.cityPlaceholder' | translate }}"
                 autocomplete="address-level2"
               />
             </div>
             <div class="field-group">
-              <label class="field-label" for="country">COUNTRY</label>
+              <label class="field-label" for="country">{{ 'profiles.registrationPersonalProfile.countryLabel' | translate }}</label>
               <div class="select-wrapper">
                 <select
                   id="country"
@@ -133,12 +133,12 @@
       <!-- Section 3: Profile -->
       <section class="form-section">
         <div class="section-info">
-          <h2 class="section-title">Profile</h2>
-          <p class="section-description">Customize your internal identifier and role summary.</p>
+          <h2 class="section-title">{{ 'profiles.registrationPersonalProfile.profileTitle' | translate }}</h2>
+          <p class="section-description">{{ 'profiles.registrationPersonalProfile.profileDescription' | translate }}</p>
         </div>
         <div class="section-fields">
           <div class="field-group">
-            <label class="field-label">UPLOAD AVATAR</label>
+            <label class="field-label">{{ 'profiles.registrationPersonalProfile.uploadAvatarLabel' | translate }}</label>
             <div
               class="avatar-dropzone"
               (dragover)="onDragOver($event)"
@@ -160,9 +160,9 @@
                   </svg>
                 </div>
                 <label for="avatar-input" class="upload-cta">
-                  <span class="upload-link">Click to upload</span> or drag and drop
+                  <span class="upload-link">{{ 'profiles.registrationPersonalProfile.avatarUploadCta' | translate }}</span> {{ 'profiles.registrationPersonalProfile.avatarOrDrop' | translate }}
                 </label>
-                <small class="upload-hint">SVG, PNG, JPG or GIF (max. 800×800px)</small>
+                <small class="upload-hint">{{ 'profiles.registrationPersonalProfile.avatarHint' | translate }}</small>
               }
             </div>
           </div>
@@ -175,13 +175,13 @@
           <svg width="16" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M6.95 13.55L12.6 7.9L11.175 6.475L6.95 10.7L4.85 8.6L3.425 10.025L6.95 13.55ZM8 20C5.68333 19.4167 3.77083 18.0875 2.2625 16.0125C0.754167 13.9375 0 11.6333 0 9.1V3L8 0L16 3V9.1C16 11.6333 15.2458 13.9375 13.7375 16.0125C12.2292 18.0875 10.3167 19.4167 8 20ZM8 17.9C9.73333 17.35 11.1667 16.25 12.3 14.6C13.4333 12.95 14 11.1167 14 9.1V4.375L8 2.125L2 4.375V9.1C2 11.1167 2.56667 12.95 3.7 14.6C4.83333 16.25 6.26667 17.35 8 17.9Z" fill="#6C7A71"/>
           </svg>
-          <span>All information is stored in compliance with enterprise security protocols.</span>
+          <span>{{ 'profiles.registrationPersonalProfile.securityNote' | translate }}</span>
         </div>
         <div class="action-buttons">
-          <button type="button" class="btn btn-skip" (click)="onSkip()">Skip</button>
-          <button type="button" class="btn btn-cancel" (click)="onCancel()">Cancel</button>
+          <button type="button" class="btn btn-skip" (click)="onSkip()">{{ 'profiles.registrationPersonalProfile.skip' | translate }}</button>
+          <button type="button" class="btn btn-cancel" (click)="onCancel()">{{ 'profiles.registrationPersonalProfile.cancel' | translate }}</button>
           <button type="submit" class="btn btn-next">
-            Next: Business Details
+            {{ 'profiles.registrationPersonalProfile.nextBusinessDetails' | translate }}
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M9.13125 6.75H0V5.25H9.13125L4.93125 1.05L6 0L12 6L6 12L4.93125 10.95L9.13125 6.75Z" fill="white"/>
             </svg>
