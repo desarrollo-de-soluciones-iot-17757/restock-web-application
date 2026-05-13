@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { IamStore } from '../../../application/iam.store';
+import { SignUpCommand } from '../../../domain/model/sign-up.command';
 
 @Component({
   selector: 'app-sign-up-form',
@@ -29,10 +30,10 @@ export class SignUpForm {
       const password = this.form.get('password')?.value || '';
 
       this.iamStore.signUp(
-        { email, password },
+        new SignUpCommand({ email, password }),
         () => {
           void this.router.navigate(['/role-selection']);
-        }
+        },
       );
     }
   }
