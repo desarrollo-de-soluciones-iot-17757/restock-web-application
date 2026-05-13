@@ -8,6 +8,7 @@ import { TranslatePipe } from '@ngx-translate/core';
  */
 @Component({
   selector: 'app-page-not-found',
+  standalone: true,
   imports: [MatButton, TranslatePipe],
   templateUrl: './page-not-found.html',
   styleUrl: './page-not-found.css',
