@@ -7,5 +7,5 @@ const salesList = () => import('./view/sales-list/sales-list').then(m => m.Sales
  * Defines paths for the sales management bounded context.
  */
 export const salesRoutes: Routes = [
-  { path: '', loadComponent: salesList }
+  { path: 'sales', loadComponent: salesList }
 ];
