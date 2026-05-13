@@ -166,6 +166,9 @@
         @if (profileLoading()) {
           <div class="profile-loading">{{ 'settings.profile.loading' | translate }}</div>
         }
+        @if (profileError(); as err) {
+          <div class="profile-error" role="alert">{{ err }}</div>
+        }
 
         <!-- Avatar section -->
         <div class="avatar-section">
@@ -265,7 +268,7 @@
               <span class="material-icons branch-item__icon">business</span>
               <div class="branch-item__info">
                 <span class="branch-item__name">{{ b.companyName }}</span>
-                <span class="branch-item__status">{{ b.mainLocation }}</span>
+                <span class="branch-item__status">{{ b.mainLocation.getValue() }}</span>
               </div>
             </div>
           }

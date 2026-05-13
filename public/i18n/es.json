@@ -160,7 +160,8 @@
     "branches": {
       "title": "Sucursales",
       "comingSoon": "Gestión de sucursales próximamente."
-    },
+    }
+  },
   "iam": {
     "authenticationSection": {
       "title": "¿Cómo usarás Restock?",
