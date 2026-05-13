@@ -1,0 +1,32 @@
+{
+  "id": "sale_001",
+  "businessId": "biz_01",
+  "branchId": "branch_01",
+  "registeredByUserId": "user_42",
+  "currency": {
+    "code": "PEN",
+    "symbol": "S/"
+  },
+  "saleItems": [
+    {
+      "itemId": "item_A1",
+      "nameSnapshot": "Café americano 12oz",
+      "unitPrice": 5.5,
+      "quantity": 3,
+      "lineTotal": 16.5
+    }
+  ],
+  "additionalSupplies": [
+    {
+      "batchId": "batch_cups_L",
+      "quantity": 3
+    }
+  ],
+  "saleTotal": {
+    "subtotal": 84.75,
+    "tax": 15.25,
+    "total": 100.0
+  },
+  "saleStatus": "completed",
+  "date": "2026-05-10"
+}
