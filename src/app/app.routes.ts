@@ -21,10 +21,6 @@ export const appRoutes: Routes = [
         children: resourceInventoryRoutes,
       },
       {
-        path: 'profiles',
-        children: profilesRoutes,
-      },
-      {
         path: 'recipes',
         loadComponent: () =>
           import('./shared/presentation/views/placeholder-page/placeholder-page').then((m) => m.PlaceholderPage),
@@ -61,6 +57,40 @@ export const appRoutes: Routes = [
         title: `${baseTitle} · Settings`,
       },
     ],
+  },
+  {
+    path: 'profiles',
+    loadComponent: () => import('./shared/presentation/components/layout/layout').then(m => m.Layout),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./profiles/presentation/views/system-preferences/system-preferences').then(
+            (m) => m.SystemPreferences,
+          ),
+        title: 'Profile Overview',
+      },
+    ]
+  },
+  {
+    path: 'profiles/register',
+    loadComponent: () =>
+      import('./profiles/presentation/views/registration-personal-profile/registration-personal-profile').then(
+        (m) => m.RegistrationPersonalProfile,
+      ),
+    title: 'Create your Account',
+  },
+  {
+    path: 'profiles/register/business',
+    loadComponent: () =>
+      import('./profiles/presentation/views/registration-business-details/registration-business-details').then(
+        (m) => m.RegistrationBusinessDetails,
+      ),
+    title: 'Business details',
+  },
+  {
+    path: '',
+    loadChildren: () => import('./iam/presentation/iam.routes').then((m) => m.iamRoutes),
   },
   {
     path: '**',

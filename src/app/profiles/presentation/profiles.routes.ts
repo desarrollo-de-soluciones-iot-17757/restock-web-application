@@ -2,6 +2,14 @@ import { Routes } from '@angular/router';
 
 export const profilesRoutes: Routes = [
   {
+    path: '',
+    loadComponent: () =>
+      import('./views/system-preferences/system-preferences').then(
+        (m) => m.SystemPreferences,
+      ),
+    title: 'Profile Overview',
+  },
+  {
     path: 'register',
     children: [
       {

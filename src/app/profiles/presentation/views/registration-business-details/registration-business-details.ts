@@ -64,5 +64,6 @@ export class RegistrationBusinessDetails {
       ...this.form.value,
       categories: this.selectedCategories(),
     });
+    void this.router.navigate(['/profiles']);
   }
 }
