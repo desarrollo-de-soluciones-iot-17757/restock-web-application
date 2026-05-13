@@ -1,6 +1,7 @@
 import { UpperCasePipe } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Profile } from '../../../domain/model/profile.entity';
 import { ProfilesApi } from '../../../infrastructure/profiles-api';
 import { ProfilesStore } from '../../../application/profiles.store';
@@ -8,20 +9,21 @@ import { ProfilesStore } from '../../../application/profiles.store';
 @Component({
   selector: 'app-system-preferences',
   standalone: true,
-  imports: [FormsModule, UpperCasePipe],
+  imports: [FormsModule, UpperCasePipe, TranslateModule],
   templateUrl: './system-preferences.html',
   styleUrl: './system-preferences.css',
 })
 export class SystemPreferences {
   private readonly store = inject(ProfilesStore);
   private readonly profilesApi = inject(ProfilesApi);
+  private readonly translate = inject(TranslateService);
 
   activeTab = signal<'general' | 'profile' | 'branches'>('general');
 
   // ── General tab ──
   timezone = signal('UTC -05:00 Eastern Time (US & Canada)');
   currency = signal('USD - United States Dollar ($)');
-  language = signal('English (US)');
+  language = signal(this.translate.getCurrentLang() || 'en');
   branch = signal('Main Branch');
   emailNotifications = signal(true);
   smsAlerts = signal(false);
@@ -44,7 +46,10 @@ export class SystemPreferences {
     'MXN - Mexican Peso ($)',
   ];
 
-  readonly languages = ['English (US)', 'English (UK)', 'Spanish', 'French', 'Portuguese'];
+  readonly languageOptions = [
+    { code: 'en', label: 'English (US)' },
+    { code: 'es', label: 'Spanish' },
+  ];
 
   readonly branches = ['Main Branch', 'Branch North', 'Branch South', 'Branch East', 'Branch West'];
 
@@ -100,7 +105,13 @@ export class SystemPreferences {
   }
 
   savePreferences(): void {
+    this.translate.use(this.language());
     // persist preferences
+  }
+
+  setLanguage(languageCode: string): void {
+    this.language.set(languageCode);
+    this.translate.use(languageCode);
   }
 
   discardProfileChanges(): void {

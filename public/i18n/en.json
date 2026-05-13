@@ -89,5 +89,77 @@
         }
       }
     }
+  },
+  "settings": {
+    "breadcrumb": {
+      "root": "SETTINGS",
+      "general": "GENERAL",
+      "profile": "PROFILE",
+      "branches": "BRANCHES"
+    },
+    "title": "Account Settings",
+    "subtitle": "Manage your personal credentials and business organizational details.",
+    "regional": {
+      "title": "Regional Configuration",
+      "timezone": "TIMEZONE",
+      "currency": "CURRENCY",
+      "language": "LANGUAGE"
+    },
+    "branch": {
+      "title": "Branch Selection",
+      "label": "BRANCHES"
+    },
+    "communication": "COMMUNICATION",
+    "notifications": {
+      "email": "Email Notifications",
+      "sms": "SMS Critical Alerts"
+    },
+    "status": {
+      "title": "System Status",
+      "version": "Software Version",
+      "sync": "Last Sync",
+      "syncTime": "2 mins ago",
+      "nominal": "ALL SYSTEMS NOMINAL",
+      "description": "Global node connectivity at 99.98%."
+    },
+    "actions": {
+      "discard": "Discard Changes",
+      "save": "Save Preferences"
+    },
+    "profile": {
+      "title": "Personal Information",
+      "loading": "Loading profile…",
+      "photo": {
+        "label": "Profile Photo",
+        "hint": "Accepted formats: JPG, PNG. Max size: 2MB.",
+        "upload": "UPLOAD NEW",
+        "remove": "REMOVE"
+      },
+      "fields": {
+        "firstName": "FIRST NAME",
+        "lastName": "LAST NAME",
+        "gender": "GENDER",
+        "phone": "PHONE NUMBER"
+      },
+      "placeholders": {
+        "firstName": "First name",
+        "lastName": "Last name",
+        "gender": "Gender",
+        "phone": "Phone number"
+      },
+      "actions": {
+        "discard": "DISCARD CHANGES",
+        "save": "SAVE CHANGES"
+      }
+    },
+    "business": {
+      "title": "BUSINESS",
+      "loading": "Loading…",
+      "empty": "No business found."
+    },
+    "branches": {
+      "title": "Branches",
+      "comingSoon": "Branch management coming soon."
+    }
   }
 }

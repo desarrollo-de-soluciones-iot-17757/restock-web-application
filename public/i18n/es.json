@@ -89,5 +89,77 @@
         }
       }
     }
+  },
+  "settings": {
+    "breadcrumb": {
+      "root": "AJUSTES",
+      "general": "GENERAL",
+      "profile": "PERFIL",
+      "branches": "SUCURSALES"
+    },
+    "title": "Configuración de Cuenta",
+    "subtitle": "Gestiona tus credenciales personales y detalles organizacionales del negocio.",
+    "regional": {
+      "title": "Configuración Regional",
+      "timezone": "ZONA HORARIA",
+      "currency": "MONEDA",
+      "language": "IDIOMA"
+    },
+    "branch": {
+      "title": "Selección de Sucursal",
+      "label": "SUCURSALES"
+    },
+    "communication": "COMUNICACIÓN",
+    "notifications": {
+      "email": "Notificaciones por Correo",
+      "sms": "Alertas Críticas por SMS"
+    },
+    "status": {
+      "title": "Estado del Sistema",
+      "version": "Versión del Software",
+      "sync": "Última Sincronización",
+      "syncTime": "Hace 2 minutos",
+      "nominal": "TODOS LOS SISTEMAS NOMINALES",
+      "description": "Conectividad global de nodos al 99.98%."
+    },
+    "actions": {
+      "discard": "Descartar Cambios",
+      "save": "Guardar Preferencias"
+    },
+    "profile": {
+      "title": "Información Personal",
+      "loading": "Cargando perfil…",
+      "photo": {
+        "label": "Foto de Perfil",
+        "hint": "Formatos aceptados: JPG, PNG. Tamaño máximo: 2MB.",
+        "upload": "SUBIR NUEVA",
+        "remove": "ELIMINAR"
+      },
+      "fields": {
+        "firstName": "NOMBRE",
+        "lastName": "APELLIDO",
+        "gender": "GÉNERO",
+        "phone": "NÚMERO DE TELÉFONO"
+      },
+      "placeholders": {
+        "firstName": "Nombre",
+        "lastName": "Apellido",
+        "gender": "Género",
+        "phone": "Número de teléfono"
+      },
+      "actions": {
+        "discard": "DESCARTAR CAMBIOS",
+        "save": "GUARDAR CAMBIOS"
+      }
+    },
+    "business": {
+      "title": "NEGOCIO",
+      "loading": "Cargando…",
+      "empty": "No se encontró negocio."
+    },
+    "branches": {
+      "title": "Sucursales",
+      "comingSoon": "Gestión de sucursales próximamente."
+    }
   }
 }
