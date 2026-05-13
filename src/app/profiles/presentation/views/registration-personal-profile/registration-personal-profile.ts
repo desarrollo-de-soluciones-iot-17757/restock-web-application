@@ -1,12 +1,13 @@
 import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registration-personal-profile',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, TranslatePipe],
   templateUrl: './registration-personal-profile.html',
   styleUrl: './registration-personal-profile.css',
 })
