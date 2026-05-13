@@ -18,4 +18,8 @@ export const environment = {
 
   // Sales Management API
   platformProviderSalesEndpointsPath: 'sales',
+  iamApi: {
+    signUpUrl: 'https://restock-apifake.free.beeceptor.com/sign-up',
+    signUpConflictUrl: 'https://restock-apifake.free.beeceptor.com/sign-up/conflict',
+  },
 };

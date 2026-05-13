@@ -1,12 +1,13 @@
 import { Component, EventEmitter, Output, signal, computed, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registration-business-details',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, TranslatePipe],
   templateUrl: './registration-business-details.html',
   styleUrl: './registration-business-details.css',
 })
@@ -64,5 +65,6 @@ export class RegistrationBusinessDetails {
       ...this.form.value,
       categories: this.selectedCategories(),
     });
+    void this.router.navigate(['/profiles']);
   }
 }

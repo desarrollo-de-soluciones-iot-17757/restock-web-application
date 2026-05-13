@@ -6,8 +6,10 @@ import { Business } from '../domain/model/business.entity';
 import { ProfilesApiEndpoint } from './profiles/profiles-api-endpoint';
 import { BusinessesApiEndpoint } from './businesses/businesses-api-endpoint';
 
+import { ProfilesRepository } from '../application/ports/profiles.repository';
+
 @Injectable({ providedIn: 'root' })
-export class ProfilesApi extends BaseApi {
+export class ProfilesApi extends BaseApi implements ProfilesRepository {
   constructor(
     private readonly profilesEndpoint: ProfilesApiEndpoint,
     private readonly businessesEndpoint: BusinessesApiEndpoint,

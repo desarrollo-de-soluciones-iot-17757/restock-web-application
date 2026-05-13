@@ -24,4 +24,14 @@ export const environment = {
 
   // Sales Management API
   platformProviderSalesEndpointsPath: 'sales',
+  iamApi: {
+    /**
+     * URL for sign-up endpoint. When null, uses simulated repository.
+     */
+    signUpUrl: null as string | null,
+    /**
+     * URL for sign-up conflict endpoint (e.g., duplicate email).
+     */
+    signUpConflictUrl: null as string | null,
+  },
 };
