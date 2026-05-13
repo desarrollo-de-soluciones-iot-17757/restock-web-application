@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BaseApi } from '../../shared/infrastructure/base-api';
 import {
   SalesApiEndpoint,
-} from './get-sales-by-branch-id/sales-endpoint';
+} from './sales/sales-endpoint';
 
 /**
  * Api service for register-sale operations.

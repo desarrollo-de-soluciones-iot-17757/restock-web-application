@@ -74,7 +74,7 @@ export class Sale implements BaseEntity {
    * The date of the sale.
    * @private Date is stored as a Date object.
    */
-  private _date: Date;
+  private _date: string;
 
   /**
    * Create a Sale
@@ -91,7 +91,7 @@ export class Sale implements BaseEntity {
     additionalSupplies: AdditionalSupply[];
     saleTotal: SaleTotal;
     saleStatus: SaleStatus;
-    date: Date;
+    date: string;
   }) {
     this._id = Sale.id;
     this._businessId = Sale.businessId;
@@ -190,7 +190,7 @@ export class Sale implements BaseEntity {
    * Getter for the sale's date.
    * @returns The sale's date.
    */
-  get date(): Date {
+  get date(): string {
     return this._date;
   }
 }

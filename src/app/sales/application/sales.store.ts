@@ -1,4 +1,4 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { SalesApi } from '../infrastructure/sales-api';
 import { Sale } from '../domain/model/sale.entity';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -9,6 +9,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
  */
 @Injectable({ providedIn: 'root' })
 export class SalesStore {
+  private readonly destroyRef = inject(DestroyRef);
+
   // State Signals
   private readonly salesSignal = signal<Sale[]>([]);
   private readonly errorSignal = signal<string | null>(null);
@@ -26,19 +28,19 @@ export class SalesStore {
    * Constructor
    * @param salesApi - SalesApi instance for making API calls.
    */
-  constructor(private salesApi: SalesApi) {
-  }
+  constructor(private salesApi: SalesApi) {}
 
   /**
    * Loads sales by branch id.
    * @param branchId - The branch id to load sales for.
    */
-  loadSalesByBranchId(branchId: string) : void {
-    this.loadingSignal.set(true)
+  loadSalesByBranchId(branchId: string): void {
+    this.loadingSignal.set(true);
     this.errorSignal.set(null);
+
     this.salesApi
       .getSalesByBranchId(branchId)
-      .pipe(takeUntilDestroyed())
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (sales) => {
           this.salesSignal.set(sales);

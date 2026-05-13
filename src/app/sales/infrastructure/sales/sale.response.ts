@@ -5,16 +5,34 @@ import { BaseResource, BaseResponse } from '../../../shared/infrastructure/base-
  * Represents a single sale record.
  */
 export interface SaleResource extends BaseResource {
-  businessId: string;
+  id: string;
   branchId: string;
+  businessId: string;
   registeredByUserId: string;
-  customerName: string;
+  customer: CustomerResource;
   currency: string;
-  subtotal: number;
+  saleItems: SaleItemResource[];
+  saleTotal: SaleTotalResource;
+  saleStatus: string;
+  date: string;
+}
+
+export interface CustomerResource {
+  name: string;
+}
+
+export interface SaleItemResource {
+  itemId: string;
+  nameSnapshot: string;
+  unitPrice: number;
+  quantity: number;
+  lineTotal: number;
+}
+
+export interface SaleTotalResource {
+  subTotal: number;
   tax: number;
   total: number;
-  status: string;
-  saleDate: string;
 }
 
 /**

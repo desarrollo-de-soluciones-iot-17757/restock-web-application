@@ -5,6 +5,7 @@ import { Currency } from '../../../shared/domain/model/currency.entity';
 import { SaleTotal } from '../../domain/model/sale-total.entity';
 import { SaleStatus } from '../../domain/model/sale-status.enum';
 import { Customer } from '../../domain/model/customer.entity';
+import { SaleItem } from '../../domain/model/sale-item.entity';
 
 /**
  * Assembler class responsible for converting between domain models, request objects, and response objects related to get-sale-by-branch-id.
@@ -32,20 +33,29 @@ export class SaleAssembler implements BaseAssembler<Sale, SaleResource, SalesRes
       branchId: resource.branchId,
       registeredByUserId: resource.registeredByUserId,
       customer: new Customer({
-        name: resource.customerName,
+          name: resource.customer.name,
       }),
       currency: new Currency({
         code: resource.currency,
       }),
-      saleItems: [],
+      saleItems: resource.saleItems.map(
+        (item) =>
+          new SaleItem({
+            id: item.itemId,
+            nameSnapshot: item.nameSnapshot,
+            unitPrice: item.unitPrice,
+            quantity: item.quantity,
+            lineTotal: item.lineTotal,
+          }),
+      ),
       additionalSupplies: [],
       saleTotal: new SaleTotal({
-        subTotal: resource.subtotal,
-        tax: resource.tax,
-        total: resource.total,
+        subTotal: resource.saleTotal.subTotal,
+        tax: resource.saleTotal.tax,
+        total: resource.saleTotal.total,
       }),
-      saleStatus: resource.status as SaleStatus,
-      date: new Date(resource.saleDate),
+      saleStatus: resource.saleStatus as SaleStatus,
+      date: resource.date,
     });
   }
 
@@ -60,13 +70,24 @@ export class SaleAssembler implements BaseAssembler<Sale, SaleResource, SalesRes
       businessId: entity.businessId,
       branchId: entity.branchId,
       registeredByUserId: entity.registeredByUserId,
-      customerName: entity.customer.name,
+      customer: {
+        name: entity.customer.name,
+      },
       currency: entity.currency.code,
-      subtotal: entity.saleTotal.subTotal,
-      tax: entity.saleTotal.tax,
-      total: entity.saleTotal.total,
-      status: entity.saleStatus,
-      saleDate: entity.date.toISOString(),
+      saleItems: entity.saleItems.map((item) => ({
+        itemId: item.id,
+        nameSnapshot: item.nameSnapshot,
+        unitPrice: item.unitPrice,
+        quantity: item.quantity,
+        lineTotal: item.lineTotal,
+      })),
+      saleTotal: {
+        subTotal: entity.saleTotal.subTotal,
+        tax: entity.saleTotal.tax,
+        total: entity.saleTotal.total,
+      },
+      saleStatus: entity.saleStatus,
+      date: entity.date,
     } as SaleResource;
   }
 }
