@@ -10,7 +10,7 @@ export interface SaleResource extends BaseResource {
   businessId: string;
   registeredByUserId: string;
   customer: CustomerResource;
-  currency: string;
+  currency: CurrencyResource;
   saleItems: SaleItemResource[];
   saleTotal: SaleTotalResource;
   saleStatus: string;
@@ -19,6 +19,11 @@ export interface SaleResource extends BaseResource {
 
 export interface CustomerResource {
   name: string;
+}
+
+export interface CurrencyResource {
+  code: string;
+  symbol: string;
 }
 
 export interface SaleItemResource {

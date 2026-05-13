@@ -6,7 +6,8 @@
       "branchId": "branch_01",
       "registeredByUserId": "user_42",
       "currency": {
-        "code": "PEN"
+        "code": "PEN",
+        "symbol": "S/"
       },
       "customer": {
         "name": "María López"
@@ -40,7 +41,8 @@
       "branchId": "branch_01",
       "registeredByUserId": "user_17",
       "currency": {
-        "code": "PEN"
+        "code": "PEN",
+        "symbol": "S/"
       },
       "customer": {
         "name": "María López"
@@ -78,10 +80,14 @@
     {
       "id": "sale_003",
       "businessId": "biz_01",
-      "branchId": "branch_02",
+      "branchId": "branch_01",
       "registeredByUserId": "user_09",
       "currency": {
-        "code": "PEN"
+        "code": "PEN",
+        "symbol": "S/"
+      },
+      "customer": {
+        "name": "Ana Martínez"
       },
       "saleItems": [
         {
@@ -116,10 +122,14 @@
     {
       "id": "sale_004",
       "businessId": "biz_02",
-      "branchId": "branch_03",
+      "branchId": "branch_01",
       "registeredByUserId": "user_55",
       "currency": {
-        "code": "PEN"
+        "code": "PEN",
+        "symbol": "S/"
+      },
+      "customer": {
+        "name": "Juan Gómez"
       },
       "saleItems": [
         {
@@ -147,10 +157,14 @@
     {
       "id": "sale_005",
       "businessId": "biz_01",
-      "branchId": "branch_02",
+      "branchId": "branch_01",
       "registeredByUserId": "user_21",
       "currency": {
-        "code": "PEN"
+        "code": "PEN",
+        "symbol": "S/"
+      },
+      "customer": {
+        "name": "Carlos Pérez"
       },
       "saleItems": [
         {

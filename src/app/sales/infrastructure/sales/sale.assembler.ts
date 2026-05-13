@@ -36,7 +36,8 @@ export class SaleAssembler implements BaseAssembler<Sale, SaleResource, SalesRes
           name: resource.customer.name,
       }),
       currency: new Currency({
-        code: resource.currency,
+        code: resource.currency.code,
+        symbol: resource.currency.symbol
       }),
       saleItems: resource.saleItems.map(
         (item) =>
@@ -73,7 +74,10 @@ export class SaleAssembler implements BaseAssembler<Sale, SaleResource, SalesRes
       customer: {
         name: entity.customer.name,
       },
-      currency: entity.currency.code,
+      currency: {
+        code: entity.currency.code,
+        symbol: entity.currency.symbol,
+      },
       saleItems: entity.saleItems.map((item) => ({
         itemId: item.id,
         nameSnapshot: item.nameSnapshot,
