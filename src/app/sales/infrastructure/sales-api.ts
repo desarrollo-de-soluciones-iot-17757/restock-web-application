@@ -1,43 +1,36 @@
 import { Injectable } from '@angular/core';
-import { RegisterSaleEndpoint } from './sales/sales-api-endpoint';
 import { HttpClient } from '@angular/common/http';
-import { RegisterSaleAssembler } from './sales/register-sale.assembler';
 import { BaseApi } from '../../shared/infrastructure/base-api';
-import { RegisterSaleCommand } from '../domain/model/register-sale.command';
-import { Observable } from 'rxjs';
-import { RegisterSaleResource } from './sales/register-sale.response';
+import {
+  SalesApiEndpoint,
+} from './get-sales-by-branch-id/sales-endpoint';
 
 /**
- * Api service for sales operations.
- * Handles HTTP requests and responses related to sales operations.
+ * Api service for register-sale operations.
+ * Handles HTTP requests and responses related to register-sale operations.
  */
 @Injectable({ providedIn: 'root' })
 export class SalesApi extends BaseApi {
 
-  /**
-   * RegisterSaleEndpoint instance for handling sale registration requests.
-   * @private RegisterSaleEndpoint instance for handling sale registration requests.
-   */
-  private readonly registerSaleEndpoint: RegisterSaleEndpoint;
+
+  private readonly salesApiEndpoint: SalesApiEndpoint;
 
   /**
    * Constructor for SalesApi.
    * @param http - HttpClient instance for making HTTP requests.
+   * @private Constructor for SalesApi.
    */
   constructor(http: HttpClient) {
     super();
-    this.registerSaleEndpoint = new RegisterSaleEndpoint(
-      http,
-      new RegisterSaleAssembler()
-    )
+    this.salesApiEndpoint = new SalesApiEndpoint(http);
   }
 
   /**
-   * Registers a new sale using the provided RegisterSaleCommand.
-   * @param registerSaleCommand - The RegisterSaleCommand containing the sale details.
-   * @returns An Observable that emits the RegisterSaleResource upon successful registration.
+   * Retrieves sales by branch id from the API endpoint.
+   * @param branchId - The id of the branch for which to retrieve sales.
+   * @returns An Observable that emits an array of Sale entities.
    */
-  registerSale(registerSaleCommand: RegisterSaleCommand) : Observable<RegisterSaleResource> {
-    return this.registerSaleEndpoint.registerSale(registerSaleCommand);
+  getSalesByBranchId(branchId: string) {
+    return this.salesApiEndpoint.getSalesByBranchId(branchId);
   }
 }
