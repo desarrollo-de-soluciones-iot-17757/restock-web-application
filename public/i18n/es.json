@@ -89,5 +89,30 @@
         }
       }
     }
+  },
+  "iam": {
+    "authenticationSection": {
+      "title": "¿Cómo usarás Restock?",
+      "subtitle": "Selecciona tu entorno operativo principal para adaptar tu inventario inteligente",
+      "restaurantAdmin": "Administrador de Restaurante",
+      "restaurantDesc": "Gestiona el inventario de cocina, suministros de alimentos frescos y operaciones culinarias diarias.",
+      "retailAdmin": "Administrador de Retail",
+      "retailDesc": "Gestiona estanterías de tienda, productos alimenticios envasados y cadenas de suministro minoristas.",
+      "continue": "CONTINUAR",
+      "returnToLogin": "Volver al Inicio de Sesión"
+    },
+    "signUpForm": {
+      "tagline": "Inventario inteligente - Control en tiempo real",
+      "register": "Registrarse",
+      "emailLabel": "Dirección de Correo",
+      "emailPlaceholder": "nombre@organizacion.com",
+      "passwordLabel": "Contraseña",
+      "passwordPlaceholder": "••••••••",
+      "confirmPasswordLabel": "Confirmar Contraseña",
+      "confirmPasswordPlaceholder": "••••••••",
+      "createAccount": "Crear Cuenta",
+      "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+      "returnToLogin": "Volver al Inicio de Sesión"
+    }
   }
 }

@@ -8,6 +8,11 @@ const baseTitle = 'RestockWebApplication';
 export const appRoutes: Routes = [
   {
     path: '',
+    pathMatch: 'full',
+    redirectTo: 'sign-up',
+  },
+  {
+    path: 'home',
     component: Layout,
     children: [
       {

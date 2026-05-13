@@ -8,52 +8,52 @@
             <path d="M1 3H23V8H1V3Z"></path>
             <path d="M10 12H14"></path>
           </svg>
-          <h2 class="logo-text">Restock</h2>
+          <h2 class="logo-text">{{ 'app.brand' | translate }}</h2>
         </div>
-        <p class="tagline">Smart inventory - Real-time control</p>
+        <p class="tagline">{{ 'iam.signUpForm.tagline' | translate }}</p>
       </div>
 
-      <h1>Register</h1>
+      <h1>{{ 'iam.signUpForm.register' | translate }}</h1>
 
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
         <div class="form-group">
-          <label for="email">Email Address</label>
+          <label for="email">{{ 'iam.signUpForm.emailLabel' | translate }}</label>
           <div class="input-wrapper">
             <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
               <polyline points="22,6 12,13 2,6"></polyline>
             </svg>
-            <input type="email" id="email" formControlName="email" placeholder="name@organization.com">
+            <input type="email" id="email" formControlName="email" placeholder="{{ 'iam.signUpForm.emailPlaceholder' | translate }}">
           </div>
         </div>
 
         <div class="form-group">
-          <label for="password">Password</label>
+          <label for="password">{{ 'iam.signUpForm.passwordLabel' | translate }}</label>
           <div class="input-wrapper">
             <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
               <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
             </svg>
-            <input type="password" id="password" formControlName="password" placeholder="••••••••">
+            <input type="password" id="password" formControlName="password" placeholder="{{ 'iam.signUpForm.passwordPlaceholder' | translate }}">
           </div>
         </div>
 
         <div class="form-group">
-          <label for="confirmPassword">Confirm Password</label>
+          <label for="confirmPassword">{{ 'iam.signUpForm.confirmPasswordLabel' | translate }}</label>
           <div class="input-wrapper">
             <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
               <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
             </svg>
-            <input type="password" id="confirmPassword" formControlName="confirmPassword" placeholder="••••••••">
+            <input type="password" id="confirmPassword" formControlName="confirmPassword" placeholder="{{ 'iam.signUpForm.confirmPasswordPlaceholder' | translate }}">
           </div>
         </div>
 
-        <button type="submit" class="submit-btn" [disabled]="form.invalid">Create Account</button>
+        <button type="submit" class="submit-btn" [disabled]="form.invalid">{{ 'iam.signUpForm.createAccount' | translate }}</button>
       </form>
 
       <p class="footer-text">
-        Already have an account? <a routerLink="/login" class="login-link">Return to Login</a>
+        {{ 'iam.signUpForm.alreadyHaveAccount' | translate }} <a routerLink="/login" class="login-link">{{ 'iam.signUpForm.returnToLogin' | translate }}</a>
       </p>
     </div>
   </div>
@@ -65,7 +65,7 @@
         <path d="M1 3H23V8H1V3Z"></path>
         <path d="M10 12H14"></path>
       </svg>
-      <span>Restock</span>
+      <span>{{ 'app.brand' | translate }}</span>
     </div>
   </div>
 </div>

@@ -89,5 +89,30 @@
         }
       }
     }
+  },
+  "iam": {
+    "authenticationSection": {
+      "title": "How will you use Restock?",
+      "subtitle": "Select your primary operational environment to tailor your smart inventory",
+      "restaurantAdmin": "Restaurant Administrator",
+      "restaurantDesc": "Manage kitchen inventory, fresh food supplies, and daily culinary operations.",
+      "retailAdmin": "Retail Administrator",
+      "retailDesc": "Manage store shelves, packaged food goods, and retail supply chains.",
+      "continue": "CONTINUE",
+      "returnToLogin": "Return to Login"
+    },
+    "signUpForm": {
+      "tagline": "Smart inventory - Real-time control",
+      "register": "Register",
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "name@organization.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "••••••••",
+      "confirmPasswordLabel": "Confirm Password",
+      "confirmPasswordPlaceholder": "••••••••",
+      "createAccount": "Create Account",
+      "alreadyHaveAccount": "Already have an account?",
+      "returnToLogin": "Return to Login"
+    }
   }
 }
