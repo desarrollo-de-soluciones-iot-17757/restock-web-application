@@ -28,4 +28,12 @@ export const environment = {
      */
     signUpConflictUrl: null as string | null,
   },
+  /**
+   * Profiles bounded context: HTTP API origin (no trailing slash).
+   * When null, the app uses the development default inside profiles infrastructure.
+   */
+  profilesApi: {
+    /** Replace with your production profiles API origin when available. */
+    baseUrl: 'https://restock-fakeapi.free.beeceptor.com',
+  },
 };

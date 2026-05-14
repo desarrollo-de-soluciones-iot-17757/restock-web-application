@@ -3,6 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, map, startWith } from 'rxjs';
 import { ProfilesStore } from '../../../../profiles/application/profiles.store';
+import { LoadProfilesStateCommand } from '../../../../profiles/domain/model/load-profiles-state.command';
 import type { NavItem } from '../navigator/nav-item.model';
 import { Navigator } from '../navigator/navigator';
 import { TopBar } from '../top-bar/top-bar';
@@ -55,12 +56,13 @@ export class Layout {
 
   userName = computed(() => {
     const p = this.profilesStore.profile();
-    return p ? `${p.firstName} ${p.lastName}` : '';
+    return p ? `${p.name} ${p.lastName}` : '';
   });
 
-  userAvatarUrl = computed(() => this.profilesStore.profile()?.avatarUrl ?? null);
+  userAvatarUrl = computed(() => this.profilesStore.profile()?.avatarUrl.getValue() ?? null);
 
   constructor() {
-    this.profilesStore.load();
+    /** Bootstrap aggregates for the shell (avatar, name) and any child views consuming {@link ProfilesStore}. */
+    this.profilesStore.loadProfilesState(new LoadProfilesStateCommand());
   }
 }

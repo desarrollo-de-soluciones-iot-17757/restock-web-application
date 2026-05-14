@@ -56,7 +56,7 @@ export const appRoutes: Routes = [
       {
         path: 'settings',
         loadComponent: () =>
-          import('./profiles/presentation/views/system-preferences/system-preferences').then(
+          import('./profiles/presentation/view/system-preferences/system-preferences').then(
             (m) => m.SystemPreferences,
           ),
         title: `${baseTitle} · Settings`,
@@ -65,33 +65,8 @@ export const appRoutes: Routes = [
   },
   {
     path: 'profiles',
-    loadComponent: () => import('./shared/presentation/components/layout/layout').then(m => m.Layout),
-    children: [
-      {
-        path: '',
-        loadComponent: () =>
-          import('./profiles/presentation/views/system-preferences/system-preferences').then(
-            (m) => m.SystemPreferences,
-          ),
-        title: 'Profile Overview',
-      },
-    ]
-  },
-  {
-    path: 'profiles/register',
-    loadComponent: () =>
-      import('./profiles/presentation/views/registration-personal-profile/registration-personal-profile').then(
-        (m) => m.RegistrationPersonalProfile,
-      ),
-    title: 'Create your Account',
-  },
-  {
-    path: 'profiles/register/business',
-    loadComponent: () =>
-      import('./profiles/presentation/views/registration-business-details/registration-business-details').then(
-        (m) => m.RegistrationBusinessDetails,
-      ),
-    title: 'Business details',
+    loadComponent: () => import('./shared/presentation/components/layout/layout').then((m) => m.Layout),
+    children: profilesRoutes,
   },
   {
     path: '',
