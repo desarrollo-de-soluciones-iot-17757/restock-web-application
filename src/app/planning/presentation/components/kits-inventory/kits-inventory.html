@@ -1,0 +1,43 @@
+<div class="inventory-container">
+  <header class="top-bar">
+    <div class="header-content">
+      <h1>Kits</h1>
+      <p class="text-muted">Gestiona tus paquetes de productos e inventario agrupado.</p>
+    </div>
+    <button class="btn-add-kit" (click)="onAddKit()">
+      <span class="icon-circle">
+        <i class="pi pi-plus"></i>
+      </span>
+      Agregar Nuevo Kit
+    </button>
+  </header>
+
+  <div class="filter-section">
+    <div class="search-input-wrapper">
+      <i class="pi pi-search search-icon"></i>
+      <input
+        type="text"
+        placeholder="Buscar kits por nombre o descripción..."
+        [ngModel]="searchTerm()"
+        (ngModelChange)="searchTerm.set($event)"
+      >
+    </div>
+  </div>
+
+  <div class="loader-overlay" *ngIf="isLoading()">
+    <div class="spinner"></div>
+    <p>Actualizando inventario...</p>
+  </div>
+
+  <div class="kits-grid" *ngIf="!isLoading()">
+    <app-kit-card
+      *ngFor="let kit of filteredKits(); trackBy: trackByKitId"
+      [kit]="kit">
+    </app-kit-card>
+
+    <div class="empty-state" *ngIf="filteredKits().length === 0">
+      <i class="pi pi-box"></i>
+      <p>No se encontraron resultados para "{{ searchTerm() }}"</p>
+    </div>
+  </div>
+</div>
