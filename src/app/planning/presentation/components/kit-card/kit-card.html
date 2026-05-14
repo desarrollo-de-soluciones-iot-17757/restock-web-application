@@ -1,0 +1,18 @@
+<div class="card-container" (click)="onViewDetail()">
+  <div class="image-wrapper">
+    <img [src]="kit.imageUrl" [alt]="kit.name" class="kit-image">
+    <div class="status-badge" [ngClass]="kit.status.toLowerCase()">
+      {{ kit.status }}
+    </div>
+  </div>
+
+  <div class="card-content">
+    <h3 class="kit-name">{{ kit.name }}</h3>
+    <p class="kit-description">{{ kit.description }}</p>
+
+    <div class="card-footer">
+      <span class="price-label">Precio Combo</span>
+      <span class="price-value">S/ {{ kit.price }}</span>
+    </div>
+  </div>
+</div>
