@@ -2,7 +2,6 @@ import { BaseResource, BaseResponse } from '../../../shared/infrastructure/base-
 
 
 export interface BusinessResource extends BaseResource {
-  _id: string;
   /** Owner user id (preferred field per schema). */
   owner_id?: string;
   /** Legacy alias some mocks still return. */

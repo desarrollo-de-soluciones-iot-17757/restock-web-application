@@ -2,7 +2,11 @@ import { BaseAssembler } from '../../../shared/infrastructure/base-assembler';
 import { Business } from '../../domain/model/business.entity';
 import { BusinessResource, BusinessesListResponse } from './businesses.response';
 
-export class BusinessesAssembler implements BaseAssembler<Business, BusinessResource, BusinessesListResponse> {
+export class BusinessesAssembler implements BaseAssembler<
+  Business,
+  BusinessResource,
+  BusinessesListResponse
+> {
   /**
    * @param response - Envelope possibly containing a `businesses` array.
    */
@@ -18,11 +22,9 @@ export class BusinessesAssembler implements BaseAssembler<Business, BusinessReso
    * @param resource - Single business document from the API.
    */
   toEntityFromResource(resource: BusinessResource): Business {
-    return {
-      id: resource.id ?? String(resource.id),
-      userId: resource.user_id ?? '',
-    const businessId = resource._id ?? String(resource.id);
+    const businessId = resource.id ?? String(resource.id);
     const ownerId = resource.owner_id ?? resource.user_id ?? '';
+
     return new Business({
       businessId,
       ownerId,
@@ -38,8 +40,7 @@ export class BusinessesAssembler implements BaseAssembler<Business, BusinessReso
    */
   toResourceFromEntity(entity: Business): BusinessResource {
     return {
-      id: 0,
-      _id: entity.id,
+      id: entity.id,
       owner_id: entity.ownerId.getValue(),
       ruc: entity.ruc,
       picture_url: entity.pictureUrl.getValue(),

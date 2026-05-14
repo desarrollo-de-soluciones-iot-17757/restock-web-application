@@ -12,8 +12,14 @@ const profilesRoute = () => import('./profiles/presentation/profiles.routes').th
 export const appRoutes: Routes = [
   {
     path: '',
+    pathMatch: 'full',
+    redirectTo: 'sign-up',
+  },
+
+  {
+    path: '',
     loadChildren: iamRoute,
-    title: `${baseTitle} · Sign Up`,
+    title: `${baseTitle} `,
   },
   {
     path: '',

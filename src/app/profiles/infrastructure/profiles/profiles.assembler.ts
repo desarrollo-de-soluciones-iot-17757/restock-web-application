@@ -19,7 +19,7 @@ export class ProfilesAssembler implements BaseAssembler<Profile, ProfileResource
    * @param resource - Single profile document from the API.
    */
   toEntityFromResource(resource: ProfileResource): Profile {
-    const profileId = resource._id ?? String(resource.id);
+    const profileId = resource.id ?? String(resource.id);
     return new Profile({
       profileId,
       userId: resource.user_id ?? '',
@@ -37,8 +37,7 @@ export class ProfilesAssembler implements BaseAssembler<Profile, ProfileResource
    */
   toResourceFromEntity(entity: Profile): ProfileResource {
     return {
-      id: 0,
-      _id: entity.id,
+      id: entity.profileId.getValue(),
       user_id: entity.userId.getValue(),
       name: entity.name,
       last_name: entity.lastName,
