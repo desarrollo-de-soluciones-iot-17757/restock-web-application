@@ -23,6 +23,6 @@ export const environment = {
     signUpConflictUrl: 'https://restock-apifake.free.beeceptor.com/sign-up/conflict',
   },
   profilesApi: {
-    baseUrl: 'https://restock-fakeapi.free.beeceptor.com',
+    baseUrl: 'https://restock-api-profiles.free.beeceptor.com',
   },
 };

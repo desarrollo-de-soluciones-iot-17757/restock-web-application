@@ -40,6 +40,6 @@ export const environment = {
    */
   profilesApi: {
     /** Replace with your production profiles API origin when available. */
-    baseUrl: 'https://restock-fakeapi.free.beeceptor.com',
+    baseUrl: 'https://restock-api-profiles.free.beeceptor.com',
   },
 };
