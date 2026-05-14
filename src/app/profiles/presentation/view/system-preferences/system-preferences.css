@@ -334,6 +334,12 @@
   color: #6c7a71;
 }
 
+.profile-error {
+  font-size: 14px;
+  color: #b91c1c;
+  margin-bottom: 8px;
+}
+
 /* Avatar section */
 .avatar-section {
   display: flex;

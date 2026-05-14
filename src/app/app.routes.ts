@@ -16,22 +16,6 @@ export const appRoutes: Routes = [
     title: `${baseTitle} · Sign Up`,
   },
   {
-    path: 'sign-up/account',
-    loadComponent: () =>
-      import('./profiles/presentation/views/registration-personal-profile/registration-personal-profile').then(
-        (m) => m.RegistrationPersonalProfile,
-      ),
-    title: 'Create your Account',
-  },
-  {
-    path: 'sign-up/business',
-    loadComponent: () =>
-      import('./profiles/presentation/views/registration-business-details/registration-business-details').then(
-        (m) => m.RegistrationBusinessDetails,
-      ),
-    title: 'Business details',
-  },
-  {
     path: '',
     component: Layout,
     children: [
