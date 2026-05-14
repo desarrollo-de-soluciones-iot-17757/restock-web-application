@@ -37,11 +37,25 @@ export class ProfilesApi extends BaseApi {
   }
 
   /**
+   * Persists a new profile document.
+   */
+  createProfile(profile: Profile): Observable<Profile> {
+    return this.profilesEndpoint.create(profile);
+  }
+
+  /**
    * @param profile - Aggregate state to persist.
    * @param id - Profile document id (path segment).
    */
   updateProfile(profile: Profile, id: string): Observable<Profile> {
     return this.profilesEndpoint.update(profile, id);
+  }
+
+  /**
+   * Persists a new business document.
+   */
+  createBusiness(business: Business): Observable<Business> {
+    return this.businessesEndpoint.create(business);
   }
 
   /**

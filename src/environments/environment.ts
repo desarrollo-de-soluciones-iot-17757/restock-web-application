@@ -24,16 +24,7 @@ export const environment = {
 
   // Sales Management API
   platformProviderSalesEndpointsPath: 'sales',
-  iamApi: {
-    /**
-     * URL for sign-up endpoint. When null, uses simulated repository.
-     */
-    signUpUrl: null as string | null,
-    /**
-     * URL for sign-up conflict endpoint (e.g., duplicate email).
-     */
-    signUpConflictUrl: null as string | null,
-  },
+
   /**
    * Profiles bounded context: HTTP API origin (no trailing slash).
    * When null, the app uses the development default inside profiles infrastructure.
@@ -42,4 +33,11 @@ export const environment = {
     /** Replace with your production profiles API origin when available. */
     baseUrl: 'https://restock-api-profiles.free.beeceptor.com',
   },
+
+  // IAM & Profiles
+  platformProviderSignUpEndpointPath: 'users',
+  platformProviderRegistrationBusinessDetailsEndpointPath: 'businesses',
+  platformProviderRegistrationPersonalProfileEndpointPath: 'profiles',
+
 };
+

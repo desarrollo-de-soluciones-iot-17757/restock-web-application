@@ -16,13 +16,14 @@ export class SignUpAssembler {
   }
 
   static toEntityFromResponse(response: SignUpResponse): User {
+    const id = String(response.id);
     return new User({
-      id: response.id,
-      accountId: response.accountId,
+      id,
+      accountId: response.accountId ?? `acct_${id}`,
       email: response.email,
       roleId: response.roleId,
-      plan: response.plan,
-      status: response.status,
+      plan: response.plan ?? 'FREE',
+      status: response.status ?? 'ACTIVE',
       token: response.token,
     });
   }
