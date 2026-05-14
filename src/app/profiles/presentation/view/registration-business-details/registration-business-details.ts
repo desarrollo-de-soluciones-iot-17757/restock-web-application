@@ -1,8 +1,11 @@
 import { Component, EventEmitter, Output, signal, computed, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { catchError, of } from 'rxjs';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { ProfilesApi } from '../../../infrastructure/profiles-api';
+import { Business } from '../../../domain/model/business.entity';
 
 @Component({
   selector: 'app-registration-business-details',
@@ -15,6 +18,7 @@ export class RegistrationBusinessDetails {
   @Output() createAccount = new EventEmitter<object>();
 
   private readonly router = inject(Router);
+  private readonly profilesApi = inject(ProfilesApi);
 
   readonly countries = [
     'United States', 'Canada', 'Mexico', 'Argentina', 'Brazil',
@@ -65,6 +69,25 @@ export class RegistrationBusinessDetails {
       ...this.form.value,
       categories: this.selectedCategories(),
     });
-    void this.router.navigate(['/profiles']);
+
+    this.storeBusiness()
+      .pipe(catchError(() => of(null)))
+      .subscribe(() => {
+        void this.router.navigate(['/profiles']);
+      });
+  }
+
+  private storeBusiness() {
+    const formValue = this.form.value;
+    const business = new Business({
+      businessId: `business_${Date.now()}`,
+      companyName: formValue.businessName ?? '',
+      ruc: '0000000000',
+      pictureUrl: 'https://via.placeholder.com/150',
+      mainLocation: `${formValue.address ?? ''}, ${formValue.city ?? ''}, ${formValue.country ?? ''}`,
+      ownerId: 'user_1',
+    });
+
+    return this.profilesApi.createBusiness(business);
   }
 }
