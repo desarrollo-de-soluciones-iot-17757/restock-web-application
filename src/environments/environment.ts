@@ -25,9 +25,9 @@ export const environment = {
   // Sales Management API
   platformProviderSalesEndpointsPath: 'sales',
 
-  // IAM & Profiles (Corrected)
-  platformProviderSignUpEndpointPath: 'authentication/sign-up',
-  platformProviderRegistrationBusinessDetailsEndpointPath: 'registration-business-details',
-  platformProviderRegistrationPersonalProfileEndpointPath: 'registration-personal-profile',
+  // IAM & Profiles
+  platformProviderSignUpEndpointPath: 'users',
+  platformProviderRegistrationBusinessDetailsEndpointPath: 'businesses',
+  platformProviderRegistrationPersonalProfileEndpointPath: 'profiles',
 };
 
