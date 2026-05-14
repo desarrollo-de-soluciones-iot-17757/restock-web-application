@@ -31,11 +31,9 @@ export class SalesList {
   readonly store = inject(SalesStore);
   protected router = inject(Router);
 
-  private readonly BRANCH_ID = 'branch_01';
-
   displayedColumns: string[] = ['id', 'saleDate', 'itemsCount', 'total', 'saleStatus'];
 
   ngOnInit(): void {
-    this.store.loadSalesByBranchId(this.BRANCH_ID);
+    this.store.loadSalesByBranchId();
   }
 }

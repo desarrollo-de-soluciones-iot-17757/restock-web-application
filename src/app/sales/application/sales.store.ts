@@ -11,6 +11,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class SalesStore {
   private readonly destroyRef = inject(DestroyRef);
 
+  private readonly BRANCH_ID = 'branch_01';
+
   // State Signals
   private readonly salesSignal = signal<Sale[]>([]);
   private readonly errorSignal = signal<string | null>(null);
@@ -32,14 +34,13 @@ export class SalesStore {
 
   /**
    * Loads sales by branch id.
-   * @param branchId - The branch id to load sales for.
    */
-  loadSalesByBranchId(branchId: string): void {
+  loadSalesByBranchId(): void {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
     this.salesApi
-      .getSalesByBranchId(branchId)
+      .getSalesByBranchId(this.BRANCH_ID)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (sales) => {

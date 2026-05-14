@@ -34,11 +34,13 @@ export class SalesApiEndpoint extends BaseApiEndpoint<
    */
   getSalesByBranchId(branchId: string): Observable<Sale[]> {
     return this.http
-      .get<SalesResponse>(this.endpointUrl, {
-        params: {
-          branchId,
-        },
+      .get<SaleResource[]>(this.endpointUrl, {
+        params: { branchId },
       })
-      .pipe(map((response) => this.assembler.toEntitiesFromResponse(response)));
+      .pipe(
+        map((response) =>
+          response.map((resource) => this.assembler.toEntityFromResource(resource)),
+        ),
+      );
   }
 }
