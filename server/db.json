@@ -1,0 +1,200 @@
+{
+  "sales": [
+    {
+      "id": "sale_001",
+      "businessId": "biz_01",
+      "branchId": "branch_01",
+      "registeredByUserId": "user_42",
+      "currency": {
+        "code": "PEN",
+        "symbol": "S/"
+      },
+      "customer": {
+        "name": "María López"
+      },
+      "saleItems": [
+        {
+          "itemId": "item_A1",
+          "nameSnapshot": "Café americano 12oz",
+          "unitPrice": 5.5,
+          "quantity": 3,
+          "lineTotal": 16.5
+        }
+      ],
+      "additionalSupplies": [
+        {
+          "batchId": "batch_cups_L",
+          "quantity": 3
+        }
+      ],
+      "saleTotal": {
+        "subTotal": 84.75,
+        "tax": 15.25,
+        "total": 100.0
+      },
+      "saleStatus": "cancelled",
+      "date": "2026-05-10"
+    },
+    {
+      "id": "sale_002",
+      "businessId": "biz_01",
+      "branchId": "branch_01",
+      "registeredByUserId": "user_17",
+      "currency": {
+        "code": "PEN",
+        "symbol": "S/"
+      },
+      "customer": {
+        "name": "María López"
+      },
+      "saleItems": [
+        {
+          "itemId": "item_B2",
+          "nameSnapshot": "Capuccino grande",
+          "unitPrice": 8.0,
+          "quantity": 2,
+          "lineTotal": 16.0
+        },
+        {
+          "itemId": "item_C3",
+          "nameSnapshot": "Croissant mantequilla",
+          "unitPrice": 6.5,
+          "quantity": 2,
+          "lineTotal": 13.0
+        }
+      ],
+      "additionalSupplies": [
+        {
+          "batchId": "batch_lids_M",
+          "quantity": 2
+        }
+      ],
+      "saleTotal": {
+        "subTotal": 74.0,
+        "tax": 13.30,
+        "total": 87.30
+      },
+      "saleStatus": "completed",
+      "date": "2026-05-11"
+    },
+    {
+      "id": "sale_003",
+      "businessId": "biz_01",
+      "branchId": "branch_01",
+      "registeredByUserId": "user_09",
+      "currency": {
+        "code": "PEN",
+        "symbol": "S/"
+      },
+      "customer": {
+        "name": "Ana Martínez"
+      },
+      "saleItems": [
+        {
+          "itemId": "item_D4",
+          "nameSnapshot": "Latte vainilla",
+          "unitPrice": 9.5,
+          "quantity": 1,
+          "lineTotal": 9.5
+        },
+        {
+          "itemId": "item_E5",
+          "nameSnapshot": "Brownie chocolate",
+          "unitPrice": 7.0,
+          "quantity": 3,
+          "lineTotal": 21.0
+        }
+      ],
+      "additionalSupplies": [
+        {
+          "batchId": "batch_cups_M",
+          "quantity": 4
+        }
+      ],
+      "saleTotal": {
+        "subTotal": 95.0,
+        "tax": 17.1,
+        "total": 112.1
+      },
+      "saleStatus": "pending",
+      "date": "2026-05-12"
+    },
+    {
+      "id": "sale_004",
+      "businessId": "biz_02",
+      "branchId": "branch_01",
+      "registeredByUserId": "user_55",
+      "currency": {
+        "code": "PEN",
+        "symbol": "S/"
+      },
+      "customer": {
+        "name": "Juan Gómez"
+      },
+      "saleItems": [
+        {
+          "itemId": "item_F6",
+          "nameSnapshot": "Té verde frío",
+          "unitPrice": 6.0,
+          "quantity": 4,
+          "lineTotal": 24.0
+        }
+      ],
+      "additionalSupplies": [
+        {
+          "batchId": "batch_straws_P",
+          "quantity": 4
+        }
+      ],
+      "saleTotal": {
+        "subTotal": 60.0,
+        "tax": 10.8,
+        "total": 70.8
+      },
+      "saleStatus": "cancelled",
+      "date": "2026-05-12"
+    },
+    {
+      "id": "sale_005",
+      "businessId": "biz_01",
+      "branchId": "branch_01",
+      "registeredByUserId": "user_21",
+      "currency": {
+        "code": "PEN",
+        "symbol": "S/"
+      },
+      "customer": {
+        "name": "Carlos Pérez"
+      },
+      "saleItems": [
+        {
+          "itemId": "item_G7",
+          "nameSnapshot": "Chocolate caliente",
+          "unitPrice": 7.5,
+          "quantity": 2,
+          "lineTotal": 15.0
+        },
+        {
+          "itemId": "item_H8",
+          "nameSnapshot": "Sandwich mixto",
+          "unitPrice": 10.0,
+          "quantity": 1,
+          "lineTotal": 10.0
+        }
+      ],
+      "additionalSupplies": [
+        {
+          "batchId": "batch_napkins_S",
+          "quantity": 5
+        }
+      ],
+      "saleTotal": {
+        "subTotal": 110.0,
+        "tax": 19.8,
+        "total": 129.8
+      },
+      "saleStatus": "completed",
+      "date": "2026-05-13"
+    }
+  ]
+}

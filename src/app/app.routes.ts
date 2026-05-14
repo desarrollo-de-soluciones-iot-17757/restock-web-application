@@ -5,16 +5,32 @@ import { resourceInventoryRoutes } from './resource/presentation/resource.routes
 
 const baseTitle = 'RestockWebApplication';
 
+const iamRoute = () => import('./iam/presentation/iam.routes').then((m) => m.iamRoutes);
+const salesRoute = () => import('./sales/presentation/sales.routes').then((m) => m.salesRoutes);
+const profilesRoute = () => import('./profiles/presentation/profiles.routes').then(m => m.profilesRoutes);
+
 export const appRoutes: Routes = [
   {
     path: '',
     pathMatch: 'full',
     redirectTo: 'sign-up',
   },
+
   {
-    path: 'home',
+    path: '',
+    loadChildren: iamRoute,
+    title: `${baseTitle} `,
+  },
+  {
+    path: '',
     component: Layout,
     children: [
+      {
+        path: 'home',
+        loadComponent: () =>
+          import('./shared/presentation/views/home/home-page').then((m) => m.HomePage),
+        title: `${baseTitle} · Overview`,
+      },
       {
         path: '',
         loadComponent: () =>
@@ -26,56 +42,54 @@ export const appRoutes: Routes = [
         children: resourceInventoryRoutes,
       },
       {
+        path: 'profiles',
+        children: profilesRoutes,
+      },
+      {
         path: 'recipes',
         loadComponent: () =>
-          import('./shared/presentation/views/placeholder-page/placeholder-page').then((m) => m.PlaceholderPage),
+          import('./shared/presentation/views/placeholder-page/placeholder-page').then(
+            (m) => m.PlaceholderPage,
+          ),
         data: { titleKey: 'nav.recipes' },
         title: `${baseTitle} · Recipes`,
       },
       {
         path: 'sales',
-        loadComponent: () =>
-          import('./shared/presentation/views/placeholder-page/placeholder-page').then((m) => m.PlaceholderPage),
-        data: { titleKey: 'nav.sales' },
+        loadChildren: salesRoute,
         title: `${baseTitle} · Sales`,
       },
       {
         path: 'alerts',
         loadComponent: () =>
-          import('./shared/presentation/views/placeholder-page/placeholder-page').then((m) => m.PlaceholderPage),
+          import('./shared/presentation/views/placeholder-page/placeholder-page').then(
+            (m) => m.PlaceholderPage,
+          ),
         data: { titleKey: 'nav.alerts' },
         title: `${baseTitle} · Alerts`,
       },
       {
         path: 'devices',
         loadComponent: () =>
-          import('./shared/presentation/views/placeholder-page/placeholder-page').then((m) => m.PlaceholderPage),
+          import('./shared/presentation/views/placeholder-page/placeholder-page').then(
+            (m) => m.PlaceholderPage,
+          ),
         data: { titleKey: 'nav.devices' },
         title: `${baseTitle} · Devices`,
       },
       {
         path: 'settings',
-        loadComponent: () =>
-          import('./profiles/presentation/view/system-preferences/system-preferences').then(
-            (m) => m.SystemPreferences,
-          ),
+        loadChildren: profilesRoute,
         title: `${baseTitle} · Settings`,
       },
     ],
   },
   {
-    path: 'profiles',
-    loadComponent: () => import('./shared/presentation/components/layout/layout').then((m) => m.Layout),
-    children: profilesRoutes,
-  },
-  {
-    path: '',
-    loadChildren: () => import('./iam/presentation/iam.routes').then((m) => m.iamRoutes),
-  },
-  {
     path: '**',
     loadComponent: () =>
-      import('./shared/presentation/views/page-not-found/page-not-found').then((m) => m.PageNotFound),
+      import('./shared/presentation/views/page-not-found/page-not-found').then(
+        (m) => m.PageNotFound,
+      ),
     title: `${baseTitle} · Not found`,
   },
 ];

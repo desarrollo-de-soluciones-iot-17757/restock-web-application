@@ -18,6 +18,12 @@ export const environment = {
      */
     batchInventoryHttpPath: '/inventory/batch-inventory',
   },
+
+  // Base API URL
+  platformProviderApiBaseUrl: 'http://localhost:3000/api/v1/',
+
+  // Sales Management API
+  platformProviderSalesEndpointsPath: 'sales',
   iamApi: {
     /**
      * URL for sign-up endpoint. When null, uses simulated repository.
