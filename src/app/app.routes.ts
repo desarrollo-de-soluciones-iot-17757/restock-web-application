@@ -5,11 +5,14 @@ import { resourceInventoryRoutes } from './resource/presentation/resource.routes
 
 const baseTitle = 'RestockWebApplication';
 
+const iamRoute = () => import('./iam/presentation/iam.routes').then((m) => m.iamRoutes);
+const salesRoute = () => import('./sales/presentation/sales.routes').then((m) => m.salesRoutes);
+const profilesRoute = () => import('./profiles/presentation/profiles.routes').then(m => m.profilesRoutes);
+
 export const appRoutes: Routes = [
   {
-    path: 'sign-up',
-    loadComponent: () =>
-      import('./iam/presentation/views/sign-up-form/sign-up-form').then((m) => m.SignUpForm),
+    path: '',
+    loadChildren: iamRoute,
     title: `${baseTitle} · Sign Up`,
   },
   {
@@ -63,9 +66,7 @@ export const appRoutes: Routes = [
       },
       {
         path: 'sales',
-        loadComponent: () =>
-          import('./sales/presentation/view/sales-list/sales-list').then((m) => m.SalesList),
-        data: { titleKey: 'nav.sales' },
+        loadChildren: salesRoute,
         title: `${baseTitle} · Sales`,
       },
       {
@@ -88,10 +89,7 @@ export const appRoutes: Routes = [
       },
       {
         path: 'settings',
-        loadComponent: () =>
-          import('./profiles/presentation/views/system-preferences/system-preferences').then(
-            (m) => m.SystemPreferences,
-          ),
+        loadChildren: profilesRoute,
         title: `${baseTitle} · Settings`,
       },
     ],
