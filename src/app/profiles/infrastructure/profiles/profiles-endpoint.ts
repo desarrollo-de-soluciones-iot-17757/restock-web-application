@@ -3,6 +3,7 @@ import { BaseApiEndpoint } from '../../../shared/infrastructure/base-api-endpoin
 import { Profile } from '../../domain/model/profile.entity';
 import { ProfileResource, ProfilesListResponse } from './profiles.response';
 import { ProfilesAssembler } from './profiles.assembler';
+import { environment } from '../../../../environments/environment';
 import { profilesApiOrigin } from './profiles-api-origin';
 
 /**
@@ -19,6 +20,11 @@ export class ProfilesApiEndpoint extends BaseApiEndpoint<
    * @param http - Angular HTTP client.
    */
   constructor(http: HttpClient) {
-    super(http, `${profilesApiOrigin()}/profiles`, new ProfilesAssembler());
+    super(
+      http,
+      `${environment.platformProviderApiBaseUrl}${environment.platformProviderRegistrationPersonalProfileEndpointPath}`,
+      new ProfilesAssembler()
+    );
   }
+
 }

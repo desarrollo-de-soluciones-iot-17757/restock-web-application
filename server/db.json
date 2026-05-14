@@ -30,7 +30,7 @@
       "saleTotal": {
         "subTotal": 84.75,
         "tax": 15.25,
-        "total": 100.0
+        "total": 100
       },
       "saleStatus": "cancelled",
       "date": "2026-05-10"
@@ -51,16 +51,16 @@
         {
           "itemId": "item_B2",
           "nameSnapshot": "Capuccino grande",
-          "unitPrice": 8.0,
+          "unitPrice": 8,
           "quantity": 2,
-          "lineTotal": 16.0
+          "lineTotal": 16
         },
         {
           "itemId": "item_C3",
           "nameSnapshot": "Croissant mantequilla",
           "unitPrice": 6.5,
           "quantity": 2,
-          "lineTotal": 13.0
+          "lineTotal": 13
         }
       ],
       "additionalSupplies": [
@@ -70,9 +70,9 @@
         }
       ],
       "saleTotal": {
-        "subTotal": 74.0,
-        "tax": 13.30,
-        "total": 87.30
+        "subTotal": 74,
+        "tax": 13.3,
+        "total": 87.3
       },
       "saleStatus": "completed",
       "date": "2026-05-11"
@@ -100,9 +100,9 @@
         {
           "itemId": "item_E5",
           "nameSnapshot": "Brownie chocolate",
-          "unitPrice": 7.0,
+          "unitPrice": 7,
           "quantity": 3,
-          "lineTotal": 21.0
+          "lineTotal": 21
         }
       ],
       "additionalSupplies": [
@@ -112,7 +112,7 @@
         }
       ],
       "saleTotal": {
-        "subTotal": 95.0,
+        "subTotal": 95,
         "tax": 17.1,
         "total": 112.1
       },
@@ -135,9 +135,9 @@
         {
           "itemId": "item_F6",
           "nameSnapshot": "Té verde frío",
-          "unitPrice": 6.0,
+          "unitPrice": 6,
           "quantity": 4,
-          "lineTotal": 24.0
+          "lineTotal": 24
         }
       ],
       "additionalSupplies": [
@@ -147,7 +147,7 @@
         }
       ],
       "saleTotal": {
-        "subTotal": 60.0,
+        "subTotal": 60,
         "tax": 10.8,
         "total": 70.8
       },
@@ -172,14 +172,14 @@
           "nameSnapshot": "Chocolate caliente",
           "unitPrice": 7.5,
           "quantity": 2,
-          "lineTotal": 15.0
+          "lineTotal": 15
         },
         {
           "itemId": "item_H8",
           "nameSnapshot": "Sandwich mixto",
-          "unitPrice": 10.0,
+          "unitPrice": 10,
           "quantity": 1,
-          "lineTotal": 10.0
+          "lineTotal": 10
         }
       ],
       "additionalSupplies": [
@@ -189,12 +189,46 @@
         }
       ],
       "saleTotal": {
-        "subTotal": 110.0,
+        "subTotal": 110,
         "tax": 19.8,
         "total": 129.8
       },
       "saleStatus": "completed",
       "date": "2026-05-13"
+    }
+  ],
+  "users": [
+    {
+      "email": "rick@gmail.com",
+      "password": "12345678",
+      "id": 1
+    },
+    {
+      "email": "prueba@gmail.com",
+      "password": "12345678",
+      "id": 2
+    }
+  ],
+  "profiles": [
+    {
+      "id": "profile_1778796979636",
+      "user_id": "user_1",
+      "name": "Elena",
+      "last_name": "Kovac",
+      "phone_number": "999100200",
+      "avatar_url": "https://via.placeholder.com/150",
+      "gender": "UNKNOWN",
+      "birth_date": "2026-05-14T22:16:19.636Z"
+    }
+  ],
+  "businesses": [
+    {
+      "id": "business_1778796992301",
+      "owner_id": "user_1",
+      "ruc": "0000000000",
+      "picture_url": "https://via.placeholder.com/150",
+      "company_name": "nexus",
+      "main_location": "av.test, san francisco, Canada"
     }
   ]
 }

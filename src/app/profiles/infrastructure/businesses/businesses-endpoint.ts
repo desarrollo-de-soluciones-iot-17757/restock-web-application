@@ -3,6 +3,7 @@ import { BaseApiEndpoint } from '../../../shared/infrastructure/base-api-endpoin
 import { Business } from '../../domain/model/business.entity';
 import { BusinessResource, BusinessesListResponse } from './businesses.response';
 import { BusinessesAssembler } from './businesses.assembler';
+import { environment } from '../../../../environments/environment';
 import { profilesApiOrigin } from '../profiles/profiles-api-origin';
 
 /**
@@ -19,6 +20,11 @@ export class BusinessesApiEndpoint extends BaseApiEndpoint<
    * @param http - Angular HTTP client.
    */
   constructor(http: HttpClient) {
-    super(http, `${profilesApiOrigin()}/businesses`, new BusinessesAssembler());
+    super(
+      http,
+      `${environment.platformProviderApiBaseUrl}${environment.platformProviderRegistrationBusinessDetailsEndpointPath}`,
+      new BusinessesAssembler()
+    );
   }
 }
+
