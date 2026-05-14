@@ -33,6 +33,15 @@ export const environment = {
      * URL for sign-up conflict endpoint (e.g., duplicate email).
      */
     signUpConflictUrl: null as string | null,
+
+    /**
+     * URL for sign-in endpoint.
+     */
+    signInUrl: null as string | null, // O la URL de tu API de login
+    /**
+     * URL for token validation or session check (opcional pero recomendado)
+     */
+    validateTokenUrl: null as string | null,
   },
   /**
    * Profiles bounded context: HTTP API origin (no trailing slash).
