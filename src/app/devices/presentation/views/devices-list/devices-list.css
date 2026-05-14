@@ -1,0 +1,101 @@
+/*
+  ================================
+  Header Section
+  ================================
+ */
+.devices-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.devices-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+.register-btn {
+  background-color: #2e7d32;
+  color: #ffffff;
+}
+.register-btn .register-icon {
+  margin-left: 8px;
+  color: #ffffff;
+}
+
+/*
+  ================================
+  Network Section
+  ================================
+ */
+.network-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 16px;
+  border: 2px solid transparent;
+  font-size: 0.9rem;
+  min-width: 80px;
+}
+.network-badge .network-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+}
+.network-badge.online {
+  border-color: #2e7d32;
+  color: #2e7d32;
+}
+.network-badge.online .network-dot {
+  background-color: #2e7d32;
+}
+.network-badge.offline {
+  border-color: #9e9e9e;
+  color: #616161;
+}
+.network-badge.offline .network-dot {
+  background-color: #9e9e9e;
+}
+.network-badge.unstable {
+  border-color: #c62828;
+  color: #c62828;
+}
+.network-badge.unstable .network-dot {
+  background-color: #c62828;
+}
+
+/* Toolbar and footer layout for the devices table */
+.devices-table-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.table-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.table-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+.table-actions button {
+  margin-left: 8px;
+}
+.table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+.footer-left {
+  color: rgba(0,0,0,0.6);
+  font-size: 0.9rem;
+}
+.footer-right {
+  /* paginator will flow here */
+}
+
+
+
