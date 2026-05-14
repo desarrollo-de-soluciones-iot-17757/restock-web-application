@@ -1,4 +1,5 @@
 import {AfterViewChecked, Component, computed, inject, ViewChild} from '@angular/core';
+import {UpperCasePipe} from '@angular/common';
 import {DevicesStore} from '../../../application/devices.store';
 import {Router} from '@angular/router';
 import {MatSort, MatSortHeader} from '@angular/material/sort';
@@ -43,6 +44,7 @@ import {MatError} from '@angular/material/input';
     MatRow,
     MatRowDef,
     MatHeaderRowDef,
+    UpperCasePipe,
   ],
   templateUrl: './devices-list.html',
   styleUrls: ['./devices-list.css'],
@@ -55,7 +57,49 @@ export class DevicesList implements AfterViewChecked {
   /**
    * Columns to be displayed in the table.
    */
-  displayedColumns: string[] = ['macAddress', 'assignedSupply', 'network', 'deviceHealth', 'actions'];
+  displayedColumns: string[] = ['macAddress', 'assignedSupply', 'network', 'deviceStatus', 'actions'];
+
+  /**
+   * Computed property that returns the count of active (online) scales.
+   */
+  activeScalesCount = computed(() => {
+    return this.store.devices().filter(d => d.networkState === 'online').length;
+  });
+
+  /**
+   * Computed property that returns the count of stock alerts.
+   */
+  stockAlertsCount = computed(() => {
+    return Math.floor(Math.random() * 20); // TODO: Replace with actual data from store
+  });
+
+  /**
+   * Computed property that returns the count of critical stock alerts.
+   */
+  stockAlertsCritical = computed(() => {
+    return Math.floor(Math.random() * 8); // TODO: Replace with actual data from store
+  });
+
+  /**
+   * Computed property that returns the count of environmental alerts.
+   */
+  environmentalAlertsCount = computed(() => {
+    return Math.floor(Math.random() * 5); // TODO: Replace with actual data from store
+  });
+
+  /**
+   * Computed property that returns the count of offline devices.
+   */
+  offlineDevicesCount = computed(() => {
+    return this.store.devices().filter(d => d.networkState === 'offline').length;
+  });
+
+  /**
+   * Computed property that returns yesterday's active scales count.
+   */
+  yesterdayActiveScales = computed(() => {
+    return Math.floor(Math.random() * 20); // TODO: Replace with actual historical data
+  });
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;

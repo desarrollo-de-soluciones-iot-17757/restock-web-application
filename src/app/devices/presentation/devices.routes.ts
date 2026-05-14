@@ -1,7 +1,11 @@
 import {Routes} from '@angular/router';
 
-const baseTitle = 'Restock';
+const devicesList = () => import('./views/devices-list/devices-list').then(m => m.DevicesList);
 
-const devicesRoutes: Routes = [
-  { path: 'devices', title: 'Devices | ${baseTitle}' }
+/**
+ * Routes for the devices module.
+ * Defines paths for device management views.
+ */
+export const devicesRoutes: Routes = [
+  { path: '', loadComponent: devicesList }
 ];
