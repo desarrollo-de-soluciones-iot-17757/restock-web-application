@@ -6,7 +6,6 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { resourceProviders } from './resource/resource.providers';
-import { profilesProviders } from './profiles/profiles.providers';
 import { iamInterceptor } from './iam/infrastructure/iam.interceptor';
 
 export const appConfig: ApplicationConfig = {
@@ -19,7 +18,5 @@ export const appConfig: ApplicationConfig = {
       fallbackLang: 'en',
     }),
     resourceProviders,
-    profilesProviders,
   ],
 };
-  
