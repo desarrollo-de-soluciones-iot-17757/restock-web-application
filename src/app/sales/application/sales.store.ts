@@ -11,7 +11,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class SalesStore {
   private readonly destroyRef = inject(DestroyRef);
 
-  private readonly BRANCH_ID = 'branch_01';
+  private readonly BRANCH_ID = 'br_001';
 
   // State Signals
   private readonly salesSignal = signal<Sale[]>([]);

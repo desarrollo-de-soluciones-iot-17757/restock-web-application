@@ -8,8 +8,8 @@ export interface SaleResource extends BaseResource {
   branchId: string;
   businessId: string;
   registeredByUserId: string;
-  customer: CustomerResource;
-  currency: CurrencyResource;
+  customer: CustomerResource | string;
+  currency: CurrencyResource | string;
   saleItems: SaleItemResource[];
   saleTotal: SaleTotalResource;
   saleStatus: string;
@@ -43,6 +43,7 @@ export interface SaleItemResource {
   unitPrice: number;
   quantity: number;
   lineTotal: number;
+  imageUrl?: string;
 }
 
 /**
