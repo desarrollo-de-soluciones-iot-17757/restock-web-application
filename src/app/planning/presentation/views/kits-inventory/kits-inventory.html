@@ -1,0 +1,46 @@
+<div class="inventory-container">
+  <div class="content-wrapper">
+    <div class="header-section">
+      <div class="header-text">
+        <h1 class="title">Kits & Combos Catalog</h1>
+        <p class="description">Manage retail combinations and inventory-linked product kits.</p>
+      </div>
+      <button class="create-kit-btn" (click)="onAddKit()">
+        <div class="btn-icon"></div>
+        <span class="btn-text">Create Kit</span>
+      </button>
+    </div>
+
+    <div class="stats-section">
+      <div class="stat-card">
+        <div class="stat-label">TOTAL KITS</div>
+        <div class="stat-value">{{ totalKits() }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">ACTIVE COMBOS</div>
+        <div class="stat-value active">{{ activeCombos() }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">LOW STOCK ALERTS</div>
+        <div class="stat-value alert">{{ lowStockAlerts() }}</div>
+      </div>
+    </div>
+
+    <div class="kits-list" *ngIf="!isLoading()">
+      <app-kit-card
+        *ngFor="let kit of filteredKits(); trackBy: trackByKitId"
+        [kit]="kit">
+      </app-kit-card>
+
+      <div class="empty-state" *ngIf="filteredKits().length === 0">
+        <i class="pi pi-box"></i>
+        <p>No se encontraron resultados para "{{ searchTerm() }}"</p>
+      </div>
+    </div>
+
+    <div class="loader-overlay" *ngIf="isLoading()">
+      <div class="spinner"></div>
+      <p>Actualizando inventario...</p>
+    </div>
+  </div>
+</div>

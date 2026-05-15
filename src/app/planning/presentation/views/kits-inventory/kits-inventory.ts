@@ -1,8 +1,10 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { KitsStore } from '../../../application/kits.store';
-import { KitCardComponent } from '../kit-card/kit-card';
+import { KitCardComponent } from '../../components/kit-card/kit-card';
+import { CreateKitDialogComponent } from '../../components/create-kit-dialog/create-kit-dialog';
 
 /**
  * KitsInventoryComponent
@@ -12,12 +14,19 @@ import { KitCardComponent } from '../kit-card/kit-card';
 @Component({
   selector: 'app-kits-inventory',
   standalone: true,
-  imports: [CommonModule, FormsModule, KitCardComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    KitCardComponent,
+    MatDialogModule,
+
+  ],
   templateUrl: './kits-inventory.html',
   styleUrls: ['./kits-inventory.css'],
 })
 export class KitsInventoryComponent implements OnInit {
   private readonly kitsStore = inject(KitsStore);
+  private readonly dialog = inject(MatDialog);
 
   // Search state
   searchTerm = signal<string>('');
@@ -36,6 +45,11 @@ export class KitsInventoryComponent implements OnInit {
       );
   });
 
+  // Stats
+  readonly totalKits = computed(() => this.kitsStore.kits().length);
+  readonly activeCombos = computed(() => this.kitsStore.kits().filter(k => k.status === 'Active').length);
+  readonly lowStockAlerts = signal(12); // TODO: compute based on data
+
   ngOnInit(): void {
     this.kitsStore.loadKits();
   }
@@ -48,6 +62,9 @@ export class KitsInventoryComponent implements OnInit {
    * Navigates to the creation flow.
    */
   onAddKit(): void {
-    console.log('Redirecting to create kit flow...');
+    const dialogRef = this.dialog.open(CreateKitDialogComponent);
+    dialogRef.afterClosed().subscribe(() => {
+      this.kitsStore.loadKits();
+    });
   }
 }
