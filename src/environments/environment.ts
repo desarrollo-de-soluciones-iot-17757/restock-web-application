@@ -25,10 +25,20 @@ export const environment = {
   // Sales Management API
   platformProviderSalesEndpointsPath: 'sales',
 
+  /**
+   * Profiles bounded context: HTTP API origin (no trailing slash).
+   * When null, the app uses the development default inside profiles infrastructure.
+   */
+  profilesApi: {
+    /** Replace with your production profiles API origin when available. */
+    baseUrl: 'https://restock-api-profiles.free.beeceptor.com',
+  },
+
   // IAM & Profiles
   platformProviderIamApiBaseUrl: 'https://restock-api-iam.free.beeceptor.com',
   platformProviderSignUpEndpointPath: 'auth/sign-up',
   platformProviderRegistrationBusinessDetailsEndpointPath: 'businesses',
   platformProviderRegistrationPersonalProfileEndpointPath: 'profiles',
+
 };
 

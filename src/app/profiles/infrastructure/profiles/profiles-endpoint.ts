@@ -20,11 +20,7 @@ export class ProfilesApiEndpoint extends BaseApiEndpoint<
    * @param http - Angular HTTP client.
    */
   constructor(http: HttpClient) {
-    super(
-      http,
-      `${environment.platformProviderApiBaseUrl}${environment.platformProviderRegistrationPersonalProfileEndpointPath}`,
-      new ProfilesAssembler()
-    );
+    super(http, `${profilesApiOrigin()}/profiles`, new ProfilesAssembler());
   }
 
 }
