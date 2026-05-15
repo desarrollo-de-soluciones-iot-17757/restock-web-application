@@ -20,11 +20,7 @@ export class BusinessesApiEndpoint extends BaseApiEndpoint<
    * @param http - Angular HTTP client.
    */
   constructor(http: HttpClient) {
-    super(
-      http,
-      `${environment.platformProviderApiBaseUrl}${environment.platformProviderRegistrationBusinessDetailsEndpointPath}`,
-      new BusinessesAssembler()
-    );
+    super(http, `${profilesApiOrigin()}/businesses`, new BusinessesAssembler());
   }
 }
 

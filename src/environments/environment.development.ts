@@ -19,9 +19,15 @@ export const environment = {
   // Sales Management API
   platformProviderSalesEndpointsPath: 'sales',
 
+  profilesApi: {
+    baseUrl: 'https://restock-api-profiles.free.beeceptor.com',
+  },
+
+
   // IAM & Profiles 
   platformProviderSignUpEndpointPath: 'users',
   platformProviderRegistrationBusinessDetailsEndpointPath: 'businesses',
   platformProviderRegistrationPersonalProfileEndpointPath: 'profiles',
+
 };
 
