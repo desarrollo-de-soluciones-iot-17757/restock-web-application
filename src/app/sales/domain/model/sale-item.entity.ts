@@ -35,6 +35,8 @@ export class SaleItem implements BaseEntity {
    */
   private _lineTotal: number;
 
+  private _imageUrl: string | undefined;
+
   /**
    * Create a SaleItem
    * @param SaleItem - An object containing the item's id, name, unit price, quantity, and line total.
@@ -45,12 +47,14 @@ export class SaleItem implements BaseEntity {
     unitPrice: number;
     quantity: number;
     lineTotal: number;
+    imageUrl?: string;
   }) {
     this._id = SaleItem.id;
     this._nameSnapshot = SaleItem.nameSnapshot;
     this._unitPrice = SaleItem.unitPrice;
     this._quantity = SaleItem.quantity;
     this._lineTotal = SaleItem.lineTotal;
+    this._imageUrl = SaleItem.imageUrl;
   }
 
   /**
@@ -58,7 +62,7 @@ export class SaleItem implements BaseEntity {
    * @returns The item's id.
    */
   get id(): string {
-    return this.id;
+    return this._id;
   }
 
   /**
@@ -91,5 +95,9 @@ export class SaleItem implements BaseEntity {
    */
   get lineTotal(): number {
     return this._lineTotal * this._quantity;
+  }
+
+  get imageUrl(): string | undefined {
+    return this._imageUrl;
   }
 }

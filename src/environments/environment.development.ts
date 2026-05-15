@@ -14,7 +14,7 @@ export const environment = {
   },
 
   salesAPI: {
-    salesBaseUrl: 'https://restock-fakeapi.free.beeceptor.com/sales',
+    salesBaseUrl: 'https://restock-api-sales.free.beeceptor.com',
   },
 
 
