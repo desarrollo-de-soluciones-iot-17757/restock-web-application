@@ -34,7 +34,6 @@ export abstract class BaseApiEndpoint<
   getAll(): Observable<TEntity[]> {
     return this.http.get<TResponse | TResource[]>(this.endpointUrl).pipe(
       map((response) => {
-        console.log(response);
         if (Array.isArray(response)) {
           return response.map((resource) => this.assembler.toEntityFromResource(resource));
         }
@@ -65,7 +64,7 @@ export abstract class BaseApiEndpoint<
    * Loads one record by identifier and maps it to a domain entity.
    */
   getById(id: string): Observable<TEntity> {
-    return this.http.get<TResource>(`${this.endpointUrl}/${id}`).pipe(
+    return this.http.get<TResource>(`${this.endpointUrl}/${encodeURIComponent(id)}`).pipe(
       map((resource) => this.assembler.toEntityFromResource(resource)),
       catchError(this.handleError('Failed to fetch entity')),
     );
@@ -85,9 +84,9 @@ export abstract class BaseApiEndpoint<
   /**
    * Persists changes of a domain entity identified by `id`.
    */
-  update(entity: TEntity, id: number): Observable<TEntity> {
+  update(entity: TEntity, id: string): Observable<TEntity> {
     const resource = this.assembler.toResourceFromEntity(entity);
-    return this.http.put<TResource>(`${this.endpointUrl}/${id}`, resource).pipe(
+    return this.http.put<TResource>(`${this.endpointUrl}/${encodeURIComponent(id)}`, resource).pipe(
       map((updated) => this.assembler.toEntityFromResource(updated)),
       catchError(this.handleError('Failed to update entity')),
     );
@@ -98,7 +97,7 @@ export abstract class BaseApiEndpoint<
    */
   delete(id: string): Observable<void> {
     return this.http
-      .delete<void>(`${this.endpointUrl}/${id}`)
+      .delete<void>(`${this.endpointUrl}/${encodeURIComponent(id)}`)
       .pipe(catchError(this.handleError('Failed to delete entity')));
   }
 }

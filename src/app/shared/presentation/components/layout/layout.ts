@@ -1,6 +1,10 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { NavItem } from '../navigator/nav-item.model';
+import { Component, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { filter, map, startWith } from 'rxjs';
+import { ProfilesStore } from '../../../../profiles/application/profiles.store';
+import { LoadProfilesStateCommand } from '../../../../profiles/domain/model/load-profiles-state.command';
+import type { NavItem } from '../navigator/nav-item.model';
 import { Navigator } from '../navigator/navigator';
 import { TopBar } from '../top-bar/top-bar';
 
@@ -12,17 +16,53 @@ import { TopBar } from '../top-bar/top-bar';
   styleUrl: './layout.css',
 })
 export class Layout {
+  private readonly router = inject(Router);
+  private readonly profilesStore = inject(ProfilesStore);
+
+  private readonly currentUrl = toSignal(
+    this.router.events.pipe(
+      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+      map(() => this.router.url.split('?')[0] ?? ''),
+      startWith(this.router.url.split('?')[0] ?? ''),
+    ),
+    { initialValue: this.router.url.split('?')[0] ?? '' },
+  );
+
+  readonly searchPlaceholderKey = computed(() => {
+    const url = this.currentUrl();
+    if (url.startsWith('/inventory/stock')) {
+      return 'layout.search.batches';
+    }
+    return 'layout.search.default';
+  });
+
   navItems = signal<NavItem[]>([
-    { label: 'Overview', icon: 'grid_view', link: '/' },
-    { label: 'Inventory', icon: 'inventory_2', link: '/inventory' },
-    { label: 'Recipes', icon: 'restaurant_menu', link: '/recipes' },
-    { label: 'Sales', icon: 'trending_up', link: '/sales' },
-    { label: 'Alerts', icon: 'notifications', link: '/alerts' },
-    { label: 'Devices', icon: 'router', link: '/devices' },
-    { label: 'Settings', icon: 'settings', link: '/settings' },
+    { labelKey: 'nav.overview', icon: 'grid_view', link: '/' },
+    {
+      labelKey: 'nav.inventory',
+      icon: 'inventory_2',
+      link: '/inventory',
+      children: [
+        { labelKey: 'nav.stock', link: '/inventory/stock' },
+        { labelKey: 'nav.discrepancies', link: '/inventory/discrepancies' },
+      ],
+    },
+    { labelKey: 'nav.recipes', icon: 'restaurant_menu', link: '/recipes' },
+    { labelKey: 'nav.sales', icon: 'trending_up', link: '/sales' },
+    { labelKey: 'nav.alerts', icon: 'notifications', link: '/alerts' },
+    { labelKey: 'nav.devices', icon: 'router', link: '/devices' },
+    { labelKey: 'nav.settings', icon: 'settings', link: '/settings' },
   ]);
 
-  userName = signal('Alex Chen');
-  userAvatarUrl = signal<string | null>(null);
-  searchPlaceholder = signal('Search recipes, ingredients, or SKUs...');
+  userName = computed(() => {
+    const p = this.profilesStore.profile();
+    return p ? `${p.name} ${p.lastName}` : '';
+  });
+
+  userAvatarUrl = computed(() => this.profilesStore.profile()?.avatarUrl.getValue() ?? null);
+
+  constructor() {
+    /** Bootstrap aggregates for the shell (avatar, name) and any child views consuming {@link ProfilesStore}. */
+    this.profilesStore.loadProfilesState(new LoadProfilesStateCommand());
+  }
 }
