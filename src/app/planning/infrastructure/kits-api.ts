@@ -25,6 +25,15 @@ export class KitsApi extends BaseApi {
    * @returns An Observable that emits an array of Kit entities.
    */
   getKits() {
-    return this.kitsApiEndpoint.getAllKits();
+    return this.kitsApiEndpoint.getAll();
+  }
+
+  /**
+   * Creates a new kit.
+   * @param kit - The Kit entity to create.
+   * @returns An Observable that emits the created Kit entity.
+   */
+  createKit(kit: any) {
+    return this.kitsApiEndpoint.create(kit);
   }
 }

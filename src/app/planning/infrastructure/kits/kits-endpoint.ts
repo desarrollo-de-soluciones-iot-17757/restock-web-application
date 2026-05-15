@@ -6,8 +6,6 @@ import { BaseApiEndpoint } from '../../../shared/infrastructure/base-api-endpoin
 import { Kit } from '../../domain/model/kit.entity';
 import { map, Observable } from 'rxjs';
 
-const kitsApiEndpointUrl = `${environment.platformProviderApiBaseUrl}/kits`;
-
 /**
  * Kits API endpoint class responsible for handling HTTP requests related to Kits.
  */
@@ -22,7 +20,7 @@ export class KitsApiEndpoint extends BaseApiEndpoint<
    * @param http - The HttpClient instance for making HTTP requests.
    */
   constructor(http: HttpClient) {
-    super(http, kitsApiEndpointUrl, new KitsAssembler());
+    super(http, `${environment.platformProviderApiBaseUrl}/kits`, new KitsAssembler());
   }
 
   /**

@@ -29,16 +29,17 @@ export class KitsAssembler implements BaseAssembler<Kit, KitResource, KitsRespon
       price: resource.price,
       imageUrl: resource.imageUrl,
       status: resource.status,
-      items: resource.items.map(
-        (item) =>
-          new KitItem({
-            productId: item.productId,
-            productName: item.productName,
-            sku: item.sku,
-            quantityPerKit: item.quantityPerKit,
-            currentStock: item.currentStock,
-          }),
-      ),
+      items:
+        (resource as any).products?.map(
+          (item: any) =>
+            new KitItem({
+              id: item.id.toString(),
+              name: item.name,
+              sku: item.sku,
+              price: item.price,
+              quantity: item.quantity,
+            }),
+        ) || [],
     });
   }
 
@@ -55,13 +56,13 @@ export class KitsAssembler implements BaseAssembler<Kit, KitResource, KitsRespon
       price: entity.price,
       imageUrl: entity.imageUrl,
       status: entity.status,
-      items: entity.items.map((item) => ({
-        productId: item.productId,
-        productName: item.productName,
+      products: entity.items.map((item) => ({
+        id: item.productId,
+        name: item.productName,
         sku: item.sku,
-        quantityPerKit: item.quantityPerKit,
-        currentStock: item.currentStock,
+        price: 0, // Placeholder, puedes agregar precio real
+        quantity: item.quantity,
       })),
-    } as KitResource; // Añadido el cast explícito como hace tu compañero
+    } as any; // Cast to any to match db.json structure
   }
 }
