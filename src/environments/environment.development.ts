@@ -17,11 +17,20 @@ export const environment = {
     salesBaseUrl: 'https://restock-fakeapi.free.beeceptor.com/sales',
   },
 
-  iamApi: {
-    signUpUrl: 'https://restock-apifake.free.beeceptor.com/sign-up',
-    signUpConflictUrl: 'https://restock-apifake.free.beeceptor.com/sign-up/conflict',
-  },
+
+  // Sales Management API
+  platformProviderSalesEndpointsPath: 'sales',
+
   profilesApi: {
-    baseUrl: 'https://restock-fakeapi.free.beeceptor.com',
+    baseUrl: 'https://restock-api-profiles.free.beeceptor.com',
   },
+
+
+  // IAM & Profiles 
+  platformProviderIamApiBaseUrl: 'https://restock-api-iam.free.beeceptor.com',
+  platformProviderSignUpEndpointPath: 'auth/sign-up',
+  platformProviderRegistrationBusinessDetailsEndpointPath: 'businesses',
+  platformProviderRegistrationPersonalProfileEndpointPath: 'profiles',
+
 };
+
