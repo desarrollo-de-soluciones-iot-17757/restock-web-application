@@ -16,15 +16,16 @@ export class SignUpAssembler {
   }
 
   static toEntityFromResponse(response: SignUpResponse): User {
-    const id = String(response.id);
+    const userData = response.user;
+    const id = String(userData.id);
     return new User({
       id,
-      accountId: response.accountId ?? `acct_${id}`,
-      email: response.email,
-      roleId: response.roleId,
-      plan: response.plan ?? 'FREE',
-      status: response.status ?? 'ACTIVE',
-      token: response.token,
+      accountId: userData.accountId ?? `acct_${id}`,
+      email: userData.email,
+      roleId: userData.roleId ?? 'ROLE_ADMIN', // Defaulting if not in mock
+      plan: userData.plan ?? 'FREE',
+      status: userData.status ?? 'ACTIVE',
+      token: userData.token,
     });
   }
 }
