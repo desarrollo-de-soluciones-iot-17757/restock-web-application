@@ -16,6 +16,9 @@ export const environment = {
   // Base API URL
   platformProviderApiBaseUrl: 'http://localhost:3000/api/v1/',
 
+  // Base API URL Kits:
+  // https://restock-api-planning-kits.free.beeceptor.com
+
   // Sales Management API
   platformProviderSalesEndpointsPath: 'sales',
   iamApi: {
