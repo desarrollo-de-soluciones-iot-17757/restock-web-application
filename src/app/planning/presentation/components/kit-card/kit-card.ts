@@ -28,4 +28,13 @@ export class KitCardComponent {
   onViewDetail(): void {
     this.router.navigate(['/catalog/kits', this.kit.id]);
   }
+
+  /**
+   * Handles edit action.
+   */
+  onEdit(event: Event): void {
+    event.stopPropagation();
+    // TODO: navigate to edit page
+    console.log('Edit kit', this.kit.id);
+  }
 }

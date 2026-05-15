@@ -1,18 +1,25 @@
 <div class="card-container" (click)="onViewDetail()">
   <div class="image-wrapper">
     <img [src]="kit.imageUrl" [alt]="kit.name" class="kit-image">
-    <div class="status-badge" [ngClass]="kit.status.toLowerCase()">
+    <div class="status-badge" [ngClass]="kit.status.toLowerCase()" *ngIf="kit.status">
       {{ kit.status }}
     </div>
   </div>
 
   <div class="card-content">
-    <h3 class="kit-name">{{ kit.name }}</h3>
-    <p class="kit-description">{{ kit.description }}</p>
+    <div class="top-row" style="display: flex; justify-content: space-between; align-items: baseline; gap: 5px;">
+      <h3 class="kit-name">{{ kit.name }}</h3>
+      <div class="price">S/{{ kit.price }}</div>
+    </div>
 
-    <div class="card-footer">
-      <span class="price-label">Precio Combo</span>
-      <span class="price-value">S/ {{ kit.price }}</span>
+    <div class="description">
+      {{ kit.description }}
+    </div>
+
+    <div class="bottom-row">
+      <div class="action" (click)="onEdit($event)">
+        Edit Details ➔
+      </div>
     </div>
   </div>
 </div>
