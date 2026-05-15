@@ -4,6 +4,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { IamApi } from '../infrastructure/iam-api';
 import { SignUpCommand } from '../domain/model/sign-up.command';
 import { User } from '../domain/model/user.entity';
+import { SignInCommand } from '../domain/model/sign-in.command';
+import { ForgotPasswordCommand } from '../domain/model/forgot-password.command';
 
 /**
  * IamStore
@@ -22,6 +24,32 @@ export class IamStore {
   readonly error = this.errorSignal.asReadonly();
   readonly loading = this.loadingSignal.asReadonly();
   readonly isAuthenticated = computed(() => this.currentUserSignal() !== null);
+
+  /**
+   * Signs in an existing user.
+   * @param command - The sign-in command.
+   * @param onSuccess - Optional callback.
+   */
+  signIn(command: SignInCommand, onSuccess?: () => void): void {
+    this.loadingSignal.set(true);
+    this.errorSignal.set(null);
+
+    this.iamApi
+      .signIn(command)
+      .pipe(
+        tap((user) => {
+          this.currentUserSignal.set(user);
+          onSuccess?.();
+        }),
+        catchError((error) => {
+          this.errorSignal.set(this.formatError(error, 'Failed to sign in.'));
+          return of(null);
+        }),
+        finalize(() => this.loadingSignal.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
+  }
 
   /**
    * Signs up a new user using the IAM API.
@@ -50,6 +78,30 @@ export class IamStore {
   }
 
   /**
+   * @param command - El comando con el email del usuario.
+   * @param onSuccess - Callback para notificar al usuario que revise su correo.
+   */
+  forgotPassword(command: ForgotPasswordCommand, onSuccess?: () => void): void {
+    this.loadingSignal.set(true);
+    this.errorSignal.set(null);
+
+    this.iamApi
+      .forgotPassword(command)
+      .pipe(
+        tap(() => {
+          onSuccess?.();
+        }),
+        catchError((error) => {
+          this.errorSignal.set(this.formatError(error, 'Failed to send recovery email.'));
+          return of(null);
+        }),
+        finalize(() => this.loadingSignal.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
+  }
+
+  /**
    * Formats error messages for display.
    * @param error - The error object received from the API.
    * @param fallback - The fallback error message.
@@ -57,7 +109,9 @@ export class IamStore {
    */
   private formatError(error: any, fallback: string): string {
     if (error instanceof Error) {
-      return error.message.includes('Resource not found') ? `${fallback}: Not found` : error.message;
+      return error.message.includes('Resource not found')
+        ? `${fallback}: Not found`
+        : error.message;
     }
     return fallback;
   }
