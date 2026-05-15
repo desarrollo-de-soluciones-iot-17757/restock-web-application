@@ -7,7 +7,7 @@ import { Sale } from '../../domain/model/sale.entity';
 import { map, Observable } from 'rxjs';
 
 
-const salesApiEndpointUrl = `${environment.platformProviderApiBaseUrl}${environment.platformProviderSalesEndpointsPath}`;
+const salesApiEndpointUrl = `${environment.salesAPI.salesBaseUrl}`;
 
 /**
  * Sales API endpoint class responsible for handling HTTP requests and responses related to getting sales by branch id.
