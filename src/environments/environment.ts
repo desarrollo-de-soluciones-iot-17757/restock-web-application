@@ -19,8 +19,10 @@ export const environment = {
     batchInventoryHttpPath: '/inventory/batch-inventory',
   },
 
-  // Base API URL
-  platformProviderApiBaseUrl: 'http://localhost:3000/api/v1/',
+  salesAPI: {
+    salesBaseUrl: 'https://restock-fakeapi.free.beeceptor.com/sales',
+  },
+
 
   // Sales Management API
   platformProviderSalesEndpointsPath: 'sales',
