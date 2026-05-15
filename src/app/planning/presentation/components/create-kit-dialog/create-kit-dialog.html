@@ -1,0 +1,121 @@
+<div class="dialog-container">
+  <div class="dialog-header">
+    <div class="header-content">
+      <div class="header-icon-box">
+        <mat-icon>inventory_2</mat-icon>
+      </div>
+      <h2 class="dialog-title">Create New Kit</h2>
+    </div>
+    <button mat-icon-button (click)="onCancel()" class="close-btn">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="dialog-body">
+    <form [formGroup]="kitForm">
+      <div class="kit-top-layout">
+        <div class="image-column">
+          <label class="section-label">Kit Image</label>
+          <div class="image-dropzone" (click)="fileInput.click()">
+            <img *ngIf="imagePreview" [src]="imagePreview" class="preview-img">
+            <div class="upload-placeholder" *ngIf="!imagePreview">
+              <mat-icon>upload</mat-icon>
+              <span>Upload Image</span>
+            </div>
+            <input #fileInput type="file" accept="image/*" (change)="onImageSelected($event)" style="display: none;">
+          </div>
+        </div>
+
+        <div class="inputs-column">
+          <div class="field-wrapper">
+            <label class="section-label">Kit Name</label>
+            <mat-form-field appearance="outline" class="full-width">
+              <input matInput formControlName="name" placeholder="e.g. Gourmet Italian Dinner Kit">
+            </mat-form-field>
+          </div>
+
+          <div class="field-wrapper">
+            <label class="section-label">Combo Price (USD)</label>
+            <mat-form-field appearance="outline" class="full-width">
+              <span matPrefix>S/&nbsp;</span>
+              <input matInput type="number" formControlName="price">
+            </mat-form-field>
+            <p class="hint-text">Recommended price: <strong>S/ {{ totalCost.toFixed(2) }}</strong></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="product-selector-box">
+        <h3 class="sub-title">Product Selector</h3>
+        <div class="selector-grid" [formGroup]="selectorForm">
+          <mat-form-field appearance="outline" class="product-field">
+            <mat-label>Select Product</mat-label>
+            <mat-select formControlName="selectedProductId">
+              <mat-option *ngFor="let product of availableProducts" [value]="product.id">
+                {{ product.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="quantity-field">
+            <mat-label>Qty</mat-label>
+            <input matInput type="number" formControlName="quantity">
+          </mat-form-field>
+
+          <button mat-raised-button class="add-button" (click)="addProduct()">
+            <mat-icon>add</mat-icon> Add Supply
+          </button>
+        </div>
+      </div>
+
+      <div class="included-products">
+        <div class="table-info">
+          <span class="badge">INCLUDED PRODUCTS ({{ productsFormArray.length }})</span>
+          <span class="total-cost">Total Cost: S/ {{ totalCost.toFixed(2) }}</span>
+        </div>
+
+        <div class="table-scroll">
+          <table class="restock-table">
+            <thead>
+            <tr>
+              <th style="width: 40%">Product</th>
+              <th style="width: 20%">SKU</th>
+              <th style="width: 15%">Qty</th>
+              <th style="width: 15%">Price</th>
+              <th style="width: 10%"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let control of productsFormArray.controls; let i = index" [formGroup]="asFormGroup(control)">
+              <td>{{ control.get('name')?.value }}</td>
+              <td>{{ control.get('sku')?.value }}</td>
+              <td>
+                <input type="number" formControlName="quantity" class="table-qty">
+              </td>
+              <td>S/ {{ control.get('price')?.value }}</td>
+              <td class="actions">
+                <button mat-icon-button color="warn" (click)="removeProduct(i)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="dialog-footer">
+    <button mat-button class="btn-cancel" (click)="onCancel()">Cancel</button>
+    <button
+      mat-raised-button
+      class="btn-save"
+      (click)="onSave()"
+      [disabled]="kitForm.invalid">
+      Save Kit
+    </button>
+  </div>
+</div>
