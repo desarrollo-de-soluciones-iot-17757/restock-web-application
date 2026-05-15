@@ -35,7 +35,8 @@ export const environment = {
   },
 
   // IAM & Profiles
-  platformProviderSignUpEndpointPath: 'users',
+  platformProviderIamApiBaseUrl: 'https://restock-api-iam.free.beeceptor.com',
+  platformProviderSignUpEndpointPath: 'auth/sign-up',
   platformProviderRegistrationBusinessDetailsEndpointPath: 'businesses',
   platformProviderRegistrationPersonalProfileEndpointPath: 'profiles',
 
