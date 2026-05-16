@@ -33,6 +33,7 @@ export const environment = {
   profilesApi: {
     /** Replace with your production profiles API origin when available. */
     baseUrl: 'https://restock-api-profiles.free.beeceptor.com',
+    fallbackBaseUrl: 'https://profiles-restock-api.free.beeceptor.com',
   },
 
   // IAM & Profiles
