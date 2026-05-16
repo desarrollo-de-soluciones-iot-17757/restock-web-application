@@ -161,6 +161,12 @@ input:focus {
   height: 24px;
 }
 
+.error-msg {
+  color: #dc2626;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
 @media (max-width: 900px) {
   .image-section {
     display: none;

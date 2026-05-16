@@ -233,3 +233,4 @@
 .link-bold { color: #006C49; font-weight: 600; text-decoration: none; }
 .form-footer { text-align: center; margin-top: 32px; color: #3C4A42; }
 .error-msg { color: #DC2626; margin-bottom: 16px; font-size: 14px; }
+.success-msg { color: #059669; margin-bottom: 16px; font-size: 14px; background: #ecfdf5; padding: 10px 12px; border-radius: 6px; }

@@ -1,13 +1,15 @@
 ﻿import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { SignInAssembler } from './sign-in.assembler';
 import { SignInCommand } from '../../domain/model/sign-in.command';
 import { SignInRequest } from './sign-in.request';
 import { SignInResponse } from './sign-in.response';
 import { User } from '../../domain/model/user.entity';
+import { IamRegisteredUsersStorage } from '../iam-registered-users.storage';
+import { signInWithLocalFallback } from './sign-in-fallback';
 
 const signInApiUrl = `${environment.platformProviderIamApiBaseUrlForSignIn}/${environment.platformProviderSignInEndpointPath}`;
 
@@ -16,6 +18,8 @@ const signInApiUrl = `${environment.platformProviderIamApiBaseUrlForSignIn}/${en
  */
 @Injectable({ providedIn: 'root' })
 export class SignInApiEndpoint {
+  private readonly registeredUsers = inject(IamRegisteredUsersStorage);
+
   constructor(private readonly http: HttpClient) {}
 
   /**
@@ -26,8 +30,18 @@ export class SignInApiEndpoint {
   signIn(command: SignInCommand): Observable<User> {
     const request: SignInRequest = SignInAssembler.toRequestFromCommand(command);
 
-    return this.http
-      .post<SignInResponse>(signInApiUrl, request)
-      .pipe(map((response) => SignInAssembler.toEntityFromResponse(response)));
+    return this.http.post<SignInResponse>(signInApiUrl, request).pipe(
+      map((response) => {
+        const user = SignInAssembler.toEntityFromResponse(response);
+        if (!user.email) {
+          return SignInAssembler.toEntityFromResponse({
+            ...response,
+            email: command.email,
+          });
+        }
+        return user;
+      }),
+      catchError((error) => signInWithLocalFallback(command, this.registeredUsers, error)),
+    );
   }
 }

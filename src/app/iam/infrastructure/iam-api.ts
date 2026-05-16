@@ -27,7 +27,7 @@ export class IamApi extends BaseApi {
    * Registers a new user.
    * @param command - The sign-up command containing user credentials.
    */
-  signUp(command: SignUpCommand): Observable<User> {
+  signUp(command: SignUpCommand): Observable<void> {
     return this.signUpEndpoint.signUp(command);
   }
 

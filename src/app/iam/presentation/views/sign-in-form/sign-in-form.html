@@ -77,6 +77,10 @@
             <label for="remember">{{ 'iam.signInForm.rememberMe' | translate }}</label>
           </div>
 
+          <div *ngIf="successMessage()" class="success-msg">
+            {{ successMessage() }}
+          </div>
+
           <div *ngIf="error()" class="error-msg">
             {{ error() }}
           </div>

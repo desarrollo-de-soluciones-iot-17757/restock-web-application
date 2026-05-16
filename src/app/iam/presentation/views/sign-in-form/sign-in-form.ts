@@ -19,6 +19,7 @@ export class SignInForm {
   private readonly iamStore = inject(IamStore);
   loading = this.iamStore.loading;
   error = this.iamStore.error;
+  successMessage = this.iamStore.successMessage;
 
   hidePassword = signal(true);
 
@@ -39,6 +40,7 @@ export class SignInForm {
       const command = new SignInCommand({ email, password });
 
       this.iamStore.signIn(command, () => {
+        this.iamStore.clearSuccessMessage();
         void this.router.navigate(['/home']);
       });
     } else {

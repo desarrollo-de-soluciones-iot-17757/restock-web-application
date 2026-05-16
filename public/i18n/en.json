@@ -22,7 +22,9 @@
   "shared": {
     "topBar": {
       "notificationsAria": "Notifications",
-      "helpAria": "Help"
+      "helpAria": "Help",
+      "userMenuAria": "User menu",
+      "signOut": "Sign out"
     }
   },
   "home": {
@@ -190,6 +192,7 @@
       "confirmPasswordLabel": "Confirm Password",
       "confirmPasswordPlaceholder": "••••••••",
       "createAccount": "Create Account",
+      "creating": "Creating account...",
       "alreadyHaveAccount": "Already have an account?",
       "returnToLogin": "Return to Login"
     },

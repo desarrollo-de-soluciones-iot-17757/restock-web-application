@@ -22,7 +22,9 @@
   "shared": {
     "topBar": {
       "notificationsAria": "Notificaciones",
-      "helpAria": "Ayuda"
+      "helpAria": "Ayuda",
+      "userMenuAria": "Menú de usuario",
+      "signOut": "Cerrar sesión"
     }
   },
   "home": {
@@ -190,6 +192,7 @@
       "confirmPasswordLabel": "Confirmar Contraseña",
       "confirmPasswordPlaceholder": "••••••••",
       "createAccount": "Crear Cuenta",
+      "creating": "Creando cuenta...",
       "alreadyHaveAccount": "¿Ya tienes una cuenta?",
       "returnToLogin": "Volver al Inicio de Sesión"
     },

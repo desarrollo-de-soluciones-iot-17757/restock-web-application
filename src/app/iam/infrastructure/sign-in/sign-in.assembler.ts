@@ -18,16 +18,16 @@ export class SignInAssembler {
    * Maps a SignInResponse to a User domain entity.
    */
   static toEntityFromResponse(response: SignInResponse): User {
-    const id = String(response.id);
+    const id = String(response.id ?? '1');
 
     return new User({
       id,
       accountId: `acct_${id}`,
-      email: response.email,
+      email: response.email ?? '',
       roleId: 'ROLE_USER',
       plan: 'FREE',
       status: 'ACTIVE',
-      token: response.token,
+      token: response.token ?? `beeceptor-token-${id}`,
     });
   }
 }
