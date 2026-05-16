@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { requireAuthGuard } from './iam/infrastructure/require-auth.guard';
 import { Layout } from './shared/presentation/components/layout/layout';
 import { profilesRoutes } from './profiles/presentation/profiles.routes';
 import { resourceInventoryRoutes } from './resource/presentation/resource.routes';
@@ -13,7 +14,12 @@ export const appRoutes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'sign-up',
+    redirectTo: 'sign-in',
+  },
+  {
+    path: 'login',
+    pathMatch: 'full',
+    redirectTo: 'sign-in',
   },
 
   {
@@ -24,6 +30,7 @@ export const appRoutes: Routes = [
   {
     path: '',
     component: Layout,
+    canActivate: [requireAuthGuard],
     children: [
       {
         path: 'home',

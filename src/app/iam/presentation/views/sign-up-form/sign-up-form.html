@@ -49,7 +49,11 @@
           </div>
         </div>
 
-        <button type="submit" class="submit-btn" [disabled]="form.invalid">{{ 'iam.signUpForm.createAccount' | translate }}</button>
+        <div *ngIf="error()" class="error-msg">{{ error() }}</div>
+
+        <button type="submit" class="submit-btn" [disabled]="form.invalid || loading()">
+          {{ (loading() ? 'iam.signUpForm.creating' : 'iam.signUpForm.createAccount') | translate }}
+        </button>
       </form>
 
       <p class="footer-text">
