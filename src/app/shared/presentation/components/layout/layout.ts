@@ -2,7 +2,9 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, map, startWith } from 'rxjs';
+import { IamStore } from '../../../../iam/application/iam.store';
 import { ProfilesStore } from '../../../../profiles/application/profiles.store';
+import { LoadProfilesStateCommand } from '../../../../profiles/domain/model/load-profiles-state.command';
 import type { NavItem } from '../navigator/nav-item.model';
 import { Navigator } from '../navigator/navigator';
 import { TopBar } from '../top-bar/top-bar';
@@ -16,6 +18,7 @@ import { TopBar } from '../top-bar/top-bar';
 })
 export class Layout {
   private readonly router = inject(Router);
+  private readonly iamStore = inject(IamStore);
   private readonly profilesStore = inject(ProfilesStore);
 
   private readonly currentUrl = toSignal(
@@ -36,7 +39,7 @@ export class Layout {
   });
 
   navItems = signal<NavItem[]>([
-    { labelKey: 'nav.overview', icon: 'grid_view', link: '/' },
+    { labelKey: 'nav.overview', icon: 'grid_view', link: '/home' },
     {
       labelKey: 'nav.inventory',
       icon: 'inventory_2',
@@ -55,12 +58,16 @@ export class Layout {
 
   userName = computed(() => {
     const p = this.profilesStore.profile();
-    return p ? `${p.firstName} ${p.lastName}` : '';
+    if (p) {
+      return `${p.name} ${p.lastName}`;
+    }
+    return this.iamStore.currentUser()?.email ?? '';
   });
 
-  userAvatarUrl = computed(() => this.profilesStore.profile()?.avatarUrl ?? null);
+  userAvatarUrl = computed(() => this.profilesStore.profile()?.avatarUrl.getValue() ?? null);
 
   constructor() {
-    this.profilesStore.load();
+    /** Bootstrap aggregates for the shell (avatar, name) and any child views consuming {@link ProfilesStore}. */
+    this.profilesStore.loadProfilesState(new LoadProfilesStateCommand());
   }
 }

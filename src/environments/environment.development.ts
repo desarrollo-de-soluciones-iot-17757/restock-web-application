@@ -12,4 +12,28 @@ export const environment = {
     batchInventoryBaseUrl: null as string | null,
     batchInventoryHttpPath: '/inventory/batch-inventory',
   },
+
+  salesAPI: {
+    salesBaseUrl: 'https://restock-api-sales.free.beeceptor.com',
+  },
+
+  // Sales Management API
+  platformProviderSalesEndpointsPath: 'sales',
+
+  profilesApi: {
+    baseUrl: 'https://restock-api-profiles.free.beeceptor.com',
+  },
+
+  // IAM & Profiles
+  platformProviderIamApiBaseUrl: 'https://restock-api-iam.free.beeceptor.com',
+  platformProviderSignUpEndpointPath: 'auth/sign-up',
+  platformProviderRegistrationBusinessDetailsEndpointPath: 'businesses',
+  platformProviderRegistrationPersonalProfileEndpointPath: 'profiles',
+
+  // IAM
+  //https://restock-api-iam-login.free.beeceptor.com
+  platformProviderIamApiBaseUrlForSignIn: 'https://restock-api-iam-login.free.beeceptor.com',
+  platformProviderSignInEndpointPath: 'auth/sign-in',
+  platformProviderForgotPasswordEndpointPath: 'auth/forgot-password',
 };
+
