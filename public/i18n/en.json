@@ -92,6 +92,27 @@
       }
     }
   },
+  "devices": {
+    "list-title": "Device Management",
+    "register-device-btn": "Register Device",
+    "list-error": "Error loading devices",
+    "stats-active-scales": "Active Scales",
+    "stats-from-yesterday": "↓ 4 from yesterday",
+    "stats-stock-alerts": "Stock Alerts",
+    "stats-critical": "Critical",
+    "stats-environmental-alerts": "Environmental Alerts",
+    "stats-temp-deviation": "Temp deviation detected",
+    "stats-offline": "Offline",
+    "stats-check-connectivity": "Check connectivity",
+    "table-title": "Active Device Directory",
+    "table-macAddress": "MAC ADDRESS",
+    "table-assignedSupply": "ASSIGNED SUPPLY",
+    "table-network": "NETWORK",
+    "table-deviceStatus": "SENSOR HEALTH",
+    "table-footer-showing": "Showing",
+    "table-footer-of": "of",
+    "table-footer-devices": "devices"
+  },
   "settings": {
     "breadcrumb": {
       "root": "SETTINGS",
