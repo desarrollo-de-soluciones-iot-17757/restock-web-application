@@ -28,4 +28,8 @@ export const environment = {
   profilesApi: {
     baseUrl: 'https://restock-fakeapi.free.beeceptor.com',
   },
+
+  platformProviderIamApiBaseUrl: 'https://restock-api-planning-kits.free.beeceptor.com',
+  platformProviderKitsEndpointPath: 'kits',
+  platformProviderProductsEndpointPath: 'products',
 };

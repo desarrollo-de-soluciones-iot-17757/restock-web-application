@@ -45,4 +45,10 @@ export const environment = {
     /** Replace with your production profiles API origin when available. */
     baseUrl: 'https://restock-fakeapi.free.beeceptor.com',
   },
+
+  platformProviderKitUpdateApiBaseUrl: 'https://u202314101.free.beeceptor.com/kits/K-992',
+  platformProviderIamApiBaseUrl: 'https://restock-api-planning-kits.free.beeceptor.com',
+  platformProviderKitsRegisterEndpointPath: 'kits/register',
+  platformProviderKitsEndpointPath: 'kits',
+  platformProviderProductsEndpointPath: 'products',
 };
