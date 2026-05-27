@@ -15,6 +15,7 @@ export class Layout {
   navItems = signal<NavItem[]>([
     { label: 'Overview', icon: 'grid_view', link: '/' },
     { label: 'Inventory', icon: 'inventory_2', link: '/inventory' },
+    { label: 'Kits', icon: 'category', link: '/planning/kits' },
     { label: 'Recipes', icon: 'restaurant_menu', link: '/recipes' },
     { label: 'Sales', icon: 'trending_up', link: '/sales' },
     { label: 'Alerts', icon: 'notifications', link: '/alerts' },
