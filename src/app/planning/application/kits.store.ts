@@ -1,75 +1,139 @@
 import { computed, DestroyRef, inject, Injectable, signal } from '@angular/core';
+import { catchError, finalize, map, of, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { KitsApi } from '../infrastructure/kits-api';
 import { Kit } from '../domain/model/kit.entity';
+import { KitItem } from '../domain/model/kit-item.entity';
+import { UpdateKitCommand } from '../domain/model/update-kit.command';
+import { RegisterKitCommand } from '../domain/model/register-kit.command';
+import { KitsApi } from '../infrastructure/kits-api';
 
-/**
- * KitsStore
- * Handles the business logic and state management for Kit operations in the catalog.
- */
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root',
+})
 export class KitsStore {
   private readonly destroyRef = inject(DestroyRef);
+  private readonly kitsApi = inject(KitsApi);
 
-  // State Signals (Private)
-  private readonly kitsSignal = signal<Kit[]>([]);
-  private readonly errorSignal = signal<string | null>(null);
-  private readonly loadingSignal = signal<boolean>(false);
+  readonly #kits = signal<Kit[]>([]);
+  readonly #products = signal<KitItem[]>([]);
+  readonly #isLoading = signal<boolean>(false);
+  readonly #loadingProducts = signal<boolean>(false);
+  readonly #error = signal<string | null>(null);
 
-  // Readonly Signals (Public)
-  readonly kits = this.kitsSignal.asReadonly();
-  readonly error = this.errorSignal.asReadonly();
-  readonly loading = this.loadingSignal.asReadonly();
+  readonly kits = this.#kits.asReadonly();
+  readonly products = this.#products.asReadonly();
+  readonly activeKits = computed(() => this.#kits());
+  readonly isLoading = this.#isLoading.asReadonly();
+  readonly loadingProducts = this.#loadingProducts.asReadonly();
+  readonly error = this.#error.asReadonly();
 
-  // Computed Signals
-  readonly kitsCount = computed(() => this.kitsSignal().length);
+  readonly totalKits = computed(() => this.#kits().length);
 
-  /**
-   * Constructor
-   * @param kitsApi - KitsApi instance for making API calls.
-   */
-  constructor(private kitsApi: KitsApi) {}
-
-  /**
-   * Loads all kits from the catalog.
-   */
-  loadKits(): void {
-    this.loadingSignal.set(true);
-    this.errorSignal.set(null);
+  loadAllKits(): void {
+    console.log('Intentando cargar kits...');
+    this.#isLoading.set(true);
+    this.#error.set(null);
 
     this.kitsApi
-      .getKits()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (kits) => {
-          this.kitsSignal.set(kits);
-          this.loadingSignal.set(false);
-        },
-        error: (err) => {
-          this.errorSignal.set(this.formatError(err, 'Failed to load kits from catalog.'));
-          this.loadingSignal.set(false);
-        },
-      });
+      .getAllKits()
+      .pipe(
+        tap((kits) => {
+          console.log('Kits recibidos de la API:', kits);
+          this.#kits.set(kits);
+        }),
+        catchError((error) => {
+          console.error('Error al cargar kits:', error);
+          this.#error.set(this.formatError(error, 'Failed to fetch kits collection.'));
+          return of([]);
+        }),
+        finalize(() => this.#isLoading.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
   }
 
-  /**
-   * Formats error messages for the store.
-   * @private
-   * @param error - The error object.
-   * @param fallback - The fallback error message.
-   * @returns A string representing the error message.
-   */
+  loadAllProducts(): void {
+    if (this.#products().length > 0) return;
+
+    this.#loadingProducts.set(true);
+    this.#error.set(null);
+
+    this.kitsApi
+      .getAllProducts()
+      .pipe(
+        map((rawProducts: any[]) =>
+          rawProducts.map(
+            (p) =>
+              new KitItem({
+                id: p.id,
+                name: p.name,
+                sku: p.sku,
+                price: p.price,
+                quantity: 1,
+              }),
+          ),
+        ),
+        tap((kitItems) => this.#products.set(kitItems)),
+        catchError((error) => {
+          this.#error.set(this.formatError(error, 'Failed to load available products.'));
+          return of([]);
+        }),
+        finalize(() => this.#loadingProducts.set(false)),
+        takeUntilDestroyed(this.destroyRef), // ◄ Protegido
+      )
+      .subscribe();
+  }
+
+  registerKit(command: RegisterKitCommand, onSuccess?: () => void): void {
+    this.#isLoading.set(true);
+    this.#error.set(null);
+
+    this.kitsApi
+      .registerKit(command)
+      .pipe(
+        tap(() => {
+          this.loadAllKits();
+          onSuccess?.();
+        }),
+        catchError((error) => {
+          this.#error.set(this.formatError(error, 'Failed to register the new kit.'));
+          return of(null);
+        }),
+        finalize(() => this.#isLoading.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
+  }
+
+  updateKit(command: UpdateKitCommand, onSuccess?: () => void): void {
+    this.#isLoading.set(true);
+    this.#error.set(null);
+
+    this.kitsApi
+      .updateKit(command)
+      .pipe(
+        tap((updatedKit) => {
+          this.#kits.update((currentKits) =>
+            currentKits.map((kit) => (kit.id === updatedKit.id ? updatedKit : kit)),
+          );
+          onSuccess?.();
+        }),
+        catchError((error) => {
+          this.#error.set(this.formatError(error, 'Failed to update the kit setup.'));
+          return of(null);
+        }),
+        finalize(() => this.#isLoading.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
+  }
+
   private formatError(error: any, fallback: string): string {
-    if (typeof error === 'string') return error;
-    return error?.message || fallback;
-  }
-
-  /**
-   * Clears the current state of the store.
-   */
-  clearStore(): void {
-    this.kitsSignal.set([]);
-    this.errorSignal.set(null);
-    this.loadingSignal.set(false);
+    if (error instanceof Error) {
+      return error.message.includes('Resource not found')
+        ? `${fallback}: Not found`
+        : error.message;
+    }
+    return fallback;
   }
 }
