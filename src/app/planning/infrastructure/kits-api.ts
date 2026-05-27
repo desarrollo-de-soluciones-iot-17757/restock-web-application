@@ -1,39 +1,71 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { map, Observable } from 'rxjs';
+import { Kit } from '../domain/model/kit.entity';
+import { RegisterKitCommand } from '../domain/model/register-kit.command';
+import { UpdateKitCommand } from '../domain/model/update-kit.command';
+import { KitsApiEndpoint } from './kits/kits-api-endpoint';
+import { RegisterKitApiEndpoint } from './kits/register-kit/register-kit-api-endpoint';
+import { UpdateKitApiEndpoint } from './kits/update-kit/update-kit-api-endpoint';
 import { BaseApi } from '../../shared/infrastructure/base-api';
-import { KitsApiEndpoint } from './kits/kits-endpoint';
+import { ProductsApiEndpoint } from './products-api';
+import { KitItem } from '../domain/model/kit-item.entity';
 
 /**
- * Api service for Kit operations in the catalog.
- * Handles HTTP requests and responses related to Kits.
+ * Infrastructure Context Facade for Kits management.
+ * Acts as a single entry point for all network/API interactions regarding the Kits context,
+ * abstracting individual specialized endpoints from the application layer.
  */
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root',
+})
 export class KitsApi extends BaseApi {
-  private readonly kitsApiEndpoint: KitsApiEndpoint;
-
+  private readonly kitsEndpoint = inject(KitsApiEndpoint);
+  private readonly registerEndpoint = inject(RegisterKitApiEndpoint);
+  private readonly updateEndpoint = inject(UpdateKitApiEndpoint);
+  private readonly productsEndpoint = inject(ProductsApiEndpoint);
   /**
-   * Constructor for KitsApi.
-   * @param http - HttpClient instance for making HTTP requests.
+   * Retrieves the complete collection of kits for the catalog view.
+   * Delegates the operation to the general Kits query endpoint (GET).
+   * * @returns An Observable array of domain Kit entities.
    */
-  constructor(http: HttpClient) {
-    super();
-    this.kitsApiEndpoint = new KitsApiEndpoint(http);
+  getAllKits(): Observable<Kit[]> {
+    return this.kitsEndpoint.getAllKits();
   }
 
   /**
-   * Retrieves all kits.
-   * @returns An Observable that emits an array of Kit entities.
+   * Dispatches a command to register a brand new kit configuration.
+   * Delegates the operation to the specialized registration endpoint (POST).
+   * * @param command The semantic intent containing the new kit details and items.
+   * @returns An Observable of the newly created domain Kit entity.
    */
-  getKits() {
-    return this.kitsApiEndpoint.getAll();
+  registerKit(command: RegisterKitCommand): Observable<Kit> {
+    return this.registerEndpoint.registerKit(command);
   }
 
   /**
-   * Creates a new kit.
-   * @param kit - The Kit entity to create.
-   * @returns An Observable that emits the created Kit entity.
+   * Dispatches a command to update an explicit existing kit contract.
+   * Delegates the operation to the specialized update endpoint (PUT).
+   * * @param command The semantic intent containing the target ID and modified attributes.
+   * @returns An Observable of the updated domain Kit entity.
    */
-  createKit(kit: any) {
-    return this.kitsApiEndpoint.create(kit);
+  updateKit(command: UpdateKitCommand): Observable<Kit> {
+    return this.updateEndpoint.updateKit(command);
+  }
+
+  getAllProducts(): Observable<KitItem[]> {
+    return this.productsEndpoint.getAllProducts().pipe(
+      map((jsonArray) =>
+        jsonArray.map(
+          (json) =>
+            new KitItem({
+              id: json.id,
+              name: json.name,
+              sku: json.sku,
+              price: json.price,
+              quantity: json.quantity,
+            }),
+        ),
+      ),
+    );
   }
 }

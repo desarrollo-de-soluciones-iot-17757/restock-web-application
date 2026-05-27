@@ -1,35 +1,20 @@
-import { BaseResource, BaseResponse } from '../../../shared/infrastructure/base-response';
-
 /**
- * KitResource
- * Represents a single kit record in the catalog.
+ * Response structure returned by the API when querying the complete Kits list.
+ * Aligned with the real JSON array structure from Beeceptor.
  */
-export interface KitResource extends BaseResource {
+export interface KitResponse {
   id: string;
   name: string;
-  description: string;
+  sku?: string; // Opcional aquí porque tus kits reales en Beeceptor no tienen sku en la raíz
   price: number;
+  description: string;
   imageUrl: string;
-  status: string;
-  items: KitItemResource[];
-}
-
-/**
- * KitItemResource
- * Represents a product/supply included in a kit.
- */
-export interface KitItemResource {
-  productId: string;
-  productName: string;
-  sku: string;
-  quantityPerKit: string;
-  currentStock: number;
-}
-
-/**
- * KitsResponse
- * Represents the response returned by the get kits endpoint.
- */
-export interface KitsResponse extends BaseResponse, KitResource {
-  kits: KitResource[];
+  status: string; // 'Active' | 'RESTOCK' | 'LOW_STOCK'
+  items: Array<{
+    id: string; // El ID del producto (ej: "P001")
+    name: string; // Nombre del producto (ej: "Organic Cereal")
+    sku: string; // SKU del producto (ej: "CER-ORG-01")
+    price: number; // Precio unitario del producto (ej: 12.00)
+    quantity: number; // Cantidad de este producto incluida en el kit
+  }>;
 }

@@ -1,68 +1,40 @@
-import { KitResource, KitsResponse } from './kits.response';
-import { BaseAssembler } from '../../../shared/infrastructure/base-assembler';
 import { Kit } from '../../domain/model/kit.entity';
 import { KitItem } from '../../domain/model/kit-item.entity';
+import { KitResponse } from './kits.response';
 
 /**
- * Assembler class responsible for converting between domain models, request objects, and response objects related to Kits.
+ * Mapper dedicated to translating infrastructure query contracts into Domain entities.
  */
-export class KitsAssembler implements BaseAssembler<Kit, KitResource, KitsResponse> {
+export class KitAssembler {
   /**
-   * Maps an array of KitResource objects to an array of Kit entities.
-   * @param response - The response object containing an array of KitResource objects.
-   * @returns An array of Kit entities created from the KitResource objects.
+   * Maps an API KitResponse into a complete Domain Kit aggregate root,
+   * initializing all its nested KitItem entities.
    */
-  toEntitiesFromResponse(response: KitsResponse): Kit[] {
-    return response.kits.map((kitResource) => this.toEntityFromResource(kitResource));
-  }
+  static toEntityFromResponse(response: KitResponse): Kit {
+    // 1. Mapeamos los sub-elementos de Beeceptor usando el constructor de KitItem
+    const domainItems = response.items.map(
+      (item) =>
+        new KitItem({
+          id: item.id,
+          name: item.name,
+          sku: item.sku,
+          price: item.price,
+          quantity: item.quantity,
+        }),
+    );
 
-  /**
-   * Converts a KitResource object to a Kit entity.
-   * @param resource - The KitResource object to be converted.
-   * @returns The Kit entity created from the KitResource.
-   */
-  toEntityFromResource(resource: KitResource): Kit {
+    // 2. Construimos el Agregado Raíz (Kit) de nuestro Dominio
     return new Kit({
-      id: resource.id,
-      name: resource.name,
-      description: resource.description,
-      price: resource.price,
-      imageUrl: resource.imageUrl,
-      status: resource.status,
-      items:
-        (resource as any).products?.map(
-          (item: any) =>
-            new KitItem({
-              id: item.id.toString(),
-              name: item.name,
-              sku: item.sku,
-              price: item.price,
-              quantity: item.quantity,
-            }),
-        ) || [],
+      id: response.id,
+      name: response.name,
+      // CONTROL DE SEGURIDAD: Como los kits de tu JSON real no traen sku en la raíz,
+      // usamos el "id" como respaldo (fallback) para evitar que rompa con undefined.
+      sku: response.sku || response.id,
+      price: response.price,
+      description: response.description,
+      imageUrl: response.imageUrl,
+      status: response.status.toUpperCase() as any, // Asegura compatibilidad con 'Active' -> 'ACTIVE'
+      items: domainItems,
     });
-  }
-
-  /**
-   * Converts a Kit entity to a KitResource object.
-   * @param entity - The Kit entity to be converted.
-   * @returns The KitResource object created from the Kit entity.
-   */
-  toResourceFromEntity(entity: Kit): KitResource {
-    return {
-      id: entity.id,
-      name: entity.name,
-      description: entity.description,
-      price: entity.price,
-      imageUrl: entity.imageUrl,
-      status: entity.status,
-      products: entity.items.map((item) => ({
-        id: item.productId,
-        name: item.productName,
-        sku: item.sku,
-        price: 0, // Placeholder, puedes agregar precio real
-        quantity: item.quantity,
-      })),
-    } as any; // Cast to any to match db.json structure
   }
 }

@@ -1,28 +1,17 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BaseApi } from '../../shared/infrastructure/base-api';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
 
-/**
- * Api service for Product operations.
- * Handles HTTP requests and responses related to Products.
- */
 @Injectable({ providedIn: 'root' })
-export class ProductsApi extends BaseApi {
-  /**
-   * Constructor for ProductsApi.
-   * @param http - HttpClient instance for making HTTP requests.
-   */
-  constructor(private http: HttpClient) {
-    super();
-  }
+export class ProductsApiEndpoint {
+  private readonly http = inject(HttpClient);
+  // Reemplaza esto por tu URL real de Beeceptor o usa tu environment configurado
+  private readonly baseUrl = 'https://restock-api-planning-kits.free.beeceptor.com/products';
 
   /**
-   * Retrieves all products.
-   * @returns An Observable that emits an array of Product entities.
+   * Consume el JSON en crudo desde el endpoint de Beeceptor
    */
-  getProducts(): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.platformProviderApiBaseUrl}/products`);
+  getAllProducts(): Observable<any[]> {
+    return this.http.get<any[]>(this.baseUrl);
   }
 }
