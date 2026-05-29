@@ -1,9 +1,12 @@
 <div class="dashboard-container">
   <div class="main-layout">
     <main class="content-body">
+
       <div class="view-header">
-        <h2>Kits & Combos Catalog</h2>
-        <p class="view-subtitle">Gestiona la configuración automatizada de tus inventarios con sensores de peso.</p>
+        <div class="header-titles">
+          <h2>Kits & Combos Catalog</h2>
+          <p class="view-subtitle">Manage retail combinations and inventory-linked product kits.</p>
+        </div>
         <button class="add-kit-btn" (click)="openCreateModal()">
           + Create New Kit
         </button>
@@ -12,18 +15,30 @@
       @if (isCreateModalOpen()) {
         <app-kit-form-modal
           [isOpen]="isCreateModalOpen()"
-          (closeModal)="closeCreateModal()"> </app-kit-form-modal>
+          (closeModal)="closeCreateModal()">
+        </app-kit-form-modal>
+      }
+
+      @if (isEditModalOpen()) {
+        <app-edit-kit-modal
+          [isOpen]="isEditModalOpen()"
+          [kitToEdit]="selectedKit()"
+          (closeModal)="closeEditModal()">
+        </app-edit-kit-modal>
       }
 
       <section class="metrics-row">
         <div class="metric-card">
-          <span class="metric-label">Total Kits</span>
+          <span class="metric-label">TOTAL KITS</span>
           <span class="metric-value">{{ kitsStore.totalKits() }}</span>
         </div>
         <div class="metric-card">
-          <span class="metric-label">Active Combos</span>
-          <span class="metric-value">{{ kitsStore.activeKits().length }}</span>
+          <span class="metric-label">ACTIVE COMBOS</span>
+          <span class="metric-value active-text">{{ kitsStore.activeKits().length }}</span>
         </div>
+        <div class="metric-card">
+          <span class="metric-label">LOW STOCK ALERTS</span>
+          <span class="metric-value alert-text">0</span> </div>
       </section>
 
       <section class="dashboard-content-card">
