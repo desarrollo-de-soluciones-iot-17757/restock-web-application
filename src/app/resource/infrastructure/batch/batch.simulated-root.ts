@@ -1,8 +1,14 @@
-import type { BatchInventoryRootResponse } from '../batch-inventory-response';
+import type { BatchRootResponse } from './batch.response';
 
-/** Fixture used by {@link SimulatedBatchInventoryRepository}; Beeceptor should return this JSON shape. */
-export const SIMULATED_BATCH_INVENTORY_ROOT: BatchInventoryRootResponse = {
-  batchInventory: {
+/**
+ * Simulated batch response used while the Resource backend endpoint
+ * is not available.
+ *
+ * This constant keeps the frontend working with the same JSON shape expected
+ * from Beeceptor or the real backend.
+ */
+export const SIMULATED_BATCH_ROOT: BatchRootResponse = {
+  batch: {
     totalActiveBatches: 1284,
     totalActiveBatchesDeltaPercent: 12,
     nearExpiry30Days: 42,

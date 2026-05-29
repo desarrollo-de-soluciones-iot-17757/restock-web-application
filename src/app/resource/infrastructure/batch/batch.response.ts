@@ -1,4 +1,7 @@
-export interface BatchInventoryBatchResponse {
+/**
+ * Represents a batch item received from the Resource API.
+ */
+export interface BatchItemResponse {
   id: string;
   supplyName: string;
   subtitle: string | null;
@@ -13,13 +16,19 @@ export interface BatchInventoryBatchResponse {
   maxStock: number;
 }
 
-export interface BatchInventoryPayloadResponse {
+/**
+ * Represents the batch payload received from the Resource API.
+ */
+export interface BatchPayloadResponse {
   totalActiveBatches: number;
   totalActiveBatchesDeltaPercent: number;
   nearExpiry30Days: number;
-  batches: BatchInventoryBatchResponse[];
+  batches: BatchItemResponse[];
 }
 
-export interface BatchInventoryRootResponse {
-  batchInventory: BatchInventoryPayloadResponse;
+/**
+ * Represents the root response received from the Resource API.
+ */
+export interface BatchRootResponse {
+  batch: BatchPayloadResponse;
 }
