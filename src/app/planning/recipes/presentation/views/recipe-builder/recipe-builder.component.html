@@ -20,14 +20,15 @@
     <div class="builder-header-right">
       <button class="btn-outline" (click)="store.openEditModal(recipe)">
         <svg viewBox="0 0 20 20" fill="none" width="15">
-          <path d="M13.586 3.586a2 2 0 112.828 2.828L8 14.828 4 16l1.172-4L13.586 3.586z"
-                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M13.586 3.586a2 2 0 112.828 2.828L8 14.828 4 16l1.172-4L13.586 3.586z" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" />
         </svg>
         Edit Recipe
       </button>
       <button class="btn-publish">
         <svg viewBox="0 0 20 20" fill="currentColor" width="15">
-          <path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm3.707 6.293l-4 4a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L9 10.172l3.293-3.293a1 1 0 011.414 1.414z"/>
+          <path
+            d="M10 2a8 8 0 100 16A8 8 0 0010 2zm3.707 6.293l-4 4a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L9 10.172l3.293-3.293a1 1 0 011.414 1.414z" />
         </svg>
         Publish Changes
       </button>
@@ -131,19 +132,9 @@
 </ng-template>
 
 <!-- MODALS -->
-<app-recipe-modal
-  *ngIf="store.modalMode() === 'edit'"
-  mode="edit"
-  [recipe]="recipe"
-  [availableIngredients]="store.ingredients()"
-  (onClose)="store.closeModal()"
-  (onUpdate)="store.update($event.cmd, $event.formIngredients)"
-  (onDeleteRequest)="store.confirmDelete($event)"
-/>
+<app-recipe-modal *ngIf="store.modalMode() === 'edit'" mode="edit" [recipe]="recipe"
+  [availableIngredients]="store.ingredients()" (onClose)="store.closeModal()"
+  (onUpdate)="store.update($any($event.cmd), $event.formIngredients)" (onDeleteRequest)="store.confirmDelete($event)" />
 
-<app-delete-modal
-  *ngIf="store.showDeleteModal()"
-  [recipe]="store.recipeToDelete()"
-  (onCancel)="store.closeDeleteModal()"
-  (onConfirm)="store.executeDelete(); goBack()"
-/>
+<app-delete-modal *ngIf="store.showDeleteModal()" [recipe]="store.recipeToDelete()"
+  (onCancel)="store.closeDeleteModal()" (onConfirm)="store.executeDelete(); goBack()" />

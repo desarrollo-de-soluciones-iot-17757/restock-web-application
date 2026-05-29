@@ -12,6 +12,7 @@ const baseTitle = 'RestockWebApplication';
 const iamRoute = () => import('./iam/presentation/iam.routes').then((m) => m.iamRoutes);
 const salesRoute = () => import('./sales/presentation/sales.routes').then((m) => m.salesRoutes);
 const profilesRoute = () => import('./profiles/presentation/profiles.routes').then(m => m.profilesRoutes);
+const recipesRoute = () => import('./planning/recipes/presentation/recipes.routes').then(m => m.recipesRoutes);
 
 /**
  * Application routes configuration.
@@ -63,15 +64,13 @@ export const appRoutes: Routes = [
         path: 'profiles',
         children: profilesRoutes,
       },
+      
       {
         path: 'recipes',
-        loadComponent: () =>
-          import('./shared/presentation/views/placeholder-page/placeholder-page').then(
-            (m) => m.PlaceholderPage,
-          ),
-        data: { titleKey: 'nav.recipes' },
+        loadChildren: recipesRoute,
         title: `${baseTitle} · Recipes`,
       },
+
       {
         path: 'sales',
         loadChildren: salesRoute,

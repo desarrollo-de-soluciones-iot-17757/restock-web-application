@@ -14,4 +14,4 @@ export * from './infrastructure/recipes-api-endpoint';
 export * from './application/recipes.store';
 
 // Routes
-export * from './recipes.routes';
+export * from './presentation/recipes.routes';

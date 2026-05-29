@@ -10,19 +10,14 @@
       <div class="search-box">
         <svg class="search-icon" viewBox="0 0 20 20" fill="none">
           <path d="M17.5 17.5L13.875 13.875M15.833 9.167a6.667 6.667 0 1 1-13.333 0 6.667 6.667 0 0 1 13.333 0Z"
-                stroke="currentColor" stroke-width="1.667" stroke-linecap="round"/>
+            stroke="currentColor" stroke-width="1.667" stroke-linecap="round" />
         </svg>
-        <input
-          type="text"
-          placeholder="Search recipes..."
-          class="search-input"
-          [value]="store.searchQuery()"
-          (input)="onSearch($event)"
-        />
+        <input type="text" placeholder="Search recipes..." class="search-input" [value]="store.searchQuery()"
+          (input)="onSearch($event)" />
       </div>
       <button class="btn-add" (click)="store.openCreateModal()">
         <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
-          <path d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"/>
+          <path d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
         </svg>
         Add Recipe
       </button>
@@ -57,27 +52,19 @@
   <!-- EMPTY STATE -->
   <div *ngIf="!store.loading() && store.filteredRecipes().length === 0" class="empty-state">
     <svg viewBox="0 0 64 64" width="64" fill="none">
-      <rect x="8" y="16" width="48" height="40" rx="4" stroke="#D1D5DB" stroke-width="2"/>
-      <path d="M20 16V12a12 12 0 0124 0v4" stroke="#D1D5DB" stroke-width="2" stroke-linecap="round"/>
-      <circle cx="32" cy="36" r="6" stroke="#D1D5DB" stroke-width="2"/>
+      <rect x="8" y="16" width="48" height="40" rx="4" stroke="#D1D5DB" stroke-width="2" />
+      <path d="M20 16V12a12 12 0 0124 0v4" stroke="#D1D5DB" stroke-width="2" stroke-linecap="round" />
+      <circle cx="32" cy="36" r="6" stroke="#D1D5DB" stroke-width="2" />
     </svg>
     <p>No recipes found</p>
   </div>
 
   <!-- RECIPES GRID -->
   <section *ngIf="!store.loading()" class="recipes-grid">
-    <div
-      *ngFor="let recipe of store.filteredRecipes()"
-      class="recipe-card"
-    >
+    <div *ngFor="let recipe of store.filteredRecipes()" class="recipe-card">
       <!-- IMAGE AREA -->
       <div class="card-image-wrapper" (click)="goToDetail(recipe)">
-        <img
-          [src]="recipe.imageUrl"
-          [alt]="recipe.name"
-          class="card-image"
-          loading="lazy"
-        />
+        <img [src]="recipe.imageUrl" [alt]="recipe.name" class="card-image" loading="lazy" />
         <!-- STATUS BADGE -->
         <span class="status-badge" [ngClass]="{
           'badge-active':   recipe.status === 'ACTIVE',
@@ -95,7 +82,9 @@
         <div class="card-menu-wrapper">
           <button class="btn-menu" (click)="openMenu($event, recipe)">
             <svg viewBox="0 0 20 20" fill="currentColor" width="16">
-              <circle cx="10" cy="4"  r="1.5"/><circle cx="10" cy="10" r="1.5"/><circle cx="10" cy="16" r="1.5"/>
+              <circle cx="10" cy="4" r="1.5" />
+              <circle cx="10" cy="10" r="1.5" />
+              <circle cx="10" cy="16" r="1.5" />
             </svg>
           </button>
           <div class="dropdown-menu">
@@ -120,20 +109,10 @@
 </div>
 
 <!-- MODALS -->
-<app-recipe-modal
-  *ngIf="store.modalMode() !== null"
-  [mode]="store.modalMode()!"
-  [recipe]="store.modalMode() === 'edit' ? store.selectedRecipe() : null"
-  [availableIngredients]="store.ingredients()"
-  (onClose)="store.closeModal()"
-  (onCreate)="store.create($event.cmd, $event.formIngredients)"
-  (onUpdate)="store.update($event.cmd, $event.formIngredients)"
-  (onDeleteRequest)="store.confirmDelete($event)"
-/>
+<app-recipe-modal *ngIf="store.modalMode() !== null" [mode]="store.modalMode()!"
+  [recipe]="store.modalMode() === 'edit' ? store.selectedRecipe() : null" [availableIngredients]="store.ingredients()"
+  (onClose)="store.closeModal()" (onCreate)="store.create($any($event.cmd), $event.formIngredients)"
+  (onUpdate)="store.update($any($event.cmd), $event.formIngredients)" (onDeleteRequest)="store.confirmDelete($event)" />
 
-<app-delete-modal
-  *ngIf="store.showDeleteModal()"
-  [recipe]="store.recipeToDelete()"
-  (onCancel)="store.closeDeleteModal()"
-  (onConfirm)="store.executeDelete()"
-/>
+<app-delete-modal *ngIf="store.showDeleteModal()" [recipe]="store.recipeToDelete()"
+  (onCancel)="store.closeDeleteModal()" (onConfirm)="store.executeDelete()" />

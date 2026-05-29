@@ -2,8 +2,7 @@ import { Injectable, signal, computed } from '@angular/core';
 import { RecipeEntity } from '../domain/model/recipe.entity';
 import { IngredientEntity } from '../domain/model/ingredient.entity';
 import { RecipesApiEndpoint } from '../infrastructure/recipes-api-endpoint';
-import { RecipesAssembler } from '../infrastructure/recipes.assembler';
-import { CreateRecipeCommand, RecipeIngredientCommand } from '../domain/commands/create-recipe.command';
+import { CreateRecipeCommand } from '../domain/commands/create-recipe.command';
 import { UpdateRecipeCommand } from '../domain/commands/update-recipe.command';
 
 export type ModalMode = 'create' | 'edit' | null;
@@ -51,16 +50,17 @@ export class RecipesStore {
   });
 
   constructor(
-    private readonly api: RecipesApiEndpoint,
-    private readonly assembler: RecipesAssembler,
+    private readonly api: RecipesApiEndpoint
+    // ¡Eliminamos el RecipeAssembler de aquí! El API ya hace el trabajo.
   ) {}
 
   // ── LOAD ─────────────────────────────────────────────────────────
   loadAll(): void {
     this.loading.set(true);
     this.api.getAll().subscribe({
-      next: resources => {
-        this.recipes.set(this.assembler.toEntityList(resources));
+      next: entities => {
+        // Recibimos directamente las entidades desde el API
+        this.recipes.set(entities);
         this.loading.set(false);
       },
       error: err => {
@@ -72,8 +72,9 @@ export class RecipesStore {
 
   loadIngredients(): void {
     this.api.getAllIngredients().subscribe({
-      next: resources => {
-        this.ingredients.set(this.assembler.ingredientListToEntities(resources));
+      next: entities => {
+        // Recibimos directamente las entidades de ingredientes
+        this.ingredients.set(entities);
       },
     });
   }
@@ -97,9 +98,9 @@ export class RecipesStore {
   ): void {
     const estimatedCost = this.calculateEstimatedCost(formIngredients);
     this.loading.set(true);
-    this.api.create({ ...cmd, estimatedCost }).subscribe({
-      next: resource => {
-        const entity = this.assembler.toEntity(resource);
+    this.api.createRecipe({ ...cmd, estimatedCost }).subscribe({
+      next: entity => {
+        // Ya es una RecipeEntity pura
         this.recipes.update(list => [entity, ...list]);
         this.closeModal();
         this.loading.set(false);
@@ -118,9 +119,9 @@ export class RecipesStore {
   ): void {
     const estimatedCost = this.calculateEstimatedCost(formIngredients);
     this.loading.set(true);
-    this.api.update({ ...cmd, estimatedCost }).subscribe({
-      next: resource => {
-        const entity = this.assembler.toEntity(resource);
+    this.api.updateRecipe({ ...cmd, estimatedCost }).subscribe({
+      next: entity => {
+        // Ya es una RecipeEntity pura
         this.recipes.update(list =>
           list.map(r => (r.id === entity.id ? entity : r))
         );
