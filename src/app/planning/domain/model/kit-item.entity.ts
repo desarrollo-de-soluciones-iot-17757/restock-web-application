@@ -5,17 +5,16 @@ import { BaseEntity } from '../../../shared/domain/model/base-entity';
  * Cloned directly from the service definitions (Beeceptor).
  */
 export class KitItem implements BaseEntity {
-  private readonly _id: string; // Mapea con el "id" del producto (ej: "P001")
-  private readonly _name: string; // Mapea con "name"
-  private readonly _sku: string; // Mapea con "sku"
-  private readonly _price: number; // Mapea con "price" (útil para calcular costos totales)
-  private _quantity: number; // Mapea con "quantity" (el valor mutable que agregas al kit)
+  private readonly _id: string;
+  private readonly _name: string;
+  private readonly _sku: string;
+  private readonly _price: number;
+  private _quantity: number;
 
   /**
    * Initializes a new KitItem instance from endpoint data.
    */
   constructor(params: { id: string; name: string; sku: string; price: number; quantity: number }) {
-    // Regla de negocio inquebrantable en tu dominio
     if (params.quantity <= 0) {
       throw new Error('La cantidad del producto debe ser mayor a cero.');
     }
@@ -27,13 +26,10 @@ export class KitItem implements BaseEntity {
     this._quantity = params.quantity;
   }
 
-  // --- GETTERS DIRECTOS ---
-
   get id(): string {
     return this._id;
   }
 
-  // Cumple con la interfaz BaseEntity de tu arquitectura usando el ID del producto
   get productId(): string {
     return this._id;
   }
@@ -54,11 +50,6 @@ export class KitItem implements BaseEntity {
     return this._quantity;
   }
 
-  // --- LÓGICA DE DOMINIO ---
-
-  /**
-   * Cambia la cantidad elegida dentro del selector o la tabla del modal.
-   */
   changeQuantity(newQuantity: number): void {
     if (newQuantity <= 0) {
       throw new Error('La cantidad del componente debe ser mayor a cero.');
