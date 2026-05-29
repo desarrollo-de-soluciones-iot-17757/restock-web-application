@@ -6,11 +6,17 @@ const appTitle = 'RestockWebApplication';
  * Inventory routes owned by the Resource bounded context.
  */
 export const resourceInventoryRoutes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'stock' },
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'stock',
+  },
   {
     path: 'stock',
     loadComponent: () =>
-      import('./views/batches-stock-section/batches-stock-section').then((m) => m.BatchesStockSection),
+      import('./views/batches-stock-section/batches-stock-section').then(
+        (m) => m.BatchesStockSection,
+      ),
     title: `${appTitle} · Inventory · Stock`,
   },
   {
