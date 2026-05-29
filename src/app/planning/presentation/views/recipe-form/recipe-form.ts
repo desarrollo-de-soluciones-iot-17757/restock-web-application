@@ -1,9 +1,9 @@
-import { Component, inject, input, output, signal, OnInit, effect } from '@angular/core';
+import { Component, inject, input, output, signal, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { KitItem } from '../../../domain/model/kit-item.entity';
 import { RegisterKitCommand } from '../../../domain/model/register-kit.command';
-import { KitsStore } from '../../../application/kits.store'; // ◄ Importa tu comando
+import { KitsStore } from '../../../application/kits.store';
 
 @Component({
   selector: 'app-kit-form-modal',
@@ -20,8 +20,10 @@ export class KitFormModalComponent implements OnInit {
 
   kitName = signal<string>('');
   kitPrice = signal<number>(0);
+  kitDescription = signal<string>('');
 
-  // Mapeos limpios que se usan en los combos de la UI
+  selectedImage = signal<string | null>(null);
+
   readonly availableProducts = this.kitsStore.products;
   readonly loadingProducts = this.kitsStore.loadingProducts;
   selectedProductId = signal<string>('');
@@ -29,19 +31,39 @@ export class KitFormModalComponent implements OnInit {
 
   includedProducts = signal<KitItem[]>([]);
 
-  constructor() {
-    effect(() => {
-      if (this.isOpen() && this.availableProducts().length > 0 && !this.selectedProductId()) {
-        this.selectedProductId.set(this.availableProducts()[0].id);
-      }
-    });
-  }
+  totalCost = computed(() => {
+    return this.includedProducts().reduce((sum, item) => sum + item.quantity * item.price, 0);
+  });
+
+  recommendedPrice = computed(() => {
+    const total = this.totalCost();
+    return total > 0 ? total + 24.5 : 0;
+  });
+
+  constructor() {}
 
   ngOnInit(): void {
     this.kitsStore.loadAllProducts();
   }
 
+  onFileSelected(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    if (inputElement.files && inputElement.files[0]) {
+      const file = inputElement.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.selectedImage.set(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   addSupply(): void {
+    if (!this.selectedProductId()) {
+      alert('Por favor, seleccione un producto válido de la lista.');
+      return;
+    }
+
     const targetProduct = this.availableProducts().find((p) => p.id === this.selectedProductId());
     if (!targetProduct) return;
 
@@ -61,6 +83,8 @@ export class KitFormModalComponent implements OnInit {
       } else {
         this.includedProducts.update((list) => [...list, newItem]);
       }
+
+      this.selectedProductId.set('');
       this.inputQuantity.set(1);
     } catch (error: any) {
       alert(error.message);
@@ -89,8 +113,8 @@ export class KitFormModalComponent implements OnInit {
     const command = new RegisterKitCommand({
       name: this.kitName(),
       price: this.kitPrice(),
-      description: 'Kit automático generado desde el planificador',
-      imageUrl: 'https://placehold.co/209x201',
+      description: this.kitDescription().trim() || 'No description provided',
+      imageUrl: this.selectedImage() || 'https://placehold.co/209x201',
       items: this.includedProducts(),
     });
 
@@ -104,6 +128,9 @@ export class KitFormModalComponent implements OnInit {
     this.includedProducts.set([]);
     this.kitName.set('');
     this.kitPrice.set(0);
+    this.kitDescription.set('');
     this.inputQuantity.set(1);
+    this.selectedImage.set(null);
+    this.selectedProductId.set('');
   }
 }

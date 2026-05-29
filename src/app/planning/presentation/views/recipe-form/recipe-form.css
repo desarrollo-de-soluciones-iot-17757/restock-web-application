@@ -1,4 +1,3 @@
-/* Overlay de fondo oscuro traslúcido */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -13,7 +12,6 @@
   z-index: 1000;
 }
 
-/* Contenedor del Modal basado en las medidas exactas de tu Figma */
 .modal-container {
   width: 768px;
   max-width: 90vw;
@@ -27,9 +25,7 @@
   overflow: hidden;
 }
 
-/* Header */
 .modal-header {
-  align-self: stretch;
   padding: 24px 32px;
   border-bottom: 1px #E0E3E2 solid;
   display: flex;
@@ -66,7 +62,6 @@
   align-items: center;
 }
 
-/* Cuerpo del modal con scroll interno controlado */
 .modal-body {
   padding: 24px 32px;
   display: flex;
@@ -76,50 +71,52 @@
   flex: 1;
 }
 
-/* Inputs y Tipografías */
-.input-label {
-  color: #3C4A42;
-  font-size: 11px;
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  margin-bottom: 8px;
-  display: block;
-}
-
-.form-input, .form-select {
-  width: 100%;
-  padding: 12px 16px;
-  background: white;
-  border-radius: 4px;
-  border: 1px solid #BBCABF;
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  color: #181C1C;
-  box-sizing: border-box;
-}
-
-.form-input::placeholder { color: #6B7280; }
-
-.form-group-row {
+.form-top-section {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  grid-template-columns: 200px 1fr;
+  gap: 32px;
+  align-items: start;
 }
 
-/* Subida de Imagen */
+.image-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 70px;
+  max-height: 120px;
+  font-family: inherit;
+  padding: 8px 12px;
+  line-height: 1.4;
+}
+
+.inputs-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .image-upload-zone {
-  align-self: stretch;
-  height: 160px;
+  width: 200px;
+  height: 180px;
   position: relative;
   background: #EBEEED;
   border-radius: 8px;
   outline: 2px #BBCABF dashed;
+  outline-offset: -2px;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
   cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.image-upload-zone:hover {
+  outline-color: #006C49;
+  background: #F1F4F3;
 }
 
 .upload-placeholder-bg {
@@ -144,7 +141,31 @@
   font-family: 'Inter', sans-serif;
 }
 
-/* Prefijo de Moneda */
+.input-label {
+  color: #3C4A42;
+  font-size: 11px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.form-input, .form-select {
+  width: 100%;
+  padding: 10px 12px;
+  background: white;
+  border-radius: 4px;
+  border: 1px solid #D1D5DB;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: #181C1C;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+.form-input::placeholder { color: #6B7280; }
+
 .price-input-wrapper {
   position: relative;
   width: 100%;
@@ -176,7 +197,6 @@
   width: 100%;
 }
 
-/* Selector de Productos */
 .product-selector-section {
   display: flex;
   flex-direction: column;
@@ -221,7 +241,13 @@
   white-space: nowrap;
 }
 
-/* Tabla Estilo Figma */
+.loading-supplies {
+  padding: 12px;
+  color: #006C49;
+  font-weight: 500;
+  font-size: 14px;
+}
+
 .included-products-section {
   display: flex;
   flex-direction: column;
@@ -274,6 +300,16 @@
 
 .table-row:last-child { border-bottom: none; }
 
+.table-blank-row {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  color: #6C7A71;
+  font-style: italic;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+}
+
 .th {
   color: #3C4A42;
   font-size: 11px;
@@ -282,22 +318,66 @@
   letter-spacing: 0.05em;
 }
 
-.td { font-size: 14px; font-family: 'Inter', sans-serif; color: #181C1C; }
+.td {
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  color: #181C1C;
+}
 
-/* Columnas Proporcionales */
-.col-product { flex: 2.5; display: flex; align-items: center; gap: 12px; }
-.col-sku { flex: 1; }
-.col-qty { flex: 0.6; text-align: center; }
-.col-price { flex: 1.2; text-align: right; }
-.col-actions { flex: 0.8; text-align: center; }
+.col-product {
+  flex: 2.5;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
-.table-prod-img { width: 38px; height: 38px; border-radius: 4px; object-fit: cover; }
-.table-prod-name { font-weight: 500; line-height: 1.3; }
+.col-sku {
+  flex: 1;
+}
 
-.text-secondary { color: #3C4A42; }
-.text-center { text-align: center; }
-.text-right { text-align: right; }
-.font-medium { font-weight: 500; }
+.col-qty {
+  flex: 0.6;
+  text-align: center;
+}
+
+.col-price {
+  flex: 1.2;
+  text-align: right;
+}
+
+.col-actions {
+  flex: 0.8;
+  text-align: center;
+}
+
+
+.table-prod-img {
+  width: 38px;
+  height: 38px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.table-prod-name {
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.text-secondary {
+  color: #3C4A42;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.font-medium {
+  font-weight: 500;
+}
 
 .delete-row-btn {
   background: transparent;
@@ -306,7 +386,6 @@
   padding: 6px;
 }
 
-/* Footer Fijo */
 .modal-footer {
   padding: 24px 32px;
   background: #F1F4F3;
