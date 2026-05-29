@@ -1,28 +1,34 @@
+:host {
+  display: block;
+  width: 100%;
+  max-width: 260px;
+  margin: 0;
+}
+
 .kit-card {
-  background: white;
-  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
   border-radius: 8px;
-  outline: 1px #BBCABF solid;
-  outline-offset: -1px;
   display: flex;
   flex-direction: column;
-  transition: all 0.3s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
 
-  /* Tamaño fijo cuadrado */
-  width: 220px;
-  height: 220px;
+  width: 100%;
+  min-height: 400px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   overflow: hidden;
 }
 
 .kit-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.08);
 }
 
 .card-image-container {
   position: relative;
   width: 100%;
-  height: 110px;
+  height: 175px;
   overflow: hidden;
 }
 
@@ -33,54 +39,56 @@
 }
 
 .card-content {
-  padding: 12px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   flex: 1;
-  gap: 4px;
+  gap: 12px;
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  gap: 8px;
+  align-items: flex-start;
+  gap: 12px;
 }
 
 .kit-title {
-  color: #181C1C;
-  font-size: 14px;
-  font-weight: 600;
+  color: #111827;
+  font-size: 18px;
+  font-weight: 700;
   margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.25;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  word-wrap: break-word;
+  flex-grow: 1;
 }
 
 .kit-price {
-  color: #006C49; /* Color de precio actualizado */
-  font-size: 14px;
-  font-weight: 700;
+  color: #575E70;
+  font-size: 15px;
+  font-weight: 500;
   white-space: nowrap;
+  padding-top: 2px;
 }
 
 .kit-description {
-  color: #3C4A42;
-  font-size: 11px;
-  line-height: 1.3;
-  margin: 0;
-  /* Limitar a 2 líneas */
+  color: #6B7280;
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0 0 16px 0;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
 .card-footer {
   margin-top: auto;
-  padding-top: 8px;
-  border-top: 1px solid #EBEEED;
+  padding-top: 0;
+  border-top: none;
   display: flex;
   justify-content: flex-end;
 }
@@ -89,17 +97,26 @@
   background: none;
   border: none;
   color: #006C49;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 0;
+  padding: 4px 0;
   transition: opacity 0.2s;
 }
 
 .edit-button:hover {
-  opacity: 0.8;
-  background: transparent;
+  opacity: 0.85;
+}
+
+.arrow-icon {
+  font-style: normal;
+  font-size: 14px;
+  transition: transform 0.2s ease;
+}
+
+.edit-button:hover .arrow-icon {
+  transform: translateX(3px);
 }

@@ -1,6 +1,6 @@
 <article class="kit-card">
   <div class="card-image-container">
-    <img [src]="kit.imageUrl" [alt]="kit.name" class="card-image">
+    <img [src]="kit.imageUrl || 'assets/placeholder-kit.png'" [alt]="kit.name" class="card-image">
   </div>
 
   <div class="card-content">
@@ -12,7 +12,7 @@
     <p class="kit-description">
       {{ kit.description }}
     </p>
-    
+
     <div class="card-footer">
       <button class="edit-button" (click)="onEdit()">
         <span>Edit Details</span>
