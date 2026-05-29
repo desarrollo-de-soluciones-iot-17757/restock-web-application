@@ -17,11 +17,11 @@ export const recipesRoutes: Routes = [
   {
     path: '',
     loadComponent: recipesList,
-    title: 'Recipes List', // Opcional: puedes ajustar el título según necesites
+    title: 'Recipes List',
   },
   {
     path: ':id',
     loadComponent: recipeBuilder,
-    title: 'Recipe Builder', // Opcional: puedes ajustar el título según necesites
+    title: 'Recipe Builder',
   },
 ];

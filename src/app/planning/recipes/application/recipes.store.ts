@@ -51,7 +51,6 @@ export class RecipesStore {
 
   constructor(
     private readonly api: RecipesApiEndpoint
-    // ¡Eliminamos el RecipeAssembler de aquí! El API ya hace el trabajo.
   ) {}
 
   // ── LOAD ─────────────────────────────────────────────────────────
@@ -59,7 +58,7 @@ export class RecipesStore {
     this.loading.set(true);
     this.api.getAll().subscribe({
       next: entities => {
-        // Recibimos directamente las entidades desde el API
+
         this.recipes.set(entities);
         this.loading.set(false);
       },
@@ -73,7 +72,6 @@ export class RecipesStore {
   loadIngredients(): void {
     this.api.getAllIngredients().subscribe({
       next: entities => {
-        // Recibimos directamente las entidades de ingredientes
         this.ingredients.set(entities);
       },
     });
@@ -100,7 +98,6 @@ export class RecipesStore {
     this.loading.set(true);
     this.api.createRecipe({ ...cmd, estimatedCost }).subscribe({
       next: entity => {
-        // Ya es una RecipeEntity pura
         this.recipes.update(list => [entity, ...list]);
         this.closeModal();
         this.loading.set(false);
@@ -121,7 +118,6 @@ export class RecipesStore {
     this.loading.set(true);
     this.api.updateRecipe({ ...cmd, estimatedCost }).subscribe({
       next: entity => {
-        // Ya es una RecipeEntity pura
         this.recipes.update(list =>
           list.map(r => (r.id === entity.id ? entity : r))
         );
