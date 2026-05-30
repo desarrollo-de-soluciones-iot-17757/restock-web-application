@@ -8,6 +8,7 @@
     "stock": "Existencias",
     "discrepancies": "Discrepancias",
     "recipes": "Recetas",
+    "kits": "Kits",
     "sales": "Ventas",
     "alerts": "Alertas",
     "devices": "Dispositivos",
@@ -293,6 +294,48 @@
       "scaleReadyBody": "Diseñado para conectar múltiples nodos de inventario",
       "privacyPolicy": "Política de Privacidad",
       "termsOfService": "Términos de Servicio"
+    }
+  },
+  "kits": {
+    "catalog": "Catálogo de Kits y Combos",
+    "subtitle": "Gestiona combinaciones de venta y kits de productos.",
+    "create": "Crear nuevo Kit",
+    "edit": "Editar detalles",
+    "save": "Guardar Kit",
+    "update": "Actualizar Kit",
+    "metrics": {
+      "totalKits": "TOTAL KITS",
+      "activeCombos": "COMBOS ACTIVOS",
+      "lowStockAlerts": "ALERTAS STOCK BAJO"
+    },
+    "states": {
+      "loadingProducts": "Cargando insumos desde Beeceptor...",
+      "emptyProducts": "Aún no se han añadido productos a este kit."
+    },
+    "actions": { "retry": "Reintentar Conexión", "cancel": "Cancelar", "save": "Guardar Kit" },
+    "form": {
+      "image": "IMAGEN DEL KIT",
+      "uploadImage": "Subir Imagen",
+      "name": "NOMBRE DEL KIT",
+      "namePlaceholder": "Ej. Kit de cena gourmet",
+      "price": "PRECIO DEL COMBO (USD)",
+      "recommendedHint": "Precio recomendado según componentes: S/ {{ price }}",
+      "description": "DESCRIPCIÓN DEL KIT",
+      "descPlaceholder": "Ej. Este kit premium contiene ingredientes seleccionados...",
+      "productSelector": "Selector de Productos",
+      "selectProduct": "SELECCIONAR PRODUCTO",
+      "selectPlaceholder": "--- Selecciona un producto ---",
+      "quantity": "CANTIDAD",
+      "addSupply": "Añadir Insumo",
+      "includedProducts": "PRODUCTOS INCLUIDOS ({{ count }})",
+      "totalCost": "Costo Total"
+    },
+    "table": {
+      "product": "Producto",
+      "sku": "SKU",
+      "qty": "Cant.",
+      "price": "Precio",
+      "actions": "Acciones"
     }
   }
 }
