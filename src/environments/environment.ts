@@ -47,5 +47,12 @@ export const environment = {
   platformProviderIamApiBaseUrlForSignIn: 'https://restock-api-iam-login.free.beeceptor.com',
   platformProviderSignInEndpointPath: 'auth/sign-in',
   platformProviderForgotPasswordEndpointPath: 'auth/forgot-password',
+
+  // Kits
+  platformProviderKitUpdateApiBaseUrl: 'https://u202314101.free.beeceptor.com/kits/K-992',
+  platformProviderKitApiBaseUrl: 'https://restock-api-planning-kits.free.beeceptor.com',
+  platformProviderKitsRegisterEndpointPath: 'kits/register',
+  platformProviderKitsEndpointPath: 'kits',
+  platformProviderProductsEndpointPath: 'products',
 };
 
