@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../../../../environments/environment';
 import { ErrorHandlingEnabledBaseType } from '../../../../../shared/infrastructure/error-handling-enabled-base-type';
 import { UpdateKitCommand } from '../../../domain/command/update-kit.command';
-import { KitRequest } from '../kit.request';
+import { KitsRequest } from '../kits.request';
 import { KitResponse } from '../kits.response';
 import { KitAssembler } from '../kits.assembler';
 
@@ -27,7 +27,7 @@ export class UpdateKitApiEndpoint extends ErrorHandlingEnabledBaseType {
    */
   updateKit(command: UpdateKitCommand): Observable<Kit> {
     const updateUrl = `${kitsApiUrl}/${command.id}`;
-    const request: KitRequest = {
+    const request: KitsRequest = {
       name: command.name,
       price: command.price,
       description: command.description,
