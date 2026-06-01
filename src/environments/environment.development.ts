@@ -31,6 +31,12 @@ export const environment = {
   platformProviderRegistrationBusinessDetailsEndpointPath: 'businesses',
   platformProviderRegistrationPersonalProfileEndpointPath: 'profiles',
 
+  //CUSTOM SUPPLY
+  platformProviderCustomSuppliesEndpointPath: 'custom-supplies',
+  
+  //SUPPLIES
+  platformProviderSuppliesEndpointPath: 'supplies',
+
   // IAM
   //https://restock-api-iam-login.free.beeceptor.com
   platformProviderIamApiBaseUrlForSignIn: 'https://restock-api-iam-login.free.beeceptor.com',

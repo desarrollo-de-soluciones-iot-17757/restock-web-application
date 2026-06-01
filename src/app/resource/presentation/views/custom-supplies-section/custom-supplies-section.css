@@ -1,0 +1,54 @@
+.custom-supplies-section {
+  padding: 24px;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.header-text h1 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+  color: #212121;
+}
+
+.header-text p {
+  margin: 0;
+  color: #757575;
+  font-size: 14px;
+}
+
+.add-supply-btn {
+  background-color: #1a5c3a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.add-supply-btn:hover {
+  background-color: #13462b;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .cards-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

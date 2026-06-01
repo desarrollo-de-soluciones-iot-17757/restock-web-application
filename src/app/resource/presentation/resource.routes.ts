@@ -1,6 +1,11 @@
-import type { Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 
 const appTitle = 'RestockWebApplication';
+
+const batchesStockSection = () => import('./views/batches-stock-section/batches-stock-section').then((m) => m.BatchesStockSection,);
+const inventoryDiscrepanciesPlaceholder = () => import('./views/inventory-discrepancies-placeholder/inventory-discrepancies-placeholder').then((m) => m.InventoryDiscrepanciesPlaceholder);
+const customSuppliesSection = () => import('./views/custom-supplies-section/custom-supplies-section').then((m) => m.CustomSuppliesSectionComponent,);
+const customSupplyDetailSection = () => import('./views/custom-supply-detail-section/custom-supply-detail-section').then((m) => m.CustomSupplyDetailSectionComponent,);
 
 /**
  * Inventory routes owned by the Resource bounded context.
@@ -13,18 +18,22 @@ export const resourceInventoryRoutes: Routes = [
   },
   {
     path: 'stock',
-    loadComponent: () =>
-      import('./views/batches-stock-section/batches-stock-section').then(
-        (m) => m.BatchesStockSection,
-      ),
+    loadComponent: batchesStockSection,
     title: `${appTitle} · Inventory · Stock`,
   },
   {
     path: 'discrepancies',
-    loadComponent: () =>
-      import('./views/inventory-discrepancies-placeholder/inventory-discrepancies-placeholder').then(
-        (m) => m.InventoryDiscrepanciesPlaceholder,
-      ),
+    loadComponent: inventoryDiscrepanciesPlaceholder,
     title: `${appTitle} · Inventory · Discrepancies`,
+  },
+  {
+    path: 'custom-supplies',
+    loadComponent: customSuppliesSection,
+    title: `${appTitle} · Inventory · Custom Supplies`,
+  },
+  {
+    path: 'custom-supplies/:id',
+    loadComponent: customSupplyDetailSection,
+    title: `${appTitle} · Inventory · Custom Supply Detail`,
   },
 ];
