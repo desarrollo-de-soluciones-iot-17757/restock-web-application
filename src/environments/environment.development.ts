@@ -22,10 +22,11 @@ export const environment = {
 
   profilesApi: {
     baseUrl: 'https://restock-api-profiles.free.beeceptor.com',
+    fallbackBaseUrl: 'https://profiles-restock-api.free.beeceptor.com',
   },
 
   // IAM & Profiles
-  platformProviderIamApiBaseUrl: 'https://restock-api-iam.free.beeceptor.com',
+  platformProviderApiBaseUrl: 'http://localhost:8080/api/v1',
   platformProviderSignUpEndpointPath: 'auth/sign-up',
   platformProviderRegistrationBusinessDetailsEndpointPath: 'businesses',
   platformProviderRegistrationPersonalProfileEndpointPath: 'profiles',

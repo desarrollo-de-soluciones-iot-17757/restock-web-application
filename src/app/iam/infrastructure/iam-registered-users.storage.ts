@@ -27,6 +27,15 @@ export class IamRegisteredUsersStorage {
   }
 
   /**
+   * Returns true when a normalized email is already stored.
+   */
+  exists(email: string): boolean {
+    const normalizedEmail = email.trim().toLowerCase();
+    return this.readAll().some((u) => u.email === normalizedEmail) ||
+      DEMO_USERS.some((u) => u.email === normalizedEmail);
+  }
+
+  /**
    * Validates credentials against locally stored or demo users.
    */
   authenticate(email: string, password: string): User | null {

@@ -9,9 +9,12 @@ import { SignUpResponse } from './sign-up.response';
 export class SignUpAssembler {
   static toRequestFromCommand(command: SignUpCommand): SignUpRequest {
     return {
+      businessName: command.businessName,
       email: command.email,
       password: command.password,
-      roleId: command.roleId,
+      role: command.role,
+      phone: command.phone,
+      country: command.country,
     };
   }
 
@@ -22,7 +25,7 @@ export class SignUpAssembler {
       id,
       accountId: userData.accountId ?? `acct_${id}`,
       email: userData.email,
-      roleId: userData.roleId ?? 'ROLE_ADMIN', // Defaulting if not in mock
+      roleId: userData.roleId ?? 'ROLE_ADMIN',
       plan: userData.plan ?? 'FREE',
       status: userData.status ?? 'ACTIVE',
       token: userData.token,
