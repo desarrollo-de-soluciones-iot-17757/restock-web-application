@@ -3,6 +3,7 @@ import { Component, computed, effect, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslatePipe } from '@ngx-translate/core';
+import { RouterLink } from '@angular/router';
 
 import { ResourceStore } from '../../../application/resource.store';
 import type { BatchRow } from '../../../infrastructure/batch/batch.assembler';
@@ -22,7 +23,7 @@ type CategoryFilter = string;
 @Component({
   selector: 'app-batches-stock-section',
   standalone: true,
-  imports: [MatIconModule, MatButtonModule, DecimalPipe, TranslatePipe, BatchStockTableComponent],
+  imports: [MatIconModule, MatButtonModule, DecimalPipe, TranslatePipe, BatchStockTableComponent, RouterLink],
   templateUrl: './batches-stock-section.html',
   styleUrl: './batches-stock-section.css',
 })

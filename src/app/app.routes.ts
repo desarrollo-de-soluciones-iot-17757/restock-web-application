@@ -5,21 +5,14 @@ import { resourceInventoryRoutes } from './resource/presentation/resource.routes
 
 const baseTitle = 'RestockWebApplication';
 
-const devicesRoutes = () =>
-  import('./devices/presentation/devices.routes').then((m) => m.devicesRoutes);
+const devicesRoutes = () =>import('./devices/presentation/devices.routes').then((m) => m.devicesRoutes);
 const iamRoute = () => import('./iam/presentation/iam.routes').then((m) => m.iamRoutes);
 const salesRoute = () => import('./sales/presentation/sales.routes').then((m) => m.salesRoutes);
-const profilesRoute = () =>
-  import('./profiles/presentation/profiles.routes').then((m) => m.profilesRoutes);
-const recipesRoute = () =>
-  import('./planning/recipes/presentation/recipes.routes').then((m) => m.recipesRoutes);
+const profilesRoute = () =>import('./profiles/presentation/profiles.routes').then((m) => m.profilesRoutes);
+const recipesRoute = () =>import('./planning/recipes/presentation/recipes.routes').then((m) => m.recipesRoutes);
 const homePage = () => import('./shared/presentation/views/home/home-page').then((m) => m.HomePage);
-const pageNotFound = () =>
-  import('./shared/presentation/views/page-not-found/page-not-found').then((m) => m.PageNotFound);
-const placeholder = () =>
-  import('./shared/presentation/views/placeholder-page/placeholder-page').then(
-    (m) => m.PlaceholderPage,
-  );
+const pageNotFound = () =>import('./shared/presentation/views/page-not-found/page-not-found').then((m) => m.PageNotFound);
+const placeholder = () =>import('./shared/presentation/views/placeholder-page/placeholder-page').then((m) => m.PlaceholderPage);
 
 /**
  * Application routes configuration.
