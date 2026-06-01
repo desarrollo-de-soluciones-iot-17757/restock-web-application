@@ -19,16 +19,14 @@ export class SignUpAssembler {
   }
 
   static toEntityFromResponse(response: SignUpResponse): User {
-    const userData = response.user;
-    const id = String(userData.id);
     return new User({
-      id,
-      accountId: userData.accountId ?? `acct_${id}`,
-      email: userData.email,
-      roleId: userData.roleId ?? 'ROLE_ADMIN',
-      plan: userData.plan ?? 'FREE',
-      status: userData.status ?? 'ACTIVE',
-      token: userData.token,
+      id: response.id,
+      accountId: response.accountId,
+      email: response.email,
+      roleId: response.role,
+      plan: 'FREE',
+      status: 'ACTIVE',
+      token: undefined,
     });
   }
 }

@@ -99,8 +99,9 @@ export class IamStore {
 
     this.iamApi.signUp(signUpCommand).subscribe({
       next: (response) => {
-        const responseUser = response.user || (response as any);
-        const userId = String(responseUser?.id || `user_${Date.now()}`);
+        const userId = response.id;
+        const accountId = response.accountId;
+
 
         const profile = new Profile({
           profileId: `profile_${Date.now()}`,
