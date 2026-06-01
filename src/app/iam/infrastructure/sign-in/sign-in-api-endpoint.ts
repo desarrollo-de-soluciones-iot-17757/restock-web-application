@@ -1,4 +1,4 @@
-﻿import { HttpClient } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -11,7 +11,7 @@ import { User } from '../../domain/model/user.entity';
 import { IamRegisteredUsersStorage } from '../iam-registered-users.storage';
 import { signInWithLocalFallback } from './sign-in-fallback';
 
-const signInApiUrl = `${environment.platformProviderIamApiBaseUrlForSignIn}/${environment.platformProviderSignInEndpointPath}`;
+const signInApiUrl = `${environment.platformProviderApiBaseUrl}/${environment.platformProviderSignInEndpointPath}`;
 
 /**
  * Endpoint for IAM sign-in requests.
@@ -31,16 +31,7 @@ export class SignInApiEndpoint {
     const request: SignInRequest = SignInAssembler.toRequestFromCommand(command);
 
     return this.http.post<SignInResponse>(signInApiUrl, request).pipe(
-      map((response) => {
-        const user = SignInAssembler.toEntityFromResponse(response);
-        if (!user.email) {
-          return SignInAssembler.toEntityFromResponse({
-            ...response,
-            email: command.email,
-          });
-        }
-        return user;
-      }),
+      map((response) => SignInAssembler.toEntityFromResponse(response)),
       catchError((error) => signInWithLocalFallback(command, this.registeredUsers, error)),
     );
   }
