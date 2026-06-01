@@ -12,6 +12,13 @@ import { SaleItem } from '../../domain/model/sale-item.entity';
  */
 export class SalesAssembler implements BaseAssembler<Sale, SaleResource, SalesResponse> {
 
+  private readonly currencySymbols: Record<string, string> = {
+    PEN: 'S/',
+    USD: '$',
+    EUR: '€',
+    GBP: '£',
+  };
+
   /**
    * Maps an array of SaleResource objects to an array of Sale entities.
    * @param response - The response object containing an array of SaleResource objects.
@@ -27,17 +34,27 @@ export class SalesAssembler implements BaseAssembler<Sale, SaleResource, SalesRe
    * @returns The Sale entity created from the SaleResource.
    */
   toEntityFromResource(resource: SaleResource): Sale {
+    const currencyCode = typeof resource.currency === 'string'
+      ? resource.currency
+      : resource.currency.code;
+    const currencySymbol = typeof resource.currency === 'string'
+      ? (this.currencySymbols[resource.currency] ?? resource.currency)
+      : resource.currency.symbol;
+    const customerName = typeof resource.customer === 'string'
+      ? resource.customer
+      : resource.customer.name;
+
     return new Sale({
       id: resource.id,
       businessId: resource.businessId,
       branchId: resource.branchId,
       registeredByUserId: resource.registeredByUserId,
       customer: new Customer({
-          name: resource.customer.name,
+        name: customerName,
       }),
       currency: new Currency({
-        code: resource.currency.code,
-        symbol: resource.currency.symbol
+        code: currencyCode,
+        symbol: currencySymbol,
       }),
       saleItems: resource.saleItems.map(
         (item) =>
@@ -47,6 +64,7 @@ export class SalesAssembler implements BaseAssembler<Sale, SaleResource, SalesRe
             unitPrice: item.unitPrice,
             quantity: item.quantity,
             lineTotal: item.lineTotal,
+            imageUrl: item.imageUrl,
           }),
       ),
       additionalSupplies: [],

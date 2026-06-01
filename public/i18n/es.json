@@ -22,7 +22,9 @@
   "shared": {
     "topBar": {
       "notificationsAria": "Notificaciones",
-      "helpAria": "Ayuda"
+      "helpAria": "Ayuda",
+      "userMenuAria": "Menú de usuario",
+      "signOut": "Cerrar sesión"
     }
   },
   "home": {
@@ -89,6 +91,27 @@
         }
       }
     }
+  },
+  "devices": {
+    "list-title": "Gestión de Dispositivos",
+    "register-device-btn": "Registrar Dispositivo",
+    "list-error": "Error al cargar los dispositivos",
+    "stats-active-scales": "Básculas Activas",
+    "stats-from-yesterday": "↓ 4 de ayer",
+    "stats-stock-alerts": "Alertas de Stock",
+    "stats-critical": "Críticas",
+    "stats-environmental-alerts": "Alertas Ambientales",
+    "stats-temp-deviation": "Desviación de temperatura detectada",
+    "stats-offline": "Desconectados",
+    "stats-check-connectivity": "Verificar conectividad",
+    "table-title": "Directorio Activo de Dispositivos",
+    "table-macAddress": "DIRECCIÓN MAC",
+    "table-assignedSupply": "SUMINISTRO ASIGNADO",
+    "table-network": "RED",
+    "table-deviceStatus": "SALUD DEL SENSOR",
+    "table-footer-showing": "Mostrando",
+    "table-footer-of": "de",
+    "table-footer-devices": "dispositivos"
   },
   "settings": {
     "breadcrumb": {
@@ -163,6 +186,13 @@
     }
   },
   "iam": {
+    "forgotPassword": {
+      "title": "Restablecer contraseña",
+      "subtitle": "Ingresa tu correo electrónico para recibir un código de recuperación.",
+      "sendButton": "Enviar código de recuperación",
+      "sending": "Enviando...",
+      "backToLogin": "Volver al inicio de sesión"
+    },
     "authenticationSection": {
       "title": "¿Cómo usarás Restock?",
       "subtitle": "Selecciona tu entorno operativo principal para adaptar tu inventario inteligente",
@@ -183,8 +213,27 @@
       "confirmPasswordLabel": "Confirmar Contraseña",
       "confirmPasswordPlaceholder": "••••••••",
       "createAccount": "Crear Cuenta",
+      "creating": "Creando cuenta...",
       "alreadyHaveAccount": "¿Ya tienes una cuenta?",
       "returnToLogin": "Volver al Inicio de Sesión"
+    },
+    "signInForm": {
+      "infoTitle": "Inteligencia de inventario en tiempo real para el almacén moderno.",
+      "infoDescription": "Conecta tu hardware sin problemas. Supervisa niveles de stock, rastrea activos sensibles a la temperatura y automatiza el reabastecimiento.",
+      "tagline": "Inventario inteligente - Control en tiempo real",
+      "loginTitle": "Iniciar sesión",
+      "emailLabel": "DIRECCIÓN DE CORREO",
+      "emailPlaceholder": "nombre@organizacion.com",
+      "passwordLabel": "CONTRASEÑA",
+      "passwordPlaceholder": "••••••••",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "rememberMe": "Recordar este dispositivo por 30 días",
+      "loginButton": "INGRESAR",
+      "authenticating": "AUTENTICANDO...",
+      "ssoDivider": "O CONTINUAR CON SSO",
+      "ssoButton": "Inicio de sesión empresarial SSO",
+      "noAccount": "¿No tienes una cuenta?",
+      "signUpLink": "Regístrate"
     }
   },
   "profiles": {

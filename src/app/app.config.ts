@@ -5,7 +5,6 @@ import { appRoutes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
-import { resourceProviders } from './resource/resource.providers';
 import { iamInterceptor } from './iam/infrastructure/iam.interceptor';
 
 export const appConfig: ApplicationConfig = {
@@ -17,6 +16,5 @@ export const appConfig: ApplicationConfig = {
       loader: provideTranslateHttpLoader({ prefix: './i18n/', suffix: '.json' }),
       fallbackLang: 'en',
     }),
-    resourceProviders,
   ],
 };

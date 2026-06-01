@@ -22,7 +22,9 @@
   "shared": {
     "topBar": {
       "notificationsAria": "Notifications",
-      "helpAria": "Help"
+      "helpAria": "Help",
+      "userMenuAria": "User menu",
+      "signOut": "Sign out"
     }
   },
   "home": {
@@ -89,6 +91,27 @@
         }
       }
     }
+  },
+  "devices": {
+    "list-title": "Device Management",
+    "register-device-btn": "Register Device",
+    "list-error": "Error loading devices",
+    "stats-active-scales": "Active Scales",
+    "stats-from-yesterday": "↓ 4 from yesterday",
+    "stats-stock-alerts": "Stock Alerts",
+    "stats-critical": "Critical",
+    "stats-environmental-alerts": "Environmental Alerts",
+    "stats-temp-deviation": "Temp deviation detected",
+    "stats-offline": "Offline",
+    "stats-check-connectivity": "Check connectivity",
+    "table-title": "Active Device Directory",
+    "table-macAddress": "MAC ADDRESS",
+    "table-assignedSupply": "ASSIGNED SUPPLY",
+    "table-network": "NETWORK",
+    "table-deviceStatus": "SENSOR HEALTH",
+    "table-footer-showing": "Showing",
+    "table-footer-of": "of",
+    "table-footer-devices": "devices"
   },
   "settings": {
     "breadcrumb": {
@@ -163,6 +186,13 @@
     }
   },
   "iam": {
+    "forgotPassword": {
+      "title": "Reset Password",
+      "subtitle": "Enter your email to receive a recovery code.",
+      "sendButton": "Send recovery code",
+      "sending": "Sending...",
+      "backToLogin": "Back to login"
+    },
     "authenticationSection": {
       "title": "How will you use Restock?",
       "subtitle": "Select your primary operational environment to tailor your smart inventory",
@@ -183,8 +213,27 @@
       "confirmPasswordLabel": "Confirm Password",
       "confirmPasswordPlaceholder": "••••••••",
       "createAccount": "Create Account",
+      "creating": "Creating account...",
       "alreadyHaveAccount": "Already have an account?",
       "returnToLogin": "Return to Login"
+    },
+    "signInForm": {
+      "infoTitle": "Real-time inventory intelligence for the modern warehouse.",
+      "infoDescription": "Connect your hardware seamlessly. Monitor stock levels, track temperature-sensitive assets, and automate replenishment.",
+      "tagline": "Smart inventory - Real-time control",
+      "loginTitle": "Login",
+      "emailLabel": "EMAIL ADDRESS",
+      "emailPlaceholder": "name@organization.com",
+      "passwordLabel": "PASSWORD",
+      "passwordPlaceholder": "••••••••",
+      "forgotPassword": "Forgot your password?",
+      "rememberMe": "Remember this device for 30 days",
+      "loginButton": "LOGIN",
+      "authenticating": "AUTHENTICATING...",
+      "ssoDivider": "OR CONTINUE WITH SSO",
+      "ssoButton": "Enterprise SSO Login",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign up"
     }
   },
   "profiles": {

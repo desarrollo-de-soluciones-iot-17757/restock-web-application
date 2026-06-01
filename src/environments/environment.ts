@@ -19,8 +19,9 @@ export const environment = {
     batchInventoryHttpPath: '/inventory/batch-inventory',
   },
 
-  // Base API URL
-  platformProviderApiBaseUrl: 'http://localhost:3000/api/v1/',
+  salesAPI: {
+    salesBaseUrl: 'https://restock-api-sales.free.beeceptor.com',
+  },
 
   // Sales Management API
   platformProviderSalesEndpointsPath: 'sales',
@@ -32,6 +33,7 @@ export const environment = {
   profilesApi: {
     /** Replace with your production profiles API origin when available. */
     baseUrl: 'https://restock-api-profiles.free.beeceptor.com',
+    fallbackBaseUrl: 'https://profiles-restock-api.free.beeceptor.com',
   },
 
   // IAM & Profiles
@@ -40,5 +42,10 @@ export const environment = {
   platformProviderRegistrationBusinessDetailsEndpointPath: 'businesses',
   platformProviderRegistrationPersonalProfileEndpointPath: 'profiles',
 
+  // IAM
+  //https://restock-api-iam-login.free.beeceptor.com
+  platformProviderIamApiBaseUrlForSignIn: 'https://restock-api-iam-login.free.beeceptor.com',
+  platformProviderSignInEndpointPath: 'auth/sign-in',
+  platformProviderForgotPasswordEndpointPath: 'auth/forgot-password',
 };
 

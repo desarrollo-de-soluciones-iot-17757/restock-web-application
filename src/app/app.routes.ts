@@ -1,19 +1,37 @@
 import { Routes } from '@angular/router';
+import { requireAuthGuard } from './iam/infrastructure/require-auth.guard';
 import { Layout } from './shared/presentation/components/layout/layout';
 import { profilesRoutes } from './profiles/presentation/profiles.routes';
 import { resourceInventoryRoutes } from './resource/presentation/resource.routes';
+
+const devicesRoutes = () =>
+  import('./devices/presentation/devices.routes').then(m => m.devicesRoutes);
 
 const baseTitle = 'RestockWebApplication';
 
 const iamRoute = () => import('./iam/presentation/iam.routes').then((m) => m.iamRoutes);
 const salesRoute = () => import('./sales/presentation/sales.routes').then((m) => m.salesRoutes);
 const profilesRoute = () => import('./profiles/presentation/profiles.routes').then(m => m.profilesRoutes);
+const recipesRoute = () => import('./planning/recipes/presentation/recipes.routes').then(m => m.recipesRoutes);
 
+/**
+ * Application routes configuration.
+ * Defines the routing structure for the Angular application, including lazy-loaded components and child routes.
+ */
 export const appRoutes: Routes = [
+  { 
+    path: 'devices', 
+    loadChildren: devicesRoutes,
+  },
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'sign-up',
+    redirectTo: 'sign-in',
+  },
+  {
+    path: 'login',
+    pathMatch: 'full',
+    redirectTo: 'sign-in',
   },
 
   {
@@ -24,6 +42,7 @@ export const appRoutes: Routes = [
   {
     path: '',
     component: Layout,
+    canActivate: [requireAuthGuard],
     children: [
       {
         path: 'home',
@@ -45,15 +64,13 @@ export const appRoutes: Routes = [
         path: 'profiles',
         children: profilesRoutes,
       },
+      
       {
         path: 'recipes',
-        loadComponent: () =>
-          import('./shared/presentation/views/placeholder-page/placeholder-page').then(
-            (m) => m.PlaceholderPage,
-          ),
-        data: { titleKey: 'nav.recipes' },
+        loadChildren: recipesRoute,
         title: `${baseTitle} · Recipes`,
       },
+
       {
         path: 'sales',
         loadChildren: salesRoute,
