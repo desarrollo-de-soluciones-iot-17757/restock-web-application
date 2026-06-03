@@ -1,12 +1,14 @@
-import { Component, EventEmitter, Output, signal, computed, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Component, inject, signal, computed } from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { catchError, of } from 'rxjs';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
-import { ProfilesApi } from '../../../infrastructure/profiles-api';
 import { IamStore } from '../../../../iam/application/iam.store';
-import { Business } from '../../../domain/model/business.entity';
 
 @Component({
   selector: 'app-registration-business-details',
@@ -16,11 +18,11 @@ import { Business } from '../../../domain/model/business.entity';
   styleUrl: './registration-business-details.css',
 })
 export class RegistrationBusinessDetails {
-  @Output() createAccount = new EventEmitter<object>();
-
   private readonly router = inject(Router);
-  private readonly profilesApi = inject(ProfilesApi);
   private readonly iamStore = inject(IamStore);
+
+  readonly loading = this.iamStore.loading;
+  readonly error = this.iamStore.error;
 
   readonly countries = [
     'United States', 'Canada', 'Mexico', 'Argentina', 'Brazil',
@@ -42,7 +44,7 @@ export class RegistrationBusinessDetails {
   );
 
   readonly form = new FormGroup({
-    businessName: new FormControl(''),
+    businessName: new FormControl('', [Validators.required]),
     phoneNumber: new FormControl(''),
     address: new FormControl(''),
     city: new FormControl(''),
@@ -67,30 +69,16 @@ export class RegistrationBusinessDetails {
   }
 
   onCreateAccount(): void {
-    const businessPayload = {
-      ...this.form.value,
-      categories: this.selectedCategories(),
-    };
-    this.createAccount.emit(businessPayload);
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
     this.iamStore.completeSignUp({
-      businessName: this.form.value.businessName ?? undefined,
+      businessName: this.form.value.businessName!,
       phone: this.form.value.phoneNumber ?? undefined,
       country: this.form.value.country ?? undefined,
       categories: this.selectedCategories(),
     });
-  }
-
-  private storeBusiness() {
-    const formValue = this.form.value;
-    const business = new Business({
-      businessId: `business_${Date.now()}`,
-      companyName: formValue.businessName ?? '',
-      ruc: '0000000000',
-      pictureUrl: 'https://via.placeholder.com/150',
-      mainLocation: `${formValue.address ?? ''}, ${formValue.city ?? ''}, ${formValue.country ?? ''}`,
-      ownerId: 'user_1',
-    });
-
-    return this.profilesApi.createBusiness(business);
   }
 }
