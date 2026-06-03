@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 import { Observable, map } from 'rxjs';
 import { CustomSupply } from '../domain/model/custom-supply.entity';
 import { Supply } from '../domain/model/supply.entity';
-import { CustomSupplyRequest, AccountCustomSuppliesResponse, CustomSupplyResponse } from '../infrastructure/custom-supply/custom-supply.response';
+import { AccountCustomSuppliesResponse, CustomSupplyResponse } from '../infrastructure/custom-supply/custom-supply.response';
 import { SupplyResponse } from '../infrastructure/supply/supply.response';
 import { assembleCustomSupply } from '../infrastructure/custom-supply/custom-supply.assembler';
 import { assembleSupply } from '../infrastructure/supply/supply.assembler';
@@ -69,15 +69,31 @@ export class ResourceStore {
   }
 
   loadCustomSuppliesByAccount(accountId: string): void {
+    if (!accountId) {
+      console.warn('[ResourceStore] loadCustomSuppliesByAccount called with empty accountId');
+      return;
+    }
     this.loading.set(true);
     this.http.get<AccountCustomSuppliesResponse>(ACCOUNT_CUSTOM_SUPPLIES_ENDPOINT(accountId)).pipe(
       tap((response: AccountCustomSuppliesResponse) => {
-        this.customSupplies.set(response.supplies.map(assembleCustomSupply));
+        // The account-level response has accountId at the root; individual supply items
+        // don't include it, so we inject it from the parent response.
+        const assembled = response.supplies.map((dto) => {
+          try {
+            return assembleCustomSupply({ ...dto, accountId: response.accountId });
+          } catch (e) {
+            console.error('[ResourceStore] Failed to assemble custom supply', dto, e);
+            return null;
+          }
+        }).filter((s): s is CustomSupply => s !== null);
+        this.customSupplies.set(assembled);
       }),
       catchError((error: any) => {
+        console.error('[ResourceStore] loadCustomSuppliesByAccount error', error);
         if (error.status === 401) {
           this.router.navigate(['/login']);
         }
+        this.loadError.set(true);
         return EMPTY;
       }),
       finalize(() => this.loading.set(false))
@@ -92,17 +108,18 @@ export class ResourceStore {
     return this.customSupplies().find(supply => supply.id === id);
   }
 
-  createCustomSupply(request: CustomSupplyRequest): Observable<CustomSupply> {
-    return this.http.post<CustomSupplyResponse>(CUSTOM_SUPPLY_ENDPOINT, request).pipe(
+  createCustomSupply(formData: FormData, accountId: string): Observable<CustomSupply> {
+    return this.http.post<CustomSupplyResponse>(CUSTOM_SUPPLY_ENDPOINT, formData).pipe(
       map((res: CustomSupplyResponse) => assembleCustomSupply(res)),
-      tap(() => {
-        this.loadCustomSuppliesByAccount(request.accountId);
+      tap((newSupply) => {
+        // Reload the full list so the new item has the proper supply/accountId populated
+        this.loadCustomSuppliesByAccount(accountId);
       })
     );
   }
 
-  updateCustomSupply(id: string, request: CustomSupplyRequest): Observable<CustomSupply> {
-    return this.http.put<CustomSupplyResponse>(`${CUSTOM_SUPPLY_ENDPOINT}/${id}`, request).pipe(
+  updateCustomSupply(id: string, formData: FormData, accountId: string): Observable<CustomSupply> {
+    return this.http.put<CustomSupplyResponse>(`${CUSTOM_SUPPLY_ENDPOINT}/${id}`, formData).pipe(
       map((res: CustomSupplyResponse) => assembleCustomSupply(res)),
       tap((updated) => {
         const current = this.customSupplies();

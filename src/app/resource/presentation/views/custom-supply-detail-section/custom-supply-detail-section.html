@@ -40,7 +40,7 @@
           <span class="perishable-badge" [ngClass]="supply.isPerishable() ? 'badge-perishable' : 'badge-non-perishable'">
             {{ supply.isPerishable() ? 'PERISHABLE' : 'NON-PERISHABLE' }}
           </span>
-          <p class="supply-sku">{{ supply.supply.id ?? '—' }}</p>
+          <p class="supply-sku">{{ supply.supply.id }}</p>
         </div>
       </div>
 

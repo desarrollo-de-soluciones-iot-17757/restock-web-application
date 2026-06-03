@@ -86,7 +86,7 @@ export class RegistrationBusinessDetails {
       businessId: `business_${Date.now()}`,
       companyName: formValue.businessName ?? '',
       ruc: '0000000000',
-      pictureUrl: 'https://via.placeholder.com/150',
+      pictureUrl: 'https://placehold.co/150',
       mainLocation: `${formValue.address ?? ''}, ${formValue.city ?? ''}, ${formValue.country ?? ''}`,
       ownerId: 'user_1',
     });

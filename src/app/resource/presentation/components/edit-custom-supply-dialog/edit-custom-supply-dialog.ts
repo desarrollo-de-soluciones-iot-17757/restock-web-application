@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ResourceStore } from '../../../application/resource.store';
 import { CustomSupply } from '../../../domain/model/custom-supply.entity';
-import { CustomSupplyRequest } from '../../../infrastructure/custom-supply/custom-supply.response';
 
 @Component({
   selector: 'app-edit-custom-supply-dialog',
@@ -23,7 +22,10 @@ export class EditCustomSupplyDialogComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
 
   readonly supplyTemplates = this.store.supplyTemplates;
-  
+
+  selectedImageFile: File | null = null;
+  imagePreviewUrl: string | null = null;
+
   formData = {
     categoryId: '',
     supplyId: '',
@@ -32,10 +34,9 @@ export class EditCustomSupplyDialogComponent implements OnInit {
     minimumStock: null as number | null,
     maximumStock: null as number | null,
     description: '',
-    unitPriceAmount: '',
+    unitPriceAmount: null as number | null,
     unitPriceCurrencyCode: 'PEN',
-    supplyContent: 1,
-    imageUrl: ''
+    supplyContent: null as number | null,
   };
 
   private originalDataStr = '';
@@ -43,18 +44,18 @@ export class EditCustomSupplyDialogComponent implements OnInit {
   ngOnInit(): void {
     this.store.loadSupplyTemplates();
     this.formData = {
-      categoryId: this.customSupply.category,
+      categoryId: this.customSupply.supply.category,
       supplyId: this.customSupply.supply.id,
       name: this.customSupply.name,
       unitMeasurement: this.customSupply.unit.abbreviation,
       minimumStock: this.customSupply.minStock,
       maximumStock: this.customSupply.maxStock,
       description: this.customSupply.supply.description,
-      unitPriceAmount: this.customSupply.unitPrice.toString(),
+      unitPriceAmount: this.customSupply.unitPrice,
       unitPriceCurrencyCode: 'PEN',
-      supplyContent: 1,
-      imageUrl: this.customSupply.imgUrl
+      supplyContent: null,
     };
+    this.imagePreviewUrl = this.customSupply.imgUrl || null;
     this.originalDataStr = JSON.stringify(this.formData);
   }
 
@@ -63,19 +64,28 @@ export class EditCustomSupplyDialogComponent implements OnInit {
   }
 
   get uniqueCategories(): string[] {
-    const templates = this.supplyTemplates();
-    return [...new Set(templates.map(t => t.category))];
+    return [...new Set(this.supplyTemplates().map(t => t.category))];
   }
 
   get isPerishable(): boolean {
-    if (!this.formData.supplyId) return false;
-    const supply = this.supplyTemplates().find(s => s.id === this.formData.supplyId);
-    return supply?.perishable ?? false;
+    return this.customSupply.supply.perishable;
   }
 
-  get selectedSupplyName(): string {
-    const supply = this.supplyTemplates().find(s => s.id === this.formData.supplyId);
-    return supply?.name ?? this.customSupply.name;
+  onImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (file) {
+      this.selectedImageFile = file;
+      this.readImagePreview(file);
+    }
+  }
+
+  private readImagePreview(file: File): void {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      this.imagePreviewUrl = e.target?.result as string;
+    };
+    reader.readAsDataURL(file);
   }
 
   cancel(): void {
@@ -83,20 +93,20 @@ export class EditCustomSupplyDialogComponent implements OnInit {
   }
 
   update(): void {
-    const request: CustomSupplyRequest = {
-      accountId: this.customSupply.accountId,
-      supplyId: this.customSupply.supply.id,
-      name: this.formData.name || this.selectedSupplyName,
-      description: this.formData.description,
-      categoryName: this.formData.categoryId,
-      unitPrice: `${this.formData.unitPriceAmount} ${this.formData.unitPriceCurrencyCode}`,
-      supplyContent: this.formData.supplyContent,
-      unitMeasurement: this.formData.unitMeasurement,
-      minimumStock: this.formData.minimumStock ?? 0,
-      pictureUrl: this.formData.imageUrl?.trim() || 'https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=400&q=80.jpg'
-    };
+    const fd = new FormData();
+    fd.append('accountId', this.customSupply.accountId);
+    fd.append('supplyId', this.formData.supplyId);
+    fd.append('name', this.formData.name);
+    fd.append('description', this.formData.description);
+    fd.append('unitPrice', String(this.formData.unitPriceAmount ?? 0));
+    fd.append('unitPriceCurrencyCode', this.formData.unitPriceCurrencyCode);
+    fd.append('supplyContent', String(this.formData.supplyContent ?? 0));
+    fd.append('unitMeasurement', this.formData.unitMeasurement);
+    if (this.selectedImageFile) {
+      fd.append('image', this.selectedImageFile, this.selectedImageFile.name);
+    }
 
-    this.store.updateCustomSupply(this.customSupply.id, request).subscribe(() => {
+    this.store.updateCustomSupply(this.customSupply.id, fd, this.customSupply.accountId).subscribe(() => {
       this.originalDataStr = JSON.stringify(this.formData);
       this.onUpdate.emit();
       this.onClose.emit();
@@ -104,3 +114,4 @@ export class EditCustomSupplyDialogComponent implements OnInit {
     });
   }
 }
+

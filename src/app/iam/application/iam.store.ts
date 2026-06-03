@@ -109,7 +109,7 @@ export class IamStore {
           name: pendingProfile?.firstName ?? '',
           lastName: pendingProfile?.lastName ?? '',
           phoneNumber: pendingProfile?.phoneNumber ?? '',
-          avatarUrl: pendingProfile?.avatarUrl ?? 'https://via.placeholder.com/150',
+          avatarUrl: pendingProfile?.avatarUrl ?? 'https://placehold.co/150',
           gender: 'UNKNOWN',
           birthDate: new Date().toISOString(),
         });
@@ -118,7 +118,7 @@ export class IamStore {
           businessId: `business_${Date.now()}`,
           companyName: params.businessName ?? '',
           ruc: '0000000000',
-          pictureUrl: 'https://via.placeholder.com/150',
+          pictureUrl: 'https://placehold.co/150',
           mainLocation: params.country ?? '',
           ownerId: userId,
         });

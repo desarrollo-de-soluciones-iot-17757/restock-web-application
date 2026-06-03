@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { ResourceStore } from '../../../application/resource.store';
@@ -21,14 +21,19 @@ export class CustomSuppliesSectionComponent implements OnInit {
   private readonly authService = inject(AuthService);
 
   readonly customSupplies = this.store.customSupplies;
+  readonly loading = this.store.loading;
   readonly RESOURCE_PATHS = RESOURCE_PATHS;
 
   showCreateModal = false;
 
   ngOnInit(): void {
     const user = this.authService.currentUser();
-    const accountId = (user as any)?.accountId ?? 'acc-123';
-    this.store.loadCustomSuppliesByAccount(accountId);
+    const accountId = user?.accountId ?? '';
+    if (accountId) {
+      this.store.loadCustomSuppliesByAccount(accountId);
+    } else {
+      console.warn('[CustomSuppliesSection] No accountId found in session');
+    }
   }
 
   onViewSupply(id: string): void {
