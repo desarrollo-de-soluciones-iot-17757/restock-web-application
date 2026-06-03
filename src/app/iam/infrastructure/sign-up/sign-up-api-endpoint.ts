@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { IamRegisteredUsersStorage } from '../iam-registered-users.storage';
 import { environment } from '../../../../environments/environment';
@@ -24,19 +23,12 @@ export class SignUpApiEndpoint {
     const request: SignUpRequest = {
       businessName: command.businessName,
       email: command.email,
-      password: command.password,
-      role: command.role,
-      phone: command.phone,
-      country: command.country,
+      password: command.password ?? '',
+      role: command.role ?? '',
     };
 
     return this.http.post<SignUpResponse>(signUpApiUrl, request).pipe(
-      catchError((error) => {
-        if (error instanceof HttpErrorResponse && error.status === 0) {
-          return throwError(() => error);
-        }
-        return throwError(() => error);
-      }),
+      catchError((error) => throwError(() => error)),
     );
   }
 }
