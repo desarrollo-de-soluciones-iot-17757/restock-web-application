@@ -1,10 +1,5 @@
 import { Component, inject, signal, computed } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
@@ -25,22 +20,39 @@ export class RegistrationBusinessDetails {
   readonly error = this.iamStore.error;
 
   readonly countries = [
-    'United States', 'Canada', 'Mexico', 'Argentina', 'Brazil',
-    'Colombia', 'Chile', 'Peru', 'Spain', 'United Kingdom',
+    'United States',
+    'Canada',
+    'Mexico',
+    'Argentina',
+    'Brazil',
+    'Colombia',
+    'Chile',
+    'Peru',
+    'Spain',
+    'United Kingdom',
   ];
 
   readonly allCategories = [
-    'Pharmaceuticals', 'IoT Sensors', 'Cold Storage', 'Electronics',
-    'Food & Beverage', 'Automotive', 'Medical Devices', 'Retail',
-    'Manufacturing', 'Logistics',
+    'Pharmaceuticals',
+    'IoT Sensors',
+    'Cold Storage',
+    'Electronics',
+    'Food & Beverage',
+    'Automotive',
+    'Medical Devices',
+    'Retail',
+    'Manufacturing',
+    'Logistics',
   ];
 
   readonly selectedCategories = signal<string[]>([
-    'Pharmaceuticals', 'IoT Sensors', 'Cold Storage',
+    'Pharmaceuticals',
+    'IoT Sensors',
+    'Cold Storage',
   ]);
 
   readonly availableToAdd = computed(() =>
-    this.allCategories.filter((c) => !this.selectedCategories().includes(c))
+    this.allCategories.filter((c) => !this.selectedCategories().includes(c)),
   );
 
   readonly form = new FormGroup({
