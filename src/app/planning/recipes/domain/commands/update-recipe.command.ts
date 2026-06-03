@@ -1,13 +1,11 @@
-import { RecipeIngredientCommand } from './create-recipe.command';
-import { RecipeStatus } from '../model/recipe.entity';
-
+/**
+ * Maps to UpdateProductResource (all fields optional, null fields ignored by backend).
+ */
 export interface UpdateRecipeCommand {
   id: string;
   name?: string;
   description?: string;
-  status?: RecipeStatus;
-  imageUrl?: string;
   sku?: string;
+  imageUrl?: string;
   sellingPrice?: number;
-  ingredients?: RecipeIngredientCommand[];
 }

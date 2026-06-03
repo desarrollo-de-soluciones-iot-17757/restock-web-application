@@ -8,6 +8,7 @@
     "stock": "Stock",
     "discrepancies": "Discrepancies",
     "recipes": "Recipes",
+    "kits": "Kits",
     "sales": "Sales",
     "alerts": "Alerts",
     "devices": "Devices",
@@ -293,6 +294,48 @@
       "scaleReadyBody": "Designed to connect multiple inventory nodes",
       "privacyPolicy": "Privacy Policy",
       "termsOfService": "Terms of Service"
+    }
+  },
+  "kits": {
+    "catalog": "Kits & Combos Catalog",
+    "subtitle": "Manage retail combinations and inventory-linked product kits.",
+    "create": "Create New Kit",
+    "edit": "Edit Details",
+    "save": "Save Kit",
+    "update": "Update Kit",
+    "metrics": {
+      "totalKits": "TOTAL KITS",
+      "activeCombos": "ACTIVE COMBOS",
+      "lowStockAlerts": "LOW STOCK ALERTS"
+    },
+    "states": {
+      "loadingProducts": "Loading supplies from Beeceptor...",
+      "emptyProducts": "No products added to this kit yet."
+    },
+    "actions": { "retry": "Retry Connection", "cancel": "Cancel", "save": "Save Kit" },
+    "form": {
+      "image": "KIT IMAGE",
+      "uploadImage": "Upload Image",
+      "name": "KIT NAME",
+      "namePlaceholder": "e.g. Gourmet Italian Dinner Kit",
+      "price": "COMBO PRICE (USD)",
+      "recommendedHint": "Recommended price based on components: S/ {{ price }}",
+      "description": "KIT DESCRIPTION",
+      "descPlaceholder": "e.g. This premium kit contains selective ingredients...",
+      "productSelector": "Product Selector",
+      "selectProduct": "SELECT PRODUCT",
+      "selectPlaceholder": "--- Select a product ---",
+      "quantity": "QUANTITY",
+      "addSupply": "Add Supply",
+      "includedProducts": "INCLUDED PRODUCTS ({{ count }})",
+      "totalCost": "Total Cost"
+    },
+    "table": {
+      "product": "Product",
+      "sku": "SKU",
+      "qty": "Qty",
+      "price": "Price",
+      "actions": "Actions"
     }
   }
 }

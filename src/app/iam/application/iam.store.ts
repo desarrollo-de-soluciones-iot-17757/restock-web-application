@@ -78,7 +78,7 @@ export class IamStore {
     const email = this.pendingEmailSignal() ?? '';
     const password = this.pendingPasswordSignal() ?? '';
     const role = this.pendingRoleSignal() ?? '';
-    const mappedRole = role === 'restaurant' ? 'CASHIER' : 'WAREHOUSEMAN';
+    const mappedRole = role === 'restaurant' ? 'RESTAURANTADMIN' : 'RETAILADMIN';
 
     const signUpCommand = new SignUpCommand({
       email,

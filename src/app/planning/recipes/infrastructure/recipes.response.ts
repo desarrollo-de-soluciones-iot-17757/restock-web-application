@@ -1,123 +1,71 @@
-import { BaseResource, BaseResponse } from '../../../shared/infrastructure/base-response';
+import { BaseResource } from '../../../shared/infrastructure/base-response';
 
-/**
- * Resource representation of an ingredient for API communication.
- */
-export interface IngredientResource extends BaseResource {
-  /**
-   * The unique identifier of the ingredient.
-   */
+// ── PRODUCT / RECIPE ──────────────────────────────────────────────────────────
+
+/** Maps IngredientResource from OpenAPI */
+export interface IngredientEntryResource {
   id: string;
-
-  /**
-   * The name of the ingredient.
-   */
-  name: string;
-
-  /**
-   * The monetary cost per single unit of the ingredient.
-   */
-  unit_price: number;
-
-  /**
-   * The standard unit of measurement for the ingredient.
-   */
-  unit_measure: string;
-}
-
-/**
- * Resource representation of a recipe-ingredient association.
- */
-export interface RecipeIngredientResource {
-  /**
-   * The ingredient resource details.
-   */
-  ingredient: IngredientResource;
-
-  /**
-   * The required quantity of the ingredient for the recipe.
-   */
+  productId: string;
+  customSupplyId: string;
   quantity: number;
+  totalCost: number;
 }
 
-/**
- * Resource representation of a recipe for API communication.
- */
-export interface RecipeResource extends BaseResource {
-  /**
-   * The unique identifier of the recipe.
-   */
-  id: string;
-
-  /**
-   * The name of the recipe.
-   */
+/** Maps ProductResource from OpenAPI */
+export interface ProductResource extends BaseResource {
+  accountId: string;
   name: string;
-
-  /**
-   * The detailed description of the recipe.
-   */
   description: string;
-
-  /**
-   * The current status of the recipe (e.g., ACTIVE, INACTIVE, LOW STOCK).
-   */
-  status: string;
-
-  /**
-   * The URL pointing to the recipe's representative image.
-   */
-  image_url: string;
-
-  /**
-   * The stock keeping unit (SKU) identifier for the recipe.
-   */
   sku: string;
-
-  /**
-   * The designated selling price for the recipe.
-   */
-  selling_price: number;
-
-  /**
-   * The calculated estimated cost to produce the recipe.
-   */
-  estimated_cost: number;
-
-  /**
-   * The list of ingredients required to prepare the recipe.
-   */
-  ingredients: RecipeIngredientResource[];
+  type: string;
+  status: string;
+  imageUrl: string;
+  sellingPrice: number;
+  ingredients: IngredientEntryResource[];
 }
 
-/**
- * Response envelope for recipe collection queries.
- */
-export interface RecipesResponse extends BaseResponse {
-  /**
-   * Array of recipe resources included in the response.
-   * Contains zero or more recipe resources.
-   */
-  recipes: RecipeResource[];
+// ── CUSTOM SUPPLY ─────────────────────────────────────────────────────────────
+
+/** Maps CustomSupplyResource from OpenAPI */
+export interface CustomSupplyResource extends BaseResource {
+  name: string;
+  description: string;
+  supplyId: string;
+  supplyName: string;
+  categoryName: string;
+  /** e.g. "10.00" */
+  unitPriceAmount: string;
+  /** e.g. "PEN" */
+  unitPriceCurrencyCode: string;
+  unitMeasurement: string;
+  minimumStock: number;
+  maximumStock: number;
+  pictureUrl: string;
+  accountId: string;
+  createdAt: string;
 }
 
-/**
- * Response envelope for a single recipe query.
- */
-export interface RecipeResponse extends BaseResponse {
-  /**
-   * The recipe resource included in the response.
-   */
-  recipe: RecipeResource;
+// ── REQUEST BODIES ────────────────────────────────────────────────────────────
+
+export interface CreateProductBody {
+  accountId: string;
+  name: string;
+  description?: string;
+  sku: string;
+  type: string;
+  imageUrl?: string;
+  sellingPrice: number;
 }
 
-/**
- * Response envelope for ingredient collection queries.
- */
-export interface IngredientsResponse extends BaseResponse {
-  /**
-   * Array of ingredient resources included in the response.
-   * Contains zero or more ingredient resources.
-   */
-  ingredients: IngredientResource[];
+export interface UpdateProductBody {
+  name?: string;
+  description?: string;
+  sku?: string;
+  imageUrl?: string;
+  sellingPrice?: number;
+}
+
+export interface AddIngredientBody {
+  customSupplyId: string;
+  quantity: number;
 }
