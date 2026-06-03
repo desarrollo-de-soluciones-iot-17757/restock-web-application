@@ -9,23 +9,24 @@ import { SignUpResponse } from './sign-up.response';
 export class SignUpAssembler {
   static toRequestFromCommand(command: SignUpCommand): SignUpRequest {
     return {
+      businessName: command.businessName,
       email: command.email,
       password: command.password,
-      roleId: command.roleId,
+      role: command.role,
+      phone: command.phone,
+      country: command.country,
     };
   }
 
   static toEntityFromResponse(response: SignUpResponse): User {
-    const userData = response.user;
-    const id = String(userData.id);
     return new User({
-      id,
-      accountId: userData.accountId ?? `acct_${id}`,
-      email: userData.email,
-      roleId: userData.roleId ?? 'ROLE_ADMIN', // Defaulting if not in mock
-      plan: userData.plan ?? 'FREE',
-      status: userData.status ?? 'ACTIVE',
-      token: userData.token,
+      id: response.id,
+      accountId: response.accountId,
+      email: response.email,
+      roleId: response.role,
+      plan: 'FREE',
+      status: 'ACTIVE',
+      token: undefined,
     });
   }
 }

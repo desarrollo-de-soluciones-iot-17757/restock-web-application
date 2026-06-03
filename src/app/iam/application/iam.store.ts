@@ -1,5 +1,7 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import { IamApi } from '../infrastructure/iam-api';
 import { IamRegisteredUsersStorage } from '../infrastructure/iam-registered-users.storage';
 import { IamSessionStorage } from '../infrastructure/iam-session.storage';
@@ -7,6 +9,9 @@ import { SignUpCommand } from '../domain/model/sign-up.command';
 import { User } from '../domain/model/user.entity';
 import { SignInCommand } from '../domain/model/sign-in.command';
 import { ForgotPasswordCommand } from '../domain/model/forgot-password.command';
+import { ProfilesApi } from '../../profiles/infrastructure/profiles-api';
+import { Profile } from '../../profiles/domain/model/profile.entity';
+import { Business } from '../../profiles/domain/model/business.entity';
 
 /**
  * IamStore
@@ -18,17 +23,146 @@ export class IamStore {
   private readonly iamApi = inject(IamApi);
   private readonly sessionStorage = inject(IamSessionStorage);
   private readonly registeredUsers = inject(IamRegisteredUsersStorage);
+  private readonly profilesApi = inject(ProfilesApi);
 
   private readonly currentUserSignal = signal<User | null>(this.sessionStorage.load());
   private readonly errorSignal = signal<string | null>(null);
   private readonly loadingSignal = signal(false);
   private readonly successMessageSignal = signal<string | null>(null);
 
+  private readonly pendingEmailSignal = signal<string | null>(null);
+  private readonly pendingPasswordSignal = signal<string | null>(null);
+  private readonly pendingRoleSignal = signal<'restaurant' | 'retail' | null>(null);
+  private readonly pendingProfileSignal = signal<{
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    avatarUrl: string | null;
+  } | null>(null);
+
   readonly currentUser = this.currentUserSignal.asReadonly();
   readonly error = this.errorSignal.asReadonly();
   readonly loading = this.loadingSignal.asReadonly();
   readonly successMessage = this.successMessageSignal.asReadonly();
   readonly isAuthenticated = computed(() => this.currentUserSignal() !== null);
+
+  setPendingCredentials(email: string, password: string): void {
+    this.pendingEmailSignal.set(email);
+    this.pendingPasswordSignal.set(password);
+  }
+
+  setPendingRole(role: 'restaurant' | 'retail'): void {
+    this.pendingRoleSignal.set(role);
+  }
+
+  setPendingProfile(profile: {
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    avatarUrl: string | null;
+  }): void {
+    this.pendingProfileSignal.set(profile);
+  }
+
+  completeSignUp(params: {
+    businessName?: string;
+    phone?: string;
+    country?: string;
+    categories: string[];
+  }): void {
+    this.loadingSignal.set(true);
+    this.errorSignal.set(null);
+    this.successMessageSignal.set(null);
+
+    const pendingProfile = this.pendingProfileSignal();
+    const email = this.pendingEmailSignal() ?? '';
+    const password = this.pendingPasswordSignal() ?? '';
+    const role = this.pendingRoleSignal() ?? '';
+    const mappedRole = role === 'restaurant' ? 'RESTAURANTADMIN' : 'RETAILADMIN';
+
+    const signUpCommand = new SignUpCommand({
+      email,
+      password,
+      role: mappedRole,
+      businessName: params.businessName,
+      phone: params.phone,
+      country: params.country,
+    });
+
+    const finishAndGoToSignIn = (message: string) => {
+      this.registeredUsers.register(email, password);
+      this.clearAuthSession();
+      this.successMessageSignal.set(message);
+      this.loadingSignal.set(false);
+      void this.router.navigate(['/sign-in'], { replaceUrl: true });
+    };
+
+    this.iamApi.signUp(signUpCommand).subscribe({
+      next: (response) => {
+        const userId = response.id;
+        const accountId = response.accountId;
+
+
+        const profile = new Profile({
+          profileId: `profile_${Date.now()}`,
+          userId: userId,
+          name: pendingProfile?.firstName ?? '',
+          lastName: pendingProfile?.lastName ?? '',
+          phoneNumber: pendingProfile?.phoneNumber ?? '',
+          avatarUrl: pendingProfile?.avatarUrl ?? 'https://via.placeholder.com/150',
+          gender: 'UNKNOWN',
+          birthDate: new Date().toISOString(),
+        });
+
+        const business = new Business({
+          businessId: `business_${Date.now()}`,
+          companyName: params.businessName ?? '',
+          ruc: '0000000000',
+          pictureUrl: 'https://via.placeholder.com/150',
+          mainLocation: params.country ?? '',
+          ownerId: userId,
+        });
+
+        forkJoin({
+          profile: this.profilesApi.createProfile(profile),
+          business: this.profilesApi.createBusiness(business),
+        }).subscribe({
+          next: () => {
+            finishAndGoToSignIn(
+              'Account created successfully. Log in with your email and password.',
+            );
+          },
+          error: (error) => {
+            this.errorSignal.set(
+              this.formatError(
+                error,
+                '\n' + 'The profile/company registration could not be completed.',
+              ),
+            );
+            this.loadingSignal.set(false);
+          },
+        });
+      },
+      error: (error) => {
+        if (error instanceof HttpErrorResponse && error.status === 0) {
+          finishAndGoToSignIn('\n' + 'Account saved. Log in with your email and password..');
+          return;
+        }
+        if (error instanceof HttpErrorResponse && error.status === 409) {
+          this.errorSignal.set('\n' + 'The email address is already registered..');
+          this.loadingSignal.set(false);
+          return;
+        }
+        if (password) {
+          finishAndGoToSignIn('Account saved. Log in with your email and password..');
+          return;
+        }
+
+        this.errorSignal.set('\n' + 'The user could not be registered.');
+        this.loadingSignal.set(false);
+      },
+    });
+  }
 
   /**
    * Signs in an existing user.
@@ -49,46 +183,6 @@ export class IamStore {
         this.errorSignal.set(this.formatError(error, 'No se pudo iniciar sesión.'));
       },
       complete: () => this.loadingSignal.set(false),
-    });
-  }
-
-  /**
-   * Signs up a new user using the IAM API.
-   * @param command - The sign-up command containing credentials and role selection.
-   * @param onSuccess - Optional callback executed after successful sign-up.
-   */
-  signUp(command: SignUpCommand): void {
-    this.loadingSignal.set(true);
-    this.errorSignal.set(null);
-    this.successMessageSignal.set(null);
-    this.clearAuthSession();
-
-    const password = command.password ?? '';
-
-    const finishAndGoToSignIn = (message: string) => {
-      this.registeredUsers.register(command.email, password);
-      this.clearAuthSession();
-      this.successMessageSignal.set(message);
-      this.loadingSignal.set(false);
-      void this.router.navigateByUrl('/sign-in', { replaceUrl: true });
-    };
-
-    this.iamApi.signUp(command).subscribe({
-      next: () => {
-        finishAndGoToSignIn(
-          'Cuenta creada correctamente. Inicia sesión con tu correo y contraseña.',
-        );
-      },
-      error: () => {
-        if (password) {
-          finishAndGoToSignIn(
-            'Cuenta guardada localmente. Inicia sesión con tu correo y contraseña.',
-          );
-          return;
-        }
-        this.errorSignal.set('No se pudo registrar el usuario.');
-        this.loadingSignal.set(false);
-      },
     });
   }
 

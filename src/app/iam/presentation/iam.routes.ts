@@ -23,7 +23,7 @@ export const iamRoutes: Routes = [
   {
     path: 'role-selection',
     loadComponent: authenticationSection,
-    canActivate: [requireAuthGuard],
+    canActivate: [guestOnlyGuard],
     title: 'Select Role',
   },
   {

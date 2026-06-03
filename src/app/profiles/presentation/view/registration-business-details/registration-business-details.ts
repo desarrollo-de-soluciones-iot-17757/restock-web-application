@@ -5,6 +5,7 @@ import { catchError, of } from 'rxjs';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { ProfilesApi } from '../../../infrastructure/profiles-api';
+import { IamStore } from '../../../../iam/application/iam.store';
 import { Business } from '../../../domain/model/business.entity';
 
 @Component({
@@ -19,6 +20,7 @@ export class RegistrationBusinessDetails {
 
   private readonly router = inject(Router);
   private readonly profilesApi = inject(ProfilesApi);
+  private readonly iamStore = inject(IamStore);
 
   readonly countries = [
     'United States', 'Canada', 'Mexico', 'Argentina', 'Brazil',
@@ -65,16 +67,17 @@ export class RegistrationBusinessDetails {
   }
 
   onCreateAccount(): void {
-    this.createAccount.emit({
+    const businessPayload = {
       ...this.form.value,
       categories: this.selectedCategories(),
+    };
+    this.createAccount.emit(businessPayload);
+    this.iamStore.completeSignUp({
+      businessName: this.form.value.businessName ?? undefined,
+      phone: this.form.value.phoneNumber ?? undefined,
+      country: this.form.value.country ?? undefined,
+      categories: this.selectedCategories(),
     });
-
-    this.storeBusiness()
-      .pipe(catchError(() => of(null)))
-      .subscribe(() => {
-        void this.router.navigate(['/profiles']);
-      });
   }
 
   private storeBusiness() {

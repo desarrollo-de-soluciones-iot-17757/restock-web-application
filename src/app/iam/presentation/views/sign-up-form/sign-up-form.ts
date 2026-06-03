@@ -7,7 +7,7 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -22,6 +22,7 @@ import { SignUpCommand } from '../../../domain/model/sign-up.command';
   styleUrl: './sign-up-form.css',
 })
 export class SignUpForm {
+  private readonly router = inject(Router);
   private readonly iamStore = inject(IamStore);
   readonly loading = this.iamStore.loading;
   readonly error = this.iamStore.error;
@@ -48,7 +49,8 @@ export class SignUpForm {
       const email = this.form.get('email')?.value || '';
       const password = this.form.get('password')?.value || '';
 
-      this.iamStore.signUp(new SignUpCommand({ email, password }));
+      this.iamStore.setPendingCredentials(email, password);
+      void this.router.navigate(['/role-selection']);
     }
   }
 }

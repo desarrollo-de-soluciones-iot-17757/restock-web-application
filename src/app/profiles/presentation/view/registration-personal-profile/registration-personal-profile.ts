@@ -6,6 +6,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { ProfilesApi } from '../../../infrastructure/profiles-api';
 import { Profile } from '../../../domain/model/profile.entity';
+import { IamStore } from '../../../../iam/application/iam.store';
 
 @Component({
   selector: 'app-registration-personal-profile',
@@ -21,6 +22,7 @@ export class RegistrationPersonalProfile {
 
   private readonly router = inject(Router);
   private readonly profilesApi = inject(ProfilesApi);
+  private readonly iamStore = inject(IamStore);
 
   readonly countries = [
     'United States', 'Canada', 'Mexico', 'Argentina', 'Brazil',
@@ -64,27 +66,15 @@ export class RegistrationPersonalProfile {
 
   onNext(): void {
     this.next.emit(this.form.value);
-    this.storeProfile()
-      .pipe(catchError(() => of(null)))
-      .subscribe(() => {
-        void this.router.navigate(['/profiles/register/business']);
-      });
-  }
-
-  private storeProfile() {
-    const formValue = this.form.value;
-    const profile = new Profile({
-      profileId: `profile_${Date.now()}`,
-      userId: 'user_1',
-      name: formValue.firstName ?? '',
-      lastName: formValue.lastName ?? '',
-      phoneNumber: formValue.phoneNumber ?? '',
-      avatarUrl: this.avatarPreview ?? 'https://via.placeholder.com/150',
-      gender: 'UNKNOWN',
-      birthDate: new Date().toISOString(),
+    const fv = this.form.value;
+    this.iamStore.setPendingProfile({
+      firstName: fv.firstName ?? '',
+      lastName: fv.lastName ?? '',
+      phoneNumber: fv.phoneNumber ?? '',
+      avatarUrl: this.avatarPreview ?? null,
     });
 
-    return this.profilesApi.createProfile(profile);
+    void this.router.navigate(['/profiles/register/business']);
   }
 
   private loadAvatarFile(file: File): void {

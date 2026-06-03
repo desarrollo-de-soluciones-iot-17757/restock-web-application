@@ -1,0 +1,28 @@
+<div class="custom-supplies-section">
+  <div class="header-container">
+    <div class="header-text">
+      <h1>Custom Supplies</h1>
+      <p>Manage and audit your organization's custom master supply list.</p>
+    </div>
+    <button class="add-supply-btn" (click)="showCreateModal = true">
+      + Add Supply
+    </button>
+  </div>
+
+  <div class="cards-grid">
+    @for (supply of customSupplies(); track supply.id) {
+      <app-custom-supply-card
+        [customSupply]="supply"
+        (onView)="onViewSupply(supply.id)"
+        (onEdit)="onEditSupply(supply)">
+      </app-custom-supply-card>
+    }
+  </div>
+
+  @if (showCreateModal) {
+    <app-create-custom-supply-dialog
+      (onClose)="showCreateModal = false"
+      (onCreate)="showCreateModal = false">
+    </app-create-custom-supply-dialog>
+  }
+</div>

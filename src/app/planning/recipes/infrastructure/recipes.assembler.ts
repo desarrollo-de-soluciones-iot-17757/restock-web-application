@@ -1,135 +1,107 @@
+import { Injectable } from '@angular/core';
 import { BaseAssembler } from '../../../shared/infrastructure/base-assembler';
-import { RecipeEntity, RecipeIngredient } from '../domain/model/recipe.entity';
-import { IngredientEntity } from '../domain/model/ingredient.entity';
+import { RecipeEntity } from '../domain/model/recipe.entity';
+import { IngredientEntryEntity } from '../domain/model/ingredient-entry.entity';
+import { CustomSupplyEntity } from '../domain/model/custom-supply.entity';
+import { BaseResponse } from '../../../shared/infrastructure/base-response';
 import {
-  RecipeResource,
-  RecipesResponse,
-  IngredientResource,
-  RecipeIngredientResource,
+  ProductResource,
+  IngredientEntryResource,
+  CustomSupplyResource,
 } from './recipes.response';
 
-/**
- * Assembler for converting between Recipe entities and infrastructure resources.
- *
- * @remarks
- * This assembler is responsible for transforming between:
- * - {@link RecipeEntity} - Domain entity for managing recipe state.
- * - {@link RecipeResource} - Infrastructure resource for API communication.
- * - {@link RecipesResponse} - API response from recipe list endpoint.
- */
-export class RecipeAssembler implements BaseAssembler<RecipeEntity, RecipeResource, RecipesResponse> {
+@Injectable({ providedIn: 'root' })
+export class RecipesAssembler implements BaseAssembler<RecipeEntity, ProductResource, BaseResponse> {
 
-  /**
-   * Maps the response envelope to a list of domain entities.
-   *
-   * @param response - The response envelope containing recipe resources.
-   * @returns A list of domain entities representing the recipes.
-   */
-  toEntitiesFromResponse(response: RecipesResponse): RecipeEntity[] {
-    console.log(response);
-    // Nota: Se asume que tu interface RecipesResponse tiene una propiedad 'recipes'
-    // equivalente a la propiedad 'devices' de tu ejemplo base.
-    return response.recipes.map(resource => this.toEntityFromResource(resource as RecipeResource));
+  // ── PRODUCT ↔ RECIPE ───────────────────────────────────────────────────────
+
+  toEntityFromResource(resource: ProductResource): RecipeEntity {
+    return new RecipeEntity({
+      id: resource.id,
+      accountId: resource.accountId,
+      name: resource.name,
+      description: resource.description ?? '',
+      sku: resource.sku,
+      type: resource.type as RecipeEntity['type'],
+      status: (resource.status as RecipeEntity['status']) ?? 'ACTIVE',
+      imageUrl: resource.imageUrl ?? '',
+      sellingPrice: resource.sellingPrice ?? 0,
+      ingredients: (resource.ingredients ?? []).map(i => this.toIngredientEntry(i)),
+    });
   }
 
-  /**
-   * Maps a single recipe resource to a domain entity.
-   *
-   * @param resource - The recipe resource to map.
-   * @returns A domain entity representing the recipe.
-   */
-  toEntityFromResource(resource: RecipeResource): RecipeEntity {
-    return new RecipeEntity({
+  toResourceFromEntity(entity: RecipeEntity): ProductResource {
+    return {
+      id: entity.id,
+      accountId: entity.accountId,
+      name: entity.name,
+      description: entity.description,
+      sku: entity.sku,
+      type: entity.type,
+      status: entity.status,
+      imageUrl: entity.imageUrl,
+      sellingPrice: entity.sellingPrice,
+      ingredients: entity.ingredients.map(i => this.toIngredientEntryResource(i)),
+    } as ProductResource;
+  }
+
+  toEntitiesFromResponse(response: BaseResponse): RecipeEntity[] {
+    const resources: ProductResource[] = Array.isArray(response) 
+      ? response 
+      : (response as any).data || [];
+    
+    return resources
+      .filter(r => r.type === 'RECIPE')
+      .map(r => this.toEntityFromResource(r));
+  }
+
+  // ── INGREDIENT ENTRY ───────────────────────────────────────────────────────
+
+  toIngredientEntry(resource: IngredientEntryResource): IngredientEntryEntity {
+    return new IngredientEntryEntity({
+      id: resource.id,
+      productId: resource.productId,
+      customSupplyId: resource.customSupplyId,
+      quantity: resource.quantity,
+      totalCost: resource.totalCost ?? 0,
+    });
+  }
+
+  toIngredientEntryResource(entity: IngredientEntryEntity): IngredientEntryResource {
+    return {
+      id: entity.id,
+      productId: entity.productId,
+      customSupplyId: entity.customSupplyId,
+      quantity: entity.quantity,
+      totalCost: entity.totalCost,
+    } as IngredientEntryResource;
+  }
+
+  // ── CUSTOM SUPPLY ──────────────────────────────────────────────────────────
+
+  toCustomSupplyEntity(resource: CustomSupplyResource): CustomSupplyEntity {
+    return new CustomSupplyEntity({
       id: resource.id,
       name: resource.name,
       description: resource.description,
-      status: resource.status as RecipeEntity['status'],
-      imageUrl: resource.image_url,
-      sku: resource.sku,
-      sellingPrice: resource.selling_price,
-      estimatedCost: resource.estimated_cost,
-      ingredients: (resource.ingredients ?? []).map(ri => this.toIngredientPair(ri)),
+      supplyId: resource.supplyId,
+      supplyName: resource.supplyName,
+      categoryName: resource.categoryName,
+      unitPriceAmount: parseFloat(resource.unitPriceAmount ?? '0'),
+      unitPriceCurrencyCode: resource.unitPriceCurrencyCode ?? 'PEN',
+      unitMeasurement: resource.unitMeasurement,
+      minimumStock: resource.minimumStock,
+      maximumStock: resource.maximumStock,
+      pictureUrl: resource.pictureUrl ?? '',
+      accountId: resource.accountId,
     });
   }
 
-  /**
-   * Maps a domain entity to a recipe resource.
-   *
-   * @param entity - The domain entity to map.
-   * @returns A recipe resource representing the domain entity.
-   */
-  toResourceFromEntity(entity: RecipeEntity): RecipeResource {
-    return {
-      id: entity.id,
-      name: entity.name,
-      description: entity.description,
-      status: entity.status,
-      image_url: entity.imageUrl,
-      sku: entity.sku,
-      selling_price: entity.sellingPrice,
-      estimated_cost: entity.estimatedCost,
-      ingredients: entity.ingredients.map(ri => ({
-        ingredient: this.ingredientToResource(ri.ingredient),
-        quantity: ri.quantity,
-      })),
-    } as RecipeResource;
-  }
-
-  /**
-   * Helper method to map a recipe ingredient resource to its domain pair.
-   *
-   * @param ri - The recipe ingredient resource.
-   * @returns A domain representation of the recipe ingredient.
-   */
-  private toIngredientPair(ri: RecipeIngredientResource): RecipeIngredient {
-    return {
-      ingredient: new IngredientEntity({
-        id: ri.ingredient.id,
-        name: ri.ingredient.name,
-        unitPrice: ri.ingredient.unit_price,
-        unitMeasure: ri.ingredient.unit_measure,
-      }),
-      quantity: ri.quantity,
-    };
-  }
-
-  /**
-   * Helper method to map an ingredient entity to its resource representation.
-   *
-   * @param entity - The ingredient domain entity.
-   * @returns An ingredient resource.
-   */
-  private ingredientToResource(entity: IngredientEntity): IngredientResource {
-    return {
-      id: entity.id,
-      name: entity.name,
-      unit_price: entity.unitPrice,
-      unit_measure: entity.unitMeasure,
-    };
-  }
-
-  /**
-   * Maps a single ingredient resource to a domain entity.
-   *
-   * @param resource - The ingredient resource to map.
-   * @returns A domain entity representing the ingredient.
-   */
-  ingredientToEntity(resource: IngredientResource): IngredientEntity {
-    return new IngredientEntity({
-      id: resource.id,
-      name: resource.name,
-      unitPrice: resource.unit_price,
-      unitMeasure: resource.unit_measure,
-    });
-  }
-
-  /**
-   * Maps a list of ingredient resources to domain entities.
-   *
-   * @param resources - The list of ingredient resources.
-   * @returns A list of domain entities representing the ingredients.
-   */
-  ingredientListToEntities(resources: IngredientResource[]): IngredientEntity[] {
-    return resources.map(r => this.ingredientToEntity(r));
+  toCustomSupplyEntityList(resources: CustomSupplyResource[]): CustomSupplyEntity[] {
+    const arr: CustomSupplyResource[] = Array.isArray(resources)
+      ? resources
+      : (resources as any).data || [];
+      
+    return arr.map(r => this.toCustomSupplyEntity(r));
   }
 }
