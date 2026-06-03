@@ -88,14 +88,15 @@ export class CreateCustomSupplyDialogComponent implements OnInit {
     const user = this.authService.currentUser();
     const accountId = user?.accountId ?? '';
 
+    const unitPrice = `${this.formData.unitPriceAmount ?? 0} ${this.formData.unitPriceCurrencyCode}`;
+
     const fd = new FormData();
-    fd.append('accountId', accountId);
-    fd.append('supplyId', this.formData.supplyId);
     fd.append('name', this.formData.name || this.selectedSupplyName);
+    fd.append('supplyId', this.formData.supplyId);
+    fd.append('minimumStock', String(this.formData.minimumStock ?? 0));
+    fd.append('maximumStock', String(this.formData.maximumStock ?? 0));
+    fd.append('unitPrice', unitPrice);
     fd.append('description', this.formData.description);
-    fd.append('unitPrice', String(this.formData.unitPriceAmount ?? 0));
-    fd.append('unitPriceCurrencyCode', this.formData.unitPriceCurrencyCode);
-    fd.append('supplyContent', String(this.formData.supplyContent ?? 0));
     fd.append('unitMeasurement', this.formData.unitMeasurement);
     if (this.selectedImageFile) {
       fd.append('image', this.selectedImageFile, this.selectedImageFile.name);

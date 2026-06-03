@@ -93,14 +93,14 @@ export class EditCustomSupplyDialogComponent implements OnInit {
   }
 
   update(): void {
+    const unitPrice = `${this.formData.unitPriceAmount ?? 0} ${this.formData.unitPriceCurrencyCode}`;
+
     const fd = new FormData();
-    fd.append('accountId', this.customSupply.accountId);
-    fd.append('supplyId', this.formData.supplyId);
     fd.append('name', this.formData.name);
     fd.append('description', this.formData.description);
-    fd.append('unitPrice', String(this.formData.unitPriceAmount ?? 0));
-    fd.append('unitPriceCurrencyCode', this.formData.unitPriceCurrencyCode);
-    fd.append('supplyContent', String(this.formData.supplyContent ?? 0));
+    fd.append('minimumStock', String(this.formData.minimumStock ?? 0));
+    fd.append('maximumStock', String(this.formData.maximumStock ?? 0));
+    fd.append('unitPrice', unitPrice);
     fd.append('unitMeasurement', this.formData.unitMeasurement);
     if (this.selectedImageFile) {
       fd.append('image', this.selectedImageFile, this.selectedImageFile.name);

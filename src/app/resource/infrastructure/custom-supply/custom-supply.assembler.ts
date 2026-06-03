@@ -4,40 +4,32 @@ import { Supply } from '../../domain/model/supply.entity';
 import { UnitMeasure } from '../../domain/model/unit-measure.entity';
 
 /**
- * Assembles a {@link CustomSupply} domain entity from a backend response.
+ * Assembles a {@link CustomSupply} domain entity from the flat API response.
  *
- * The backend returns two different shapes depending on the endpoint:
- * - POST /custom-supplies  → uses `category` field (flat supply template object)
- * - GET /accounts/{id}/custom-supplies → uses `supply` field (nested supply object)
- *
- * Both fields share the same structure: { id, name, description, category, isPerishable }.
+ * All endpoints (GET list, GET by id, POST, PATCH) return the same flat shape:
+ * supplyId, supplyName, categoryName — no nested objects.
  */
 export function assembleCustomSupply(dto: CustomSupplyResponse): CustomSupply {
-  // Resolve the supply template from whichever field is present
-  const supplyDto = dto.supply ?? dto.category;
-
-  const supply = supplyDto
-    ? Supply.create(
-        supplyDto.id,
-        supplyDto.name,
-        supplyDto.description,
-        supplyDto.isPerishable,
-        supplyDto.category,
-      )
-    : Supply.empty();
+  const supply = Supply.create(
+    dto.supplyId,
+    dto.supplyName,
+    dto.description,
+    false,
+    dto.categoryName,
+  );
 
   const unitMeasure = UnitMeasure.create('', dto.unitMeasurement, dto.unitMeasurement);
 
   return CustomSupply.create(
     dto.id,
-    dto.accountId ?? '',
+    dto.accountId,
     dto.name,
-    supply.category,
+    dto.categoryName,
     parseFloat(dto.unitPriceAmount) || 0,
     supply,
-    0,
+    dto.minimumStock,
     unitMeasure,
-    0,
+    dto.maximumStock,
     dto.pictureUrl,
   );
 }
