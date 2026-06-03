@@ -1,11 +1,8 @@
-import { Component, EventEmitter, Output, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { catchError, of } from 'rxjs';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
-import { ProfilesApi } from '../../../infrastructure/profiles-api';
-import { Profile } from '../../../domain/model/profile.entity';
 import { IamStore } from '../../../../iam/application/iam.store';
 
 @Component({
@@ -16,12 +13,7 @@ import { IamStore } from '../../../../iam/application/iam.store';
   styleUrl: './registration-personal-profile.css',
 })
 export class RegistrationPersonalProfile {
-  @Output() skipped = new EventEmitter<void>();
-  @Output() cancelled = new EventEmitter<void>();
-  @Output() next = new EventEmitter<typeof this.form.value>();
-
   private readonly router = inject(Router);
-  private readonly profilesApi = inject(ProfilesApi);
   private readonly iamStore = inject(IamStore);
 
   readonly countries = [
@@ -56,16 +48,17 @@ export class RegistrationPersonalProfile {
     if (file) this.loadAvatarFile(file);
   }
 
+  /** Skip personal profile — go directly to business details */
   onSkip(): void {
-    this.skipped.emit();
+    void this.router.navigate(['/profiles/register/business']);
   }
 
+  /** Cancel registration — return to sign-up */
   onCancel(): void {
-    this.cancelled.emit();
+    void this.router.navigate(['/sign-up']);
   }
 
   onNext(): void {
-    this.next.emit(this.form.value);
     const fv = this.form.value;
     this.iamStore.setPendingProfile({
       firstName: fv.firstName ?? '',

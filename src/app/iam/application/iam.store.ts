@@ -65,7 +65,7 @@ export class IamStore {
   }
 
   completeSignUp(params: {
-    businessName?: string;
+    businessName: string;
     phone?: string;
     country?: string;
     categories: string[];
@@ -85,23 +85,11 @@ export class IamStore {
       password,
       role: mappedRole,
       businessName: params.businessName,
-      phone: params.phone,
-      country: params.country,
     });
-
-    const finishAndGoToSignIn = (message: string) => {
-      this.registeredUsers.register(email, password);
-      this.clearAuthSession();
-      this.successMessageSignal.set(message);
-      this.loadingSignal.set(false);
-      void this.router.navigate(['/sign-in'], { replaceUrl: true });
-    };
 
     this.iamApi.signUp(signUpCommand).subscribe({
       next: (response) => {
         const userId = response.id;
-        const accountId = response.accountId;
-
 
         const profile = new Profile({
           profileId: `profile_${Date.now()}`,
@@ -116,49 +104,34 @@ export class IamStore {
 
         const business = new Business({
           businessId: `business_${Date.now()}`,
-          companyName: params.businessName ?? '',
+          companyName: params.businessName,
           ruc: '0000000000',
           pictureUrl: 'https://placehold.co/150',
           mainLocation: params.country ?? '',
           ownerId: userId,
         });
-
         forkJoin({
           profile: this.profilesApi.createProfile(profile),
           business: this.profilesApi.createBusiness(business),
         }).subscribe({
-          next: () => {
-            finishAndGoToSignIn(
-              'Account created successfully. Log in with your email and password.',
-            );
-          },
-          error: (error) => {
-            this.errorSignal.set(
-              this.formatError(
-                error,
-                '\n' + 'The profile/company registration could not be completed.',
-              ),
-            );
-            this.loadingSignal.set(false);
-          },
+          error: (err) => console.warn('[IamStore] Profile/business setup incomplete:', err),
         });
+
+        this.registeredUsers.register(email, password);
+        this.clearAuthSession();
+        this.successMessageSignal.set(
+          'Account created successfully. Log in with your email and password.',
+        );
+        this.loadingSignal.set(false);
+        void this.router.navigate(['/sign-in'], { replaceUrl: true });
       },
       error: (error) => {
-        if (error instanceof HttpErrorResponse && error.status === 0) {
-          finishAndGoToSignIn('\n' + 'Account saved. Log in with your email and password..');
-          return;
-        }
         if (error instanceof HttpErrorResponse && error.status === 409) {
-          this.errorSignal.set('\n' + 'The email address is already registered..');
+          this.errorSignal.set('The email address is already registered.');
           this.loadingSignal.set(false);
           return;
         }
-        if (password) {
-          finishAndGoToSignIn('Account saved. Log in with your email and password..');
-          return;
-        }
-
-        this.errorSignal.set('\n' + 'The user could not be registered.');
+        this.errorSignal.set(this.formatError(error, 'The user could not be registered.'));
         this.loadingSignal.set(false);
       },
     });

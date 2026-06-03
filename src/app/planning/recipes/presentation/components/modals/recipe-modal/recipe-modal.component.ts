@@ -1,19 +1,34 @@
 import {
-  Component, Input, Output, EventEmitter, OnInit, OnChanges,
-  SimpleChanges, inject
+  Component, Input, Output, EventEmitter,
+  OnInit, OnChanges, SimpleChanges
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RecipeEntity } from '../../../../domain/model/recipe.entity';
-import { IngredientEntity } from '../../../../domain/model/ingredient.entity';
+import { CustomSupplyEntity } from '../../../../domain/model/custom-supply.entity';
+import { IngredientEntryEntity } from '../../../../domain/model/ingredient-entry.entity';
 import { CreateRecipeCommand } from '../../../../domain/commands/create-recipe.command';
 import { UpdateRecipeCommand } from '../../../../domain/commands/update-recipe.command';
-import { RecipeFormIngredient } from '../../../../application/recipes.store';
+import { AddIngredientCommand } from '../../../../domain/commands/add-ingredient.command';
+import { PendingIngredient } from '../../../../application/recipes.store';
 
-export interface RecipeModalSubmitEvent {
-  cmd: CreateRecipeCommand | UpdateRecipeCommand;
-  formIngredients: RecipeFormIngredient[];
+// ── Output event shapes ───────────────────────────────────────────────────────
+
+export interface CreateModalEvent {
+  cmd: CreateRecipeCommand;
+  pendingIngredients: PendingIngredient[];
 }
+
+export interface UpdateModalEvent {
+  cmd: UpdateRecipeCommand;
+}
+
+export interface RemoveIngredientEvent {
+  productId: string;
+  customSupplyId: string;
+}
+
+// ── Component ─────────────────────────────────────────────────────────────────
 
 @Component({
   selector: 'app-recipe-modal',
@@ -25,110 +40,153 @@ export interface RecipeModalSubmitEvent {
 export class RecipeModalComponent implements OnInit, OnChanges {
   @Input() mode!: 'create' | 'edit';
   @Input() recipe: RecipeEntity | null = null;
-  @Input() availableIngredients: IngredientEntity[] = [];
+  @Input() availableSupplies: CustomSupplyEntity[] = [];
+  @Input() accountId = '';
+  @Input() saving = false;
 
-  @Output() onClose        = new EventEmitter<void>();
-  @Output() onCreate       = new EventEmitter<RecipeModalSubmitEvent>();
-  @Output() onUpdate       = new EventEmitter<RecipeModalSubmitEvent>();
-  @Output() onDeleteRequest = new EventEmitter<RecipeEntity>();
+  @Output() onClose           = new EventEmitter<void>();
+  @Output() onCreate          = new EventEmitter<CreateModalEvent>();
+  @Output() onUpdate          = new EventEmitter<UpdateModalEvent>();
+  @Output() onAddIngredient   = new EventEmitter<AddIngredientCommand>();
+  @Output() onRemoveIngredient = new EventEmitter<RemoveIngredientEvent>();
+  @Output() onDeleteRequest   = new EventEmitter<RecipeEntity>();
 
-  // Form fields
-  name           = '';
-  description    = '';
-  imageUrl       = '';
-  sku            = '';
-  sellingPrice   = 0;
+  // ── Form fields ───────────────────────────────────────────────────────────
+  name         = '';
+  description  = '';
+  imageUrl     = '';
+  sku          = '';
+  sellingPrice = 0;
 
-  // Ingredient constructor
-  selectedIngredientId = '';
-  ingredientQty        = 1;
+  // ── Ingredient builder ────────────────────────────────────────────────────
+  selectedSupplyId = '';
+  ingredientQty    = 1;
 
-  // Added ingredients
-  formIngredients: RecipeFormIngredient[] = [];
+  /**
+   * In CREATE mode: local list that will be submitted with the form.
+   * In EDIT mode: mirrors the saved ingredients from recipe (already persisted).
+   * Adding/removing in edit mode emits events to the store immediately.
+   */
+  pendingIngredients: PendingIngredient[] = [];
 
-  ngOnInit(): void {
-    this.populateForm();
-  }
-
+  ngOnInit(): void { this._populateForm(); }
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['recipe']) this.populateForm();
+    if (changes['recipe'] || changes['availableSupplies']) this._populateForm();
   }
 
-  private populateForm(): void {
+  private _populateForm(): void {
     if (this.mode === 'edit' && this.recipe) {
       this.name         = this.recipe.name;
       this.description  = this.recipe.description;
       this.imageUrl     = this.recipe.imageUrl;
       this.sku          = this.recipe.sku;
       this.sellingPrice = this.recipe.sellingPrice;
-      this.formIngredients = this.recipe.ingredients.map(ri => ({
-        ingredient: ri.ingredient,
-        quantity: ri.quantity,
-      }));
+      this.pendingIngredients = this._resolveExisting(this.recipe.ingredients);
     } else {
       this.name = this.description = this.imageUrl = this.sku = '';
       this.sellingPrice = 0;
-      this.formIngredients = [];
+      this.pendingIngredients = [];
     }
   }
+
+  private _resolveExisting(entries: IngredientEntryEntity[]): PendingIngredient[] {
+    return entries.map(entry => {
+      const supply = this.availableSupplies.find(s => s.id === entry.customSupplyId);
+      return {
+        supply: supply ?? this._placeholderSupply(entry.customSupplyId),
+        quantity: entry.quantity,
+        localCost: entry.totalCost,
+      };
+    });
+  }
+
+  private _placeholderSupply(id: string): CustomSupplyEntity {
+    return new CustomSupplyEntity({ id, name: id, unitPriceAmount: 0, unitMeasurement: '—' });
+  }
+
+  // ── Computed ──────────────────────────────────────────────────────────────
 
   get estimatedCost(): number {
-    return this.formIngredients.reduce(
-      (sum, fi) => sum + fi.ingredient.unitPrice * fi.quantity,
-      0
-    );
+    if (this.mode === 'edit' && this.recipe) {
+      return this.recipe.estimatedCost; // server-calculated
+    }
+    return this.pendingIngredients.reduce((s, p) => s + p.localCost, 0);
   }
 
-  addIngredient(): void {
-    if (!this.selectedIngredientId || this.ingredientQty <= 0) return;
-    const ingredient = this.availableIngredients.find(i => i.id === this.selectedIngredientId);
-    if (!ingredient) return;
+  /** Supplies not yet added to the current recipe */
+  get availableToAdd(): CustomSupplyEntity[] {
+    const usedIds = new Set(this.pendingIngredients.map(p => p.supply.id));
+    return this.availableSupplies.filter(s => !usedIds.has(s.id));
+  }
 
-    const existing = this.formIngredients.findIndex(fi => fi.ingredient.id === ingredient.id);
-    if (existing >= 0) {
-      this.formIngredients[existing].quantity += this.ingredientQty;
+  // ── Ingredient actions ────────────────────────────────────────────────────
+
+  addIngredient(): void {
+    if (!this.selectedSupplyId || this.ingredientQty <= 0) return;
+    const supply = this.availableSupplies.find(s => s.id === this.selectedSupplyId);
+    if (!supply) return;
+
+    if (this.mode === 'edit' && this.recipe) {
+      this.onAddIngredient.emit({
+        productId:      this.recipe.id,
+        customSupplyId: supply.id,
+        quantity:       this.ingredientQty,
+      });
+      this.pendingIngredients = [
+        ...this.pendingIngredients,
+        { supply, quantity: this.ingredientQty, localCost: supply.unitPriceAmount * this.ingredientQty },
+      ];
     } else {
-      this.formIngredients = [
-        ...this.formIngredients,
-        { ingredient, quantity: this.ingredientQty }
+      // CREATE mode: accumulate locally
+      this.pendingIngredients = [
+        ...this.pendingIngredients,
+        { supply, quantity: this.ingredientQty, localCost: supply.unitPriceAmount * this.ingredientQty },
       ];
     }
-    this.selectedIngredientId = '';
+
+    this.selectedSupplyId = '';
     this.ingredientQty = 1;
   }
 
   removeIngredient(index: number): void {
-    this.formIngredients = this.formIngredients.filter((_, i) => i !== index);
+    const removed = this.pendingIngredients[index];
+    this.pendingIngredients = this.pendingIngredients.filter((_, i) => i !== index);
+
+    if (this.mode === 'edit' && this.recipe) {
+      this.onRemoveIngredient.emit({
+        productId:      this.recipe.id,
+        customSupplyId: removed.supply.id,
+      });
+    }
   }
 
-  submit(): void {
-    const ingredientCommands = this.formIngredients.map(fi => ({
-      ingredientId: fi.ingredient.id,
-      quantity: fi.quantity,
-    }));
+  // ── Submit ────────────────────────────────────────────────────────────────
 
+  submit(): void {
     if (this.mode === 'create') {
-      const cmd: CreateRecipeCommand = {
-        name: this.name,
-        description: this.description,
-        status: 'ACTIVE',
-        imageUrl: this.imageUrl,
-        sku: this.sku,
-        sellingPrice: this.sellingPrice,
-        ingredients: ingredientCommands,
-      };
-      this.onCreate.emit({ cmd, formIngredients: this.formIngredients });
+      this.onCreate.emit({
+        cmd: {
+          accountId:    this.accountId,
+          name:         this.name,
+          description:  this.description,
+          sku:          this.sku,
+          type:         'RECIPE',
+          imageUrl:     this.imageUrl,
+          sellingPrice: this.sellingPrice,
+        },
+        pendingIngredients: this.pendingIngredients,
+      });
     } else if (this.mode === 'edit' && this.recipe) {
-      const cmd: UpdateRecipeCommand = {
-        id: this.recipe.id,
-        name: this.name,
-        description: this.description,
-        imageUrl: this.imageUrl,
-        sku: this.sku,
-        sellingPrice: this.sellingPrice,
-        ingredients: ingredientCommands,
-      };
-      this.onUpdate.emit({ cmd, formIngredients: this.formIngredients });
+      this.onUpdate.emit({
+        cmd: {
+          id:           this.recipe.id,
+          name:         this.name,
+          description:  this.description,
+          sku:          this.sku,
+          imageUrl:     this.imageUrl,
+          sellingPrice: this.sellingPrice,
+        },
+      });
     }
   }
 
