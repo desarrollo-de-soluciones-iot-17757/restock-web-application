@@ -1,16 +1,13 @@
-import { RecipeStatus } from '../model/recipe.entity';
-
-export interface RecipeIngredientCommand {
-  ingredientId: string;
-  quantity: number;
-}
-
+/**
+ * Maps to CreateProductResource.
+ * type is always "RECIPE" for this module.
+ */
 export interface CreateRecipeCommand {
+  accountId: string;
   name: string;
-  description: string;
-  status: RecipeStatus;
-  imageUrl: string;
+  description?: string;
   sku: string;
+  type: 'RECIPE';
+  imageUrl?: string;
   sellingPrice: number;
-  ingredients: RecipeIngredientCommand[];
 }

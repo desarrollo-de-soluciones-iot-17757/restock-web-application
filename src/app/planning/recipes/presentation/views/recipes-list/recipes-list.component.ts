@@ -14,29 +14,23 @@ import { DeleteModalComponent } from '../../components/modals/delete-modal/delet
   styleUrls: ['./recipes-list.component.scss'],
 })
 export class RecipesListComponent implements OnInit {
-  store = inject(RecipesStore);
-  private router = inject(Router);
+  readonly store = inject(RecipesStore);
+  private readonly router = inject(Router);
 
   ngOnInit(): void {
     this.store.loadAll();
-    this.store.loadIngredients();
   }
 
   goToDetail(recipe: RecipeEntity): void {
     this.store.selectRecipe(recipe);
-    this.router.navigate(['/planning/recipes', recipe.id]);
-  }
-
-  getStatusLabel(status: string): string {
-    return status;
+    this.router.navigate(['/recipes', recipe.id]);
   }
 
   onSearch(event: Event): void {
     this.store.setSearch((event.target as HTMLInputElement).value);
   }
 
-  openMenu(event: Event, recipe: RecipeEntity): void {
+  stopProp(event: Event): void {
     event.stopPropagation();
-    // context menu handled inline in template
   }
 }
