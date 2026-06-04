@@ -6,6 +6,8 @@
     "overview": "Overview",
     "inventory": "Inventory",
     "stock": "Stock",
+    "customSupplies": "Custom supplies",
+    "batches": "Batches",
     "discrepancies": "Discrepancies",
     "recipes": "Recipes",
     "sales": "Sales",
@@ -16,7 +18,8 @@
   "layout": {
     "search": {
       "default": "Search recipes, ingredients, or SKUs...",
-      "batches": "Search batches..."
+      "batches": "Search batches...",
+      "customSupplies": "Search catalog items..."
     }
   },
   "shared": {
@@ -38,7 +41,8 @@
       "discrepancies": {
         "crumbs": "INVENTORY > DISCREPANCIES",
         "title": "Discrepancies",
-        "body": "This section will list stock discrepancies. UI coming next."
+        "emptyTitle": "No discrepancies detected",
+        "body": "Inventory discrepancies will appear here when stock audits report mismatches."
       },
       "stock": {
         "crumbs": "INVENTORY > BATCHES",
