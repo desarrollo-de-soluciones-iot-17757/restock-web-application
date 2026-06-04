@@ -45,8 +45,9 @@ export class BatchStockTableComponent {
   @Output() categoryFilterChange = new EventEmitter<string>();
   @Output() stockLevelFilterChange = new EventEmitter<StockLevelFilter>();
   @Output() pageChange = new EventEmitter<number>();
+  @Output() viewBatch = new EventEmitter<BatchRow>();
   @Output() editBatch = new EventEmitter<BatchRow>();
-  @Output() deleteBatch = new EventEmitter<string>();
+  @Output() deleteBatch = new EventEmitter<BatchRow>();
 
   protected onCategoryChange(value: string): void {
     this.categoryFilterChange.emit(value);
@@ -60,12 +61,16 @@ export class BatchStockTableComponent {
     this.pageChange.emit(index);
   }
 
-  protected onDeleteBatch(batchId: string): void {
-    this.deleteBatch.emit(batchId);
+  protected onDeleteBatch(row: BatchRow): void {
+    this.deleteBatch.emit(row);
   }
 
   protected onEditBatch(row: BatchRow): void {
     this.editBatch.emit(row);
+  }
+
+  protected onViewBatch(row: BatchRow): void {
+    this.viewBatch.emit(row);
   }
 
   protected trackById(_: number, row: BatchRow): string {

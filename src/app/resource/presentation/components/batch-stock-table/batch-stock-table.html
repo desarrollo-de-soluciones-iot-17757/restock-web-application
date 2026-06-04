@@ -142,6 +142,15 @@
               <button
                 type="button"
                 class="row-action"
+                aria-label="View batch details"
+                (click)="onViewBatch(row)"
+              >
+                <mat-icon>visibility</mat-icon>
+              </button>
+
+              <button
+                type="button"
+                class="row-action"
                 [attr.aria-label]="'resource.inventory.stock.table.editAria' | translate"
                 (click)="onEditBatch(row)"
               >
@@ -154,7 +163,7 @@
                 type="button"
                 class="row-action"
                 [attr.aria-label]="'resource.inventory.stock.table.deleteAria' | translate"
-                (click)="onDeleteBatch(row.id)"
+                (click)="onDeleteBatch(row)"
               >
                 <mat-icon>delete_outline</mat-icon>
               </button>
