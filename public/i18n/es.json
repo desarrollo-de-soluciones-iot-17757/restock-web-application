@@ -50,7 +50,7 @@
         "transferBatch": "Transferir stock de lote",
         "customSupplies": "Insumos personalizados",
         "addBatch": "Añadir lote",
-        "errorLoad": "No se pudo cargar el inventario. Revisa la API o la conexión.",
+        "errorLoad": "No se pudo cargar el inventario. Revisa API o conexión.",
         "loading": "Cargando lotes…",
         "kpi": {
           "totalBatches": "LOTES ACTIVOS TOTALES",

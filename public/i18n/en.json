@@ -50,7 +50,7 @@
         "transferBatch": "Transfer Batch Stock",
         "customSupplies": "Custom Supplies",
         "addBatch": "Add Batch",
-        "errorLoad": "Could not load inventory. Check the API or your network.",
+        "errorLoad": "Could not load inventory. Check the API or network.",
         "loading": "Loading batches…",
         "kpi": {
           "totalBatches": "TOTAL ACTIVE BATCHES",
