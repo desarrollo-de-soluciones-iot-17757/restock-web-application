@@ -8,6 +8,8 @@ export interface CustomSupplyResponse {
     category: string;
     isPerishable: boolean;
   };
+  isPerishable?: boolean;
+  supplyIsPerishable?: boolean;
   name: string;
   description: string;
   categoryName: string;
