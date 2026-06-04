@@ -3,12 +3,11 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ResourceStore } from '../../../application/resource.store';
-import { EditCustomSupplyDialogComponent } from '../../components/edit-custom-supply-dialog/edit-custom-supply-dialog';
 
 @Component({
   selector: 'app-custom-supply-detail-section',
   standalone: true,
-  imports: [CommonModule, EditCustomSupplyDialogComponent],
+  imports: [CommonModule],
   templateUrl: './custom-supply-detail-section.html',
   styleUrl: './custom-supply-detail-section.css',
 })
@@ -21,9 +20,6 @@ export class CustomSupplyDetailSectionComponent {
   customSupply = computed(() =>
     this.store.getCustomSupplyById(this.params()?.get('id') ?? ''),
   );
-
-  showEditModal = false;
-
   /**
    * Health status based on days until expiration.
    * Fresh: > 30 days | Expiring Soon: 1–30 days | Critical Care: today or expired
@@ -41,9 +37,5 @@ export class CustomSupplyDetailSectionComponent {
   getBatchHealthLabel(expirationDate: string | null): string {
     const labels = { fresh: 'Fresh', expiring: 'Expiring Soon', critical: 'Critical Care' };
     return labels[this.getBatchHealth(expirationDate)];
-  }
-
-  onCloseModal(): void {
-    this.showEditModal = false;
   }
 }
