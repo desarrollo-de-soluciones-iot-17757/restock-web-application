@@ -1,6 +1,16 @@
- import { Supply } from './supply.entity';
+import { Supply } from './supply.entity';
 import { UnitMeasure } from './unit-measure.entity';
- import { BaseEntity } from '../../../shared/domain/model/base-entity';
+import { BaseEntity } from '../../../shared/domain/model/base-entity';
+
+export interface StockRange {
+  minimumStock: number;
+  maximumStock: number;
+}
+
+export interface Money {
+  amount: number;
+  currencyCode: string;
+}
 
 /**
  * Represents a custom supply configured by an account.
@@ -13,16 +23,16 @@ export class CustomSupply implements BaseEntity {
     public readonly id: string,
     public readonly accountId: string,
     public readonly name: string,
-    public readonly category: string,
-    private _unitPrice: number,
+    public readonly supplyId: string,
     public readonly supply: Supply,
-    private _minStock: number,
-    public readonly unit: UnitMeasure,
-    private _maxStock: number,
-    public readonly imgUrl: string,
+    public readonly stockRange: StockRange,
+    private _unitPrice: Money,
+    public readonly description: string,
+    public readonly unitMeasurement: UnitMeasure,
+    public readonly pictureUrl: string,
   ) {
-    this.validateUnitPrice(_unitPrice);
-    this.validateStockLimits(_minStock, _maxStock);
+    this.validateUnitPrice(_unitPrice.amount);
+    this.validateStockLimits(stockRange.minimumStock, stockRange.maximumStock);
   }
 
   /**
@@ -31,38 +41,38 @@ export class CustomSupply implements BaseEntity {
    * @param id Unique custom supply identifier.
    * @param accountId Account identifier that owns the custom supply.
    * @param name Custom supply name.
-   * @param category Custom supply category.
+   * @param supplyId Identifier of the base supply.
    * @param unitPrice Unit price assigned by the account.
    * @param supply Base supply document.
-   * @param minStock Minimum expected stock.
-   * @param unit Unit measure document.
-   * @param maxStock Maximum expected stock.
-   * @param imgUrl Image URL of the custom supply.
+   * @param stockRange Minimum and maximum expected stock.
+   * @param description Custom supply description.
+   * @param unitMeasurement Unit measure document.
+   * @param pictureUrl Image URL of the custom supply.
    * @returns A new {@link CustomSupply} instance.
    */
   static create(
     id: string,
     accountId: string,
     name: string,
-    category: string,
-    unitPrice: number,
+    supplyId: string,
     supply: Supply,
-    minStock: number,
-    unit: UnitMeasure,
-    maxStock: number,
-    imgUrl: string,
+    stockRange: StockRange,
+    unitPrice: Money,
+    description: string,
+    unitMeasurement: UnitMeasure,
+    pictureUrl: string,
   ): CustomSupply {
     return new CustomSupply(
       id,
       accountId,
       name,
-      category,
-      unitPrice,
+      supplyId,
       supply,
-      minStock,
-      unit,
-      maxStock,
-      imgUrl,
+      stockRange,
+      unitPrice,
+      description,
+      unitMeasurement,
+      pictureUrl,
     );
   }
 
@@ -72,7 +82,18 @@ export class CustomSupply implements BaseEntity {
    * @returns An empty {@link CustomSupply} instance.
    */
   static empty(): CustomSupply {
-    return new CustomSupply('', '', '', '', 0, Supply.empty(), 0, UnitMeasure.empty(), 0, '');
+    return new CustomSupply(
+      '',
+      '',
+      '',
+      '',
+      Supply.empty(),
+      { minimumStock: 0, maximumStock: 0 },
+      { amount: 0, currencyCode: 'PEN' },
+      '',
+      UnitMeasure.empty(),
+      '',
+    );
   }
 
   /**
@@ -81,7 +102,11 @@ export class CustomSupply implements BaseEntity {
    * @returns Unit price value.
    */
   get unitPrice(): number {
-    return this._unitPrice;
+    return this._unitPrice.amount;
+  }
+
+  get unitPriceCurrencyCode(): string {
+    return this._unitPrice.currencyCode;
   }
 
   /**
@@ -90,7 +115,7 @@ export class CustomSupply implements BaseEntity {
    * @returns Minimum stock value.
    */
   get minStock(): number {
-    return this._minStock;
+    return this.stockRange.minimumStock;
   }
 
   /**
@@ -99,7 +124,19 @@ export class CustomSupply implements BaseEntity {
    * @returns Maximum stock value.
    */
   get maxStock(): number {
-    return this._maxStock;
+    return this.stockRange.maximumStock;
+  }
+
+  get category(): string {
+    return this.supply.category;
+  }
+
+  get unit(): UnitMeasure {
+    return this.unitMeasurement;
+  }
+
+  get imgUrl(): string {
+    return this.pictureUrl;
   }
 
   /**
@@ -108,7 +145,7 @@ export class CustomSupply implements BaseEntity {
    * @returns True if the base supply is perishable; otherwise, false.
    */
   isPerishable(): boolean {
-    return this.supply.perishable;
+    return this.supply.isPerishable;
   }
 
   /**
@@ -118,7 +155,7 @@ export class CustomSupply implements BaseEntity {
    */
   updateUnitPrice(unitPrice: number): void {
     this.validateUnitPrice(unitPrice);
-    this._unitPrice = unitPrice;
+    this._unitPrice = { ...this._unitPrice, amount: unitPrice };
   }
 
   /**
@@ -129,8 +166,8 @@ export class CustomSupply implements BaseEntity {
    */
   updateStockLimits(minStock: number, maxStock: number): void {
     this.validateStockLimits(minStock, maxStock);
-    this._minStock = minStock;
-    this._maxStock = maxStock;
+    this.stockRange.minimumStock = minStock;
+    this.stockRange.maximumStock = maxStock;
   }
 
   /**

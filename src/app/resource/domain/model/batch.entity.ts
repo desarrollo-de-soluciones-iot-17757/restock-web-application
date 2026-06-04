@@ -1,5 +1,10 @@
- import { CustomSupply } from './custom-supply.entity';
- import { BaseEntity } from '../../../shared/domain/model/base-entity';
+import { CustomSupply } from './custom-supply.entity';
+import { BaseEntity } from '../../../shared/domain/model/base-entity';
+
+export interface Stock {
+  stock: number;
+  unitMeasurement: string;
+}
 
 /**
  * Represents an inventory batch associated with a custom supply.
@@ -10,14 +15,16 @@
 export class Batch implements BaseEntity {
   private constructor(
     public readonly id: string,
+    public readonly code: string,
+    private _currentStock: Stock,
     public readonly customSupplyId: string,
     public readonly branchId: string,
-    private _currentQuantity: number,
-    public readonly expirationDate: string | null,
     public readonly accountId: string,
+    public readonly expirationDate: string | null,
+    public readonly entryDate: string | null,
     public readonly customSupply?: CustomSupply,
   ) {
-    this.validateCurrentQuantity(_currentQuantity);
+    this.validateCurrentStock(_currentStock);
   }
 
   /**
@@ -34,20 +41,24 @@ export class Batch implements BaseEntity {
    */
   static create(
     id: string,
+    code: string,
+    currentStock: Stock,
     customSupplyId: string,
     branchId: string,
-    currentQuantity: number,
-    expirationDate: string | null,
     accountId: string,
+    expirationDate: string | null,
+    entryDate: string | null,
     customSupply?: CustomSupply,
   ): Batch {
     return new Batch(
       id,
+      code,
+      currentStock,
       customSupplyId,
       branchId,
-      currentQuantity,
-      expirationDate,
       accountId,
+      expirationDate,
+      entryDate,
       customSupply,
     );
   }
@@ -60,7 +71,11 @@ export class Batch implements BaseEntity {
    * @returns An empty {@link Batch} instance.
    */
   static empty(): Batch {
-    return new Batch('', '', '', 0, null, '');
+    return new Batch('', '', { stock: 0, unitMeasurement: '' }, '', '', '', null, null);
+  }
+
+  get currentStock(): Stock {
+    return this._currentStock;
   }
 
   /**
@@ -69,7 +84,11 @@ export class Batch implements BaseEntity {
    * @returns Current quantity value.
    */
   get currentQuantity(): number {
-    return this._currentQuantity;
+    return this._currentStock.stock;
+  }
+
+  get unitMeasurement(): string {
+    return this._currentStock.unitMeasurement;
   }
 
   /**
@@ -78,8 +97,12 @@ export class Batch implements BaseEntity {
    * @param quantity New quantity value.
    */
   updateCurrentQuantity(quantity: number): void {
-    this.validateCurrentQuantity(quantity);
-    this._currentQuantity = quantity;
+    this.changeCurrentStock({ ...this._currentStock, stock: quantity });
+  }
+
+  changeCurrentStock(currentStock: Stock): void {
+    this.validateCurrentStock(currentStock);
+    this._currentStock = currentStock;
   }
 
   /**
@@ -114,8 +137,12 @@ export class Batch implements BaseEntity {
    * @param quantity Quantity to validate.
    * @throws Error if the quantity is negative.
    */
-  private validateCurrentQuantity(quantity: number): void {
-    if (quantity < 0) {
+  private validateCurrentStock(currentStock: Stock): void {
+    if (!currentStock) {
+      throw new Error('Batch current stock cannot be null.');
+    }
+
+    if (currentStock.stock < 0) {
       throw new Error('Batch current quantity cannot be negative.');
     }
   }
