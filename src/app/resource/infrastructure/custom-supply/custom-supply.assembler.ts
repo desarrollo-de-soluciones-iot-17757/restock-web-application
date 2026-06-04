@@ -3,6 +3,12 @@ import { CustomSupply } from '../../domain/model/custom-supply.entity';
 import { Supply } from '../../domain/model/supply.entity';
 import { UnitMeasure } from '../../domain/model/unit-measure.entity';
 
+/**
+ * Assembles a {@link CustomSupply} domain entity from the flat API response.
+ *
+ * All endpoints (GET list, GET by id, POST, PATCH) return the same flat shape:
+ * supplyId, supplyName, categoryName — no nested objects.
+ */
 export function assembleCustomSupply(dto: CustomSupplyResponse): CustomSupply {
   const supplyDto = dto.supply;
   const supply = Supply.create(
@@ -15,7 +21,7 @@ export function assembleCustomSupply(dto: CustomSupplyResponse): CustomSupply {
 
   const unitMeasure = UnitMeasure.create('', dto.unitMeasurement, dto.unitMeasurement);
   const minimumStock = dto.minimumStock ?? 0;
-  const maximumStock = dto.maximumStock ?? Math.max(minimumStock, dto.supplyContent ?? 0);
+  const maximumStock = dto.maximumStock ?? minimumStock;
 
   return CustomSupply.create(
     dto.id,

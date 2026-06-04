@@ -9,15 +9,25 @@
     </button>
   </div>
 
-  <div class="cards-grid">
-    @for (supply of customSupplies(); track supply.id) {
-      <app-custom-supply-card
-        [customSupply]="supply"
-        (onView)="onViewSupply(supply.id)"
-        (onEdit)="onEditSupply(supply)">
-      </app-custom-supply-card>
-    }
-  </div>
+  @if (loading()) {
+    <div class="empty-state">
+      <p>Loading supplies…</p>
+    </div>
+  } @else if (customSupplies().length === 0) {
+    <div class="empty-state">
+      <p>No custom supplies found. Click <strong>+ Add Supply</strong> to create one.</p>
+    </div>
+  } @else {
+    <div class="cards-grid">
+      @for (supply of customSupplies(); track supply.id) {
+        <app-custom-supply-card
+          [customSupply]="supply"
+          (onView)="onViewSupply(supply.id)"
+          (onEdit)="onEditSupply(supply)">
+        </app-custom-supply-card>
+      }
+    </div>
+  }
 
   @if (showCreateModal) {
     <app-create-custom-supply-dialog

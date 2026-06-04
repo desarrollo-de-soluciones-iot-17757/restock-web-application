@@ -54,6 +54,7 @@ export class Layout {
       ],
     },
     { labelKey: 'nav.recipes', icon: 'restaurant_menu', link: '/recipes' },
+    { labelKey: 'nav.kits', icon: 'inventory', link: '/kits' },
     { labelKey: 'nav.sales', icon: 'trending_up', link: '/sales' },
     { labelKey: 'nav.alerts', icon: 'notifications', link: '/alerts' },
     { labelKey: 'nav.devices', icon: 'router', link: '/devices' },

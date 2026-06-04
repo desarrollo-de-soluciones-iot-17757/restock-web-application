@@ -1,29 +1,33 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, catchError, EMPTY, finalize, forkJoin, map, of, tap } from 'rxjs';
 
 import { ResourceApi } from '../infrastructure/resource-api';
 import type { BatchData, BatchRow } from '../infrastructure/batch/batch.assembler';
 import type { BranchResource } from '../infrastructure/resource-api';
+import type { CreateBatchCommand } from '../domain/commands/create-batch.command';
+import type { TransferBatchCommand } from '../domain/commands/transfer-batch.command';
+import type { UpdateBatchCommand } from '../domain/commands/update-batch.command';
 import { CustomSupply } from '../domain/model/custom-supply.entity';
 import { Supply } from '../domain/model/supply.entity';
-import type { CreateBatchCommand } from '../domain/commands/create-batch.command';
-import type { UpdateBatchCommand } from '../domain/commands/update-batch.command';
-import type { TransferBatchCommand } from '../domain/commands/transfer-batch.command';
+import { assembleCustomSupply } from '../infrastructure/custom-supply/custom-supply.assembler';
 import {
-  AccountCustomSuppliesResponse,
-  CustomSupplyRequest,
+  CREATE_CUSTOM_SUPPLY_URL,
+  CUSTOM_SUPPLIES_BY_ACCOUNT_URL,
+  DELETE_CUSTOM_SUPPLY_URL,
+  UPDATE_CUSTOM_SUPPLY_URL,
+} from '../infrastructure/custom-supply/custom-supply.endpoint';
+import type {
+  CustomSupplyListResponse,
   CustomSupplyResponse,
 } from '../infrastructure/custom-supply/custom-supply.response';
-import { SupplyResponse } from '../infrastructure/supply/supply.response';
-import { assembleCustomSupply } from '../infrastructure/custom-supply/custom-supply.assembler';
 import { assembleSupply } from '../infrastructure/supply/supply.assembler';
-import { CUSTOM_SUPPLY_ENDPOINT } from '../infrastructure/custom-supply/custom-supply.endpoint';
-import { SUPPLY_ENDPOINT } from '../infrastructure/supply/supply.endpoint';
+import { SUPPLY_CATEGORIES_URL, SUPPLY_ENDPOINT } from '../infrastructure/supply/supply.endpoint';
+import type { SupplyResponse } from '../infrastructure/supply/supply.response';
 
 /**
- * Store responsible for managing the Resource feature state.
+ * Store responsible for managing the Resource bounded context state.
  */
 @Injectable({ providedIn: 'root' })
 export class ResourceStore {
@@ -37,6 +41,7 @@ export class ResourceStore {
 
   readonly customSupplies = signal<CustomSupply[]>([]);
   readonly supplyTemplates = signal<Supply[]>([]);
+  readonly supplyCategories = signal<string[]>([]);
   readonly branches = signal<BranchResource[]>([]);
   readonly accountId = signal('6a1e6a7f6da7ea565b1c50b2');
 
@@ -94,55 +99,67 @@ export class ResourceStore {
   loadInventoryContext(accountId = this.accountId()): void {
     this.setAccountId(accountId);
     this.loadCustomSuppliesByAccount(accountId);
-    this.resourceApi.getBranches(accountId).pipe(
-      tap((branches) => this.branches.set(branches)),
-      catchError(() => of([])),
-    ).subscribe();
+    this.resourceApi
+      .getBranches(accountId)
+      .pipe(
+        tap((branches) => this.branches.set(branches)),
+        catchError(() => of([])),
+      )
+      .subscribe();
   }
 
   createBatch(command: CreateBatchCommand): void {
-    this.resourceApi.createBatch(command.accountId, {
-      code: command.code,
-      currentStock: command.currentStock,
-      customSupplyId: command.customSupplyId,
-      branchId: command.branchId,
-      expirationDate: command.expirationDate,
-    }).pipe(
-      tap(() => this.refreshBatch()),
-      catchError(() => {
-        this.loadError.set(true);
-        return EMPTY;
-      }),
-    ).subscribe();
+    this.resourceApi
+      .createBatch(command.accountId, {
+        code: command.code,
+        currentStock: command.currentStock,
+        customSupplyId: command.customSupplyId,
+        branchId: command.branchId,
+        expirationDate: command.expirationDate,
+      })
+      .pipe(
+        tap(() => this.refreshBatch()),
+        catchError(() => {
+          this.loadError.set(true);
+          return EMPTY;
+        }),
+      )
+      .subscribe();
   }
 
   updateBatch(command: UpdateBatchCommand): void {
-    this.resourceApi.updateBatch(command.id, {
-      code: command.code,
-      currentStock: command.currentStock,
-      expirationDate: command.expirationDate,
-    }).pipe(
-      tap(() => this.refreshBatch()),
-      catchError(() => {
-        this.loadError.set(true);
-        return EMPTY;
-      }),
-    ).subscribe();
+    this.resourceApi
+      .updateBatch(command.id, {
+        code: command.code,
+        currentStock: command.currentStock,
+        expirationDate: command.expirationDate,
+      })
+      .pipe(
+        tap(() => this.refreshBatch()),
+        catchError(() => {
+          this.loadError.set(true);
+          return EMPTY;
+        }),
+      )
+      .subscribe();
   }
 
   transferBatch(command: TransferBatchCommand): void {
-    this.resourceApi.transferBatch(command.batchId, {
-      targetBranchId: command.targetBranchId,
-      quantity: command.quantity,
-      unitMeasurement: command.unitMeasurement,
-      reason: command.reason,
-    }).pipe(
-      tap(() => this.refreshBatch()),
-      catchError(() => {
-        this.loadError.set(true);
-        return EMPTY;
-      }),
-    ).subscribe();
+    this.resourceApi
+      .transferBatch(command.batchId, {
+        targetBranchId: command.targetBranchId,
+        quantity: command.quantity,
+        unitMeasurement: command.unitMeasurement,
+        reason: command.reason,
+      })
+      .pipe(
+        tap(() => this.refreshBatch()),
+        catchError(() => {
+          this.loadError.set(true);
+          return EMPTY;
+        }),
+      )
+      .subscribe();
   }
 
   deleteBatch(batchId: string): void {
@@ -161,15 +178,50 @@ export class ResourceStore {
       .subscribe();
   }
 
+  loadSupplyTemplates(): void {
+    this.http
+      .get<SupplyResponse[]>(SUPPLY_ENDPOINT)
+      .pipe(
+        tap((responses) => this.supplyTemplates.set(responses.map(assembleSupply))),
+        catchError((error) => {
+          console.error('[ResourceStore] loadSupplyTemplates error', error);
+          return EMPTY;
+        }),
+      )
+      .subscribe();
+  }
+
+  loadSupplyCategories(): void {
+    this.http
+      .get<string[]>(SUPPLY_CATEGORIES_URL)
+      .pipe(
+        tap((categories) => this.supplyCategories.set(categories)),
+        catchError((error) => {
+          console.error('[ResourceStore] loadSupplyCategories error', error);
+          return EMPTY;
+        }),
+      )
+      .subscribe();
+  }
+
+  getSupplyTemplates(): Supply[] {
+    return this.supplyTemplates();
+  }
+
   loadCustomSuppliesByAccount(accountId: string): void {
+    if (!accountId) {
+      console.warn('[ResourceStore] loadCustomSuppliesByAccount called with empty accountId');
+      return;
+    }
+
     this.loading.set(true);
     this.fetchCustomSuppliesByAccount(accountId)
       .pipe(
-        tap((supplies: CustomSupply[]) => {
-          this.customSupplies.set(supplies);
-        }),
+        tap((supplies) => this.customSupplies.set(supplies)),
         catchError((error: any) => {
+          console.error('[ResourceStore] loadCustomSuppliesByAccount error', error);
           this.handleAuthError(error);
+          this.loadError.set(true);
           return EMPTY;
         }),
         finalize(() => this.loading.set(false)),
@@ -185,89 +237,65 @@ export class ResourceStore {
     return this.customSupplies().find((supply) => supply.id === id);
   }
 
-  createCustomSupply(request: CustomSupplyRequest): Observable<CustomSupply> {
-    const params = new HttpParams().set('accountId', request.accountId);
-    const body = this.toCustomSupplyFormData(request, true);
-
-    return this.http.post<CustomSupplyResponse>(CUSTOM_SUPPLY_ENDPOINT, body, { params }).pipe(
-      map((res: CustomSupplyResponse) => assembleCustomSupply(res)),
-      tap(() => {
-        this.loadCustomSuppliesByAccount(request.accountId);
-      }),
+  createCustomSupply(formData: FormData, accountId: string): Observable<CustomSupply> {
+    return this.http.post<CustomSupplyResponse>(CREATE_CUSTOM_SUPPLY_URL(accountId), formData).pipe(
+      map((response) => assembleCustomSupply(response)),
+      tap(() => this.loadCustomSuppliesByAccount(accountId)),
     );
   }
 
-  updateCustomSupply(id: string, request: CustomSupplyRequest): Observable<CustomSupply> {
-    const body = this.toCustomSupplyFormData(request, false);
-
-    return this.http.patch<CustomSupplyResponse>(`${CUSTOM_SUPPLY_ENDPOINT}/${id}`, body).pipe(
-      map((res: CustomSupplyResponse) => assembleCustomSupply(res)),
+  updateCustomSupply(
+    customSupplyId: string,
+    formData: FormData,
+    accountId: string,
+  ): Observable<CustomSupply> {
+    return this.http.patch<CustomSupplyResponse>(UPDATE_CUSTOM_SUPPLY_URL(customSupplyId), formData).pipe(
+      map((response) => assembleCustomSupply(response)),
       tap((updated) => {
-        const current = this.customSupplies();
-        const index = current.findIndex((supply) => supply.id === id);
+        this.customSupplies.update((current) => {
+          const index = current.findIndex((supply) => supply.id === customSupplyId);
+          if (index === -1) return current;
 
-        if (index !== -1) {
-          const nextSupplies = [...current];
-          nextSupplies[index] = updated;
-          this.customSupplies.set(nextSupplies);
-        }
+          const updatedList = [...current];
+          updatedList[index] = updated;
+          return updatedList;
+        });
+        this.loadCustomSuppliesByAccount(accountId);
       }),
     );
   }
 
-  deleteCustomSupply(id: string): Observable<void> {
-    return this.http.delete<void>(`${CUSTOM_SUPPLY_ENDPOINT}/${id}`).pipe(
+  deleteCustomSupply(customSupplyId: string, accountId: string): Observable<void> {
+    return this.http.delete<void>(DELETE_CUSTOM_SUPPLY_URL(customSupplyId)).pipe(
       tap(() => {
-        this.customSupplies.update((current) => current.filter((supply) => supply.id !== id));
+        this.customSupplies.update((current) =>
+          current.filter((supply) => supply.id !== customSupplyId),
+        );
+        this.loadCustomSuppliesByAccount(accountId);
       }),
     );
-  }
-
-  loadSupplyTemplates(): void {
-    this.http
-      .get<SupplyResponse[]>(SUPPLY_ENDPOINT)
-      .pipe(
-        tap((responses: SupplyResponse[]) => {
-          this.supplyTemplates.set(responses.map(assembleSupply));
-        }),
-      )
-      .subscribe();
-  }
-
-  getSupplyTemplates(): Supply[] {
-    return this.supplyTemplates();
   }
 
   private fetchCustomSuppliesByAccount(accountId: string): Observable<CustomSupply[]> {
-    const params = new HttpParams().set('accountId', accountId);
-
-    return this.http
-      .get<AccountCustomSuppliesResponse | CustomSupplyResponse[]>(CUSTOM_SUPPLY_ENDPOINT, { params })
-      .pipe(
-        map((response) => {
-          const supplies = Array.isArray(response) ? response : response.supplies;
-          return supplies.map(assembleCustomSupply);
-        }),
-      );
+    return this.http.get<CustomSupplyListResponse>(CUSTOM_SUPPLIES_BY_ACCOUNT_URL(accountId)).pipe(
+      map((list) =>
+        list
+          .map((dto) => {
+            try {
+              return assembleCustomSupply(dto);
+            } catch (error) {
+              console.error('[ResourceStore] Failed to assemble custom supply', dto, error);
+              return null;
+            }
+          })
+          .filter((supply): supply is CustomSupply => supply !== null),
+      ),
+    );
   }
 
   private handleAuthError(error: any): void {
     if (error.status === 401) {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/sign-in']);
     }
-  }
-
-  private toCustomSupplyFormData(request: CustomSupplyRequest, includeSupplyId: boolean): FormData {
-    const body = new FormData();
-    body.append('name', request.name);
-    if (includeSupplyId) body.append('supplyId', request.supplyId);
-    body.append('minimumStock', String(request.minimumStock));
-    body.append('maximumStock', String(request.maximumStock ?? request.minimumStock));
-    body.append('unitPrice', request.unitPrice);
-    body.append('description', request.description);
-    body.append('unitMeasurement', request.unitMeasurement);
-    if (request.image) body.append('image', request.image);
-
-    return body;
   }
 }

@@ -11,10 +11,8 @@ export class SignUpAssembler {
     return {
       businessName: command.businessName,
       email: command.email,
-      password: command.password,
-      role: command.role,
-      phone: command.phone,
-      country: command.country,
+      password: command.password ?? '',
+      role: command.role ?? '',
     };
   }
 

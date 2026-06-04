@@ -6,7 +6,7 @@ import { IamStore as AuthService } from '../../../../iam/application/iam.store';
 import { CustomSupply } from '../../../domain/model/custom-supply.entity';
 import { CustomSupplyCardComponent } from '../../components/custom-supply-card/custom-supply-card';
 import { CreateCustomSupplyDialogComponent } from '../../components/create-custom-supply-dialog/create-custom-supply-dialog';
-import { RESOURCE_PATHS } from '../../../infrastructure/resource-paths.registry';
+import { RESOURCE_PATHS } from '../../resource-paths';
 
 @Component({
   selector: 'app-custom-supplies-section',
@@ -21,14 +21,19 @@ export class CustomSuppliesSectionComponent implements OnInit {
   private readonly authService = inject(AuthService);
 
   readonly customSupplies = this.store.customSupplies;
+  readonly loading = this.store.loading;
   readonly RESOURCE_PATHS = RESOURCE_PATHS;
 
   showCreateModal = false;
 
   ngOnInit(): void {
     const user = this.authService.currentUser();
-    const accountId = (user as any)?.accountId ?? 'acc-123';
-    this.store.loadCustomSuppliesByAccount(accountId);
+    const accountId = user?.accountId ?? '';
+    if (accountId) {
+      this.store.loadCustomSuppliesByAccount(accountId);
+    } else {
+      console.warn('[CustomSuppliesSection] No accountId found in session');
+    }
   }
 
   onViewSupply(id: string): void {

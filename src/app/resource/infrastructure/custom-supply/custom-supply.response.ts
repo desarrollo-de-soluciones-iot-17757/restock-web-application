@@ -16,7 +16,6 @@ export interface CustomSupplyResponse {
   unitMeasurement: string;
   minimumStock?: number;
   maximumStock?: number;
-  supplyContent?: number;
   pictureUrl: string;
   accountId?: string;
 }
@@ -36,8 +35,8 @@ export interface CustomSupplyRequest {
   unitPrice: string;
   unitMeasurement: string;
   minimumStock: number;
-  maximumStock?: number;
-  supplyContent?: number;
-  pictureUrl: string;
+  maximumStock: number;
   image?: File;
 }
+
+export type CustomSupplyListResponse = CustomSupplyResponse[];

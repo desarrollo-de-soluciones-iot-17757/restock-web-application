@@ -38,20 +38,26 @@ export const environment = {
 
   // IAM & Profiles
   platformProviderApiBaseUrl: 'http://localhost:8080/api/v1',
+  platformProviderSignInEndpointPath: 'auth/sign-in',
   platformProviderSignUpEndpointPath: 'auth/sign-up',
   platformProviderRegistrationBusinessDetailsEndpointPath: 'businesses',
   platformProviderRegistrationPersonalProfileEndpointPath: 'profiles',
 
-  //CUSTOM SUPPLY
+  // Resources
   platformProviderCustomSuppliesEndpointPath: 'custom-supplies',
-
-  //SUPPLIES
   platformProviderSuppliesEndpointPath: 'supplies',
+  platformProviderSupplyCategoriesEndpointPath: 'supplies/categories',
 
   // IAM
   //https://restock-api-iam-login.free.beeceptor.com
   platformProviderIamApiBaseUrlForSignIn: 'https://restock-api-iam-login.free.beeceptor.com',
-  platformProviderSignInEndpointPath: 'auth/sign-in',
   platformProviderForgotPasswordEndpointPath: 'auth/forgot-password',
+
+  // Kits
+  platformProviderKitUpdateApiBaseUrl: 'https://u202314101.free.beeceptor.com/kits/K-992',
+  platformProviderKitApiBaseUrl: 'https://restock-api-planning-kits.free.beeceptor.com',
+  platformProviderKitsRegisterEndpointPath: 'kits/register',
+  platformProviderKitsEndpointPath: 'kits',
+  platformProviderProductsEndpointPath: 'products',
 };
 
