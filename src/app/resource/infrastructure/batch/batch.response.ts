@@ -38,7 +38,7 @@ export interface CreateBatchRequest {
   currentStock: number;
   customSupplyId: string;
   branchId: string;
-  expirationDate: string | null;
+  expirationDate: string;
 }
 
 export interface UpdateBatchRequest {
