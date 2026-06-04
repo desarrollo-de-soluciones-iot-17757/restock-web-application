@@ -11,6 +11,14 @@
   padding: 24px 28px 40px;
   max-width: 1280px;
   margin: 0 auto;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.batches-page *,
+.batches-page *::before,
+.batches-page *::after {
+  box-sizing: border-box;
 }
 
 .error-banner {
@@ -144,4 +152,171 @@
 
 .kpi-foot-warn {
   color: var(--rs-orange);
+}
+
+.modal-backdrop,
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(17, 24, 39, 0.58);
+  display: flex;
+}
+
+.modal-backdrop {
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.drawer-backdrop {
+  justify-content: flex-end;
+  overflow: hidden;
+}
+
+.inventory-modal,
+.transfer-drawer {
+  background: #fff;
+  border: 1px solid var(--rs-border);
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.22);
+}
+
+.inventory-modal {
+  width: min(520px, calc(100vw - 48px));
+  max-height: calc(100dvh - 48px);
+  border-radius: 8px;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.transfer-drawer {
+  width: min(420px, 100vw);
+  height: 100dvh;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.modal-titlebar {
+  margin-bottom: 22px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--rs-border);
+}
+
+.modal-titlebar h2 {
+  margin: 0;
+  font-size: 22px;
+  color: var(--rs-text);
+}
+
+.modal-titlebar p {
+  margin: 4px 0 0;
+  color: var(--rs-muted);
+  font-size: 13px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.form-field span {
+  color: #374151;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  border: 1px solid #cfd8d3;
+  border-radius: 6px;
+  min-height: 42px;
+  padding: 10px 12px;
+  color: var(--rs-text);
+  font: inherit;
+  background: #fff;
+}
+
+.form-field textarea {
+  resize: vertical;
+  max-width: 100%;
+}
+
+.modal-actions,
+.drawer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rs-border);
+}
+
+.drawer-actions {
+  margin-top: auto;
+}
+
+.btn-secondary,
+.btn-submit {
+  min-width: 128px;
+  height: 42px;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  border: 1px solid var(--rs-border);
+  background: #fff;
+  color: #374151;
+}
+
+.btn-submit {
+  border: 1px solid var(--rs-green);
+  background: var(--rs-green);
+  color: #fff;
+}
+
+@media (max-width: 640px) {
+  .batches-page {
+    padding: 18px 14px 28px;
+  }
+
+  .page-head-actions,
+  .page-head-actions button {
+    width: 100%;
+  }
+
+  .modal-backdrop {
+    align-items: flex-start;
+    padding: 16px;
+  }
+
+  .inventory-modal {
+    width: 100%;
+    max-height: calc(100dvh - 32px);
+    padding: 20px;
+  }
+
+  .transfer-drawer {
+    width: min(420px, 100vw);
+    padding: 20px;
+  }
+
+  .modal-actions,
+  .drawer-actions {
+    flex-direction: column-reverse;
+  }
+
+  .btn-secondary,
+  .btn-submit {
+    width: 100%;
+  }
 }

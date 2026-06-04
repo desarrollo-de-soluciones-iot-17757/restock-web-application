@@ -143,6 +143,7 @@
                 type="button"
                 class="row-action"
                 [attr.aria-label]="'resource.inventory.stock.table.editAria' | translate"
+                (click)="onEditBatch(row)"
               >
                 <mat-icon [class.icon-warn]="row.rowHighlight === 'warning'">
                   edit
@@ -153,6 +154,7 @@
                 type="button"
                 class="row-action"
                 [attr.aria-label]="'resource.inventory.stock.table.deleteAria' | translate"
+                (click)="onDeleteBatch(row.id)"
               >
                 <mat-icon>delete_outline</mat-icon>
               </button>
