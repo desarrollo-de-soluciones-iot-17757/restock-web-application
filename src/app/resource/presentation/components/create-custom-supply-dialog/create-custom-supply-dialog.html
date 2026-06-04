@@ -62,11 +62,7 @@
           <label>UOM (UNIT OF MEASURE)</label>
           <select [(ngModel)]="formData.unitMeasurement" class="form-control">
             <option value="" disabled selected>Select unit</option>
-            <option value="kg">Kilograms (kg)</option>
-            <option value="L">Liters (L)</option>
-            <option value="doz">Dozen (doz)</option>
-            <option value="grams">Grams (g)</option>
-            <option value="units">Units</option>
+            <option *ngFor="let unit of unitMeasurements" [value]="unit">{{ unit }}</option>
           </select>
         </div>
       </div>
