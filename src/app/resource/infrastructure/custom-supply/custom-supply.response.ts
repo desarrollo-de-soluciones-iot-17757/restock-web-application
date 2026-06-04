@@ -1,12 +1,22 @@
 export interface CustomSupplyResponse {
   id: string;
+  supplyId?: string;
+  supply?: {
+    id: string;
+    name: string;
+    description: string;
+    category: string;
+    isPerishable: boolean;
+  };
   name: string;
   description: string;
   categoryName: string;
   unitPriceAmount: string;
   unitPriceCurrencyCode: string;
-  supplyContent: number;
   unitMeasurement: string;
+  minimumStock?: number;
+  maximumStock?: number;
+  supplyContent?: number;
   pictureUrl: string;
   accountId?: string;
 }
@@ -24,8 +34,10 @@ export interface CustomSupplyRequest {
   description: string;
   categoryName: string;
   unitPrice: string;
-  supplyContent: number;
   unitMeasurement: string;
   minimumStock: number;
+  maximumStock?: number;
+  supplyContent?: number;
   pictureUrl: string;
+  image?: File;
 }
