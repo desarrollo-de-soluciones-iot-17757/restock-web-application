@@ -20,6 +20,24 @@ export interface BranchResource {
   status?: string;
 }
 
+type BranchDto = Partial<{
+  id: string | { value?: string; id?: string };
+  branchId: string | { value?: string; id?: string };
+  name: string | { value?: string };
+  branchName: string | { value?: string };
+  status: string;
+}>;
+
+type BranchRootResponse =
+  | BranchDto[]
+  | {
+      data?: BranchDto[] | { content?: BranchDto[]; branches?: BranchDto[]; items?: BranchDto[] };
+      branches?: BranchDto[];
+      content?: BranchDto[];
+      items?: BranchDto[];
+      branch?: { data?: BranchDto[]; branches?: BranchDto[] };
+    };
+
 /**
  * HTTP entry point for the Resource bounded context.
  *
@@ -83,7 +101,10 @@ export class ResourceApi {
    * Updates a batch.
    */
   updateBatch(batchId: string, body: UpdateBatchRequest): Observable<BatchItemResponse> {
-    const operation = () => this.http.patch<BatchItemResponse>(`${this.batchesUrl}/${encodeURIComponent(batchId)}`, body);
+    const operation = () => this.http.patch<BatchItemResponse>(
+      `${this.batchesUrl}/${encodeURIComponent(batchId)}`,
+      body,
+    );
 
     return operation().pipe(catchError(() => this.withFallback(operation)));
   }
@@ -109,12 +130,53 @@ export class ResourceApi {
     return operation().pipe(catchError(() => this.withFallback(operation)));
   }
 
-  getBranches(accountId: string): Observable<BranchResource[]> {
-    const params = new HttpParams().set('accountId', accountId);
-    const operation = () => this.http.get<BranchResource[] | { data?: BranchResource[] }>(this.branchesUrl, { params }).pipe(
-      map((response) => Array.isArray(response) ? response : response.data ?? []),
-    );
+  getBranches(accountId = ''): Observable<BranchResource[]> {
+    const options = accountId ? { params: new HttpParams().set('accountId', accountId) } : undefined;
+    const operation = () =>
+      this.http
+        .get<BranchRootResponse>(this.branchesUrl, options)
+        .pipe(map((response) => this.assembleBranches(response)));
 
     return operation().pipe(catchError(() => this.withFallback(operation)));
+  }
+
+  private assembleBranches(response: BranchRootResponse): BranchResource[] {
+    const branches = this.branchItemsFrom(response);
+
+    return branches
+      .map((branch): BranchResource | null => {
+        const id = this.stringValue(branch.id) || this.stringValue(branch.branchId);
+        const name = this.stringValue(branch.name) || this.stringValue(branch.branchName);
+
+        if (!id || !name) return null;
+
+        return branch.status ? { id, name, status: branch.status } : { id, name };
+      })
+      .filter((branch): branch is BranchResource => branch !== null);
+  }
+
+  private branchItemsFrom(response: BranchRootResponse): BranchDto[] {
+    if (Array.isArray(response)) return response;
+
+    if (Array.isArray(response.data)) return response.data;
+
+    return (
+      response.branches ??
+      response.content ??
+      response.items ??
+      response.branch?.data ??
+      response.branch?.branches ??
+      response.data?.content ??
+      response.data?.branches ??
+      response.data?.items ??
+      []
+    );
+  }
+
+  private stringValue(value: string | { value?: string; id?: string } | undefined): string {
+    if (!value) return '';
+    if (typeof value === 'string') return value;
+
+    return value.value ?? value.id ?? '';
   }
 }

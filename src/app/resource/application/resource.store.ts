@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, catchError, EMPTY, finalize, forkJoin, map, of, tap } from 'rxjs';
+import { Observable, catchError, EMPTY, finalize, forkJoin, map, of, switchMap, tap } from 'rxjs';
 
 import { ResourceApi } from '../infrastructure/resource-api';
 import type { BatchData, BatchRow } from '../infrastructure/batch/batch.assembler';
@@ -19,12 +19,14 @@ import {
   UPDATE_CUSTOM_SUPPLY_URL,
 } from '../infrastructure/custom-supply/custom-supply.endpoint';
 import type {
+  AccountCustomSuppliesResponse,
   CustomSupplyListResponse,
   CustomSupplyResponse,
 } from '../infrastructure/custom-supply/custom-supply.response';
 import { assembleSupply } from '../infrastructure/supply/supply.assembler';
 import { SUPPLY_CATEGORIES_URL, SUPPLY_ENDPOINT } from '../infrastructure/supply/supply.endpoint';
 import type { SupplyResponse } from '../infrastructure/supply/supply.response';
+import { IamStore as AuthService } from '../../iam/application/iam.store';
 
 /**
  * Store responsible for managing the Resource bounded context state.
@@ -48,6 +50,7 @@ export class ResourceStore {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
   private readonly resourceApi = inject(ResourceApi);
+  private readonly authService = inject(AuthService);
 
   /**
    * Loads custom supplies first, then batches enriched with their metadata.
@@ -63,7 +66,12 @@ export class ResourceStore {
           return of([]);
         }),
       ),
-      branches: this.resourceApi.getBranches(this.accountId()).pipe(catchError(() => of([]))),
+      branches: this.resourceApi.getBranches(this.accountId()).pipe(
+        switchMap((branches) =>
+          branches.length > 0 ? of(branches) : this.resourceApi.getBranches(),
+        ),
+        catchError(() => of([])),
+      ),
     }).subscribe(({ customSupplies, branches }) => {
       this.customSupplies.set(customSupplies);
       this.branches.set(branches);
@@ -102,6 +110,9 @@ export class ResourceStore {
     this.resourceApi
       .getBranches(accountId)
       .pipe(
+        switchMap((branches) =>
+          branches.length > 0 ? of(branches) : this.resourceApi.getBranches(),
+        ),
         tap((branches) => this.branches.set(branches)),
         catchError(() => of([])),
       )
@@ -115,7 +126,7 @@ export class ResourceStore {
         currentStock: command.currentStock,
         customSupplyId: command.customSupplyId,
         branchId: command.branchId,
-        expirationDate: command.expirationDate,
+        expirationDate: command.expirationDate ?? '',
       })
       .pipe(
         tap(() => this.refreshBatch()),
@@ -249,9 +260,14 @@ export class ResourceStore {
     formData: FormData,
     accountId: string,
   ): Observable<CustomSupply> {
-    return this.http.patch<CustomSupplyResponse>(UPDATE_CUSTOM_SUPPLY_URL(customSupplyId), formData).pipe(
+    return this.http.patch<CustomSupplyResponse>(
+      UPDATE_CUSTOM_SUPPLY_URL(customSupplyId),
+      formData,
+      this.authOptions(),
+    ).pipe(
       map((response) => assembleCustomSupply(response)),
       tap((updated) => {
+        const reloadAccountId = accountId || updated.accountId || this.accountId();
         this.customSupplies.update((current) => {
           const index = current.findIndex((supply) => supply.id === customSupplyId);
           if (index === -1) return current;
@@ -260,7 +276,7 @@ export class ResourceStore {
           updatedList[index] = updated;
           return updatedList;
         });
-        this.loadCustomSuppliesByAccount(accountId);
+        this.loadCustomSuppliesByAccount(reloadAccountId);
       }),
     );
   }
@@ -277,25 +293,36 @@ export class ResourceStore {
   }
 
   private fetchCustomSuppliesByAccount(accountId: string): Observable<CustomSupply[]> {
-    return this.http.get<CustomSupplyListResponse>(CUSTOM_SUPPLIES_BY_ACCOUNT_URL(accountId)).pipe(
-      map((list) =>
-        list
-          .map((dto) => {
-            try {
-              return assembleCustomSupply(dto);
-            } catch (error) {
-              console.error('[ResourceStore] Failed to assemble custom supply', dto, error);
-              return null;
-            }
-          })
-          .filter((supply): supply is CustomSupply => supply !== null),
-      ),
-    );
+    return this.http
+      .get<CustomSupplyListResponse | AccountCustomSuppliesResponse>(CUSTOM_SUPPLIES_BY_ACCOUNT_URL(accountId))
+      .pipe(
+        map((response) => {
+          const supplies = Array.isArray(response) ? response : response.supplies;
+
+          return supplies
+            .map((dto) => {
+              try {
+                return assembleCustomSupply(dto);
+              } catch (error) {
+                console.error('[ResourceStore] Failed to assemble custom supply', dto, error);
+                return null;
+              }
+            })
+            .filter((supply): supply is CustomSupply => supply !== null);
+        }),
+      );
   }
 
   private handleAuthError(error: any): void {
     if (error.status === 401) {
       this.router.navigate(['/sign-in']);
     }
+  }
+
+  private authOptions(): { headers?: HttpHeaders } {
+    const token = this.authService.currentUser()?.token;
+    return token
+      ? { headers: new HttpHeaders({ Authorization: `Bearer ${token}` }) }
+      : {};
   }
 }
