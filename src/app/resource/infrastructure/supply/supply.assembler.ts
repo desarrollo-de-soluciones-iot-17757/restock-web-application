@@ -6,7 +6,7 @@ export function assembleSupply(dto: SupplyResponse): Supply {
     dto.id,
     dto.name,
     dto.description,
-    dto.isPerishable,
-    dto.category
+    dto.category,
+    dto.isPerishable
   );
 }
