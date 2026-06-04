@@ -7,7 +7,6 @@
 
   <header class="page-head">
     <div class="page-head-text">
-      <p class="crumbs">{{ 'resource.inventory.stock.crumbs' | translate }}</p>
       <h1 class="title">{{ 'resource.inventory.stock.title' | translate }}</h1>
     </div>
 
@@ -68,8 +67,9 @@
       (categoryFilterChange)="onCategoryChange($event)"
       (stockLevelFilterChange)="onStockLevelChange($event)"
       (pageChange)="goPage($event)"
+      (viewBatch)="openBatchDetailModal($event)"
       (editBatch)="openEditBatchModal($event)"
-      (deleteBatch)="onDeleteBatch($event)"
+      (deleteBatch)="askDeleteBatch($event)"
     />
   }
 
@@ -79,6 +79,10 @@
         <header class="modal-titlebar">
           <h2>{{ showAddBatchModal() ? 'Add New Batch' : 'Edit Batch' }}</h2>
         </header>
+
+        @if (batchFormWarning()) {
+          <p class="warning-banner" role="alert">{{ batchFormWarning() }}</p>
+        }
 
         <label class="form-field">
           <span>Batch code</span>
@@ -96,27 +100,22 @@
             </select>
           </label>
 
-          <label class="form-field">
-            <span>Branch</span>
-            <select name="branchId" [(ngModel)]="batchForm.branchId" required>
-              <option value="" disabled>Select branch...</option>
-              @for (branch of branches(); track branch.id) {
-                <option [value]="branch.id">{{ branch.name }}</option>
-              }
-            </select>
-          </label>
         }
 
-        <label class="form-field">
-          <span>Current stock</span>
-          <input name="currentStock" type="number" min="0" step="0.01" [(ngModel)]="batchForm.currentStock" required>
-        </label>
+        <div class="stock-row">
+          <label class="form-field stock-input">
+            <span>Initial stock</span>
+            <input name="currentStock" type="number" min="0" step="0.01" [(ngModel)]="batchForm.currentStock" placeholder="0.00" required>
+          </label>
+          <span class="stock-unit">{{ selectedCustomSupplyUnit() }}</span>
+        </div>
 
         @if (selectedCustomSupplyRequiresExpiration()) {
           <label class="form-field">
             <span>Expiration date</span>
             <input name="expirationDate" type="date" [(ngModel)]="batchForm.expirationDate" required>
           </label>
+          <p class="field-hint">Required for perishable items</p>
         }
 
         <footer class="modal-actions">
@@ -138,6 +137,11 @@
             <p>Initiate inter-branch logistics</p>
           </div>
         </header>
+
+        <label class="form-field">
+          <span>Origin branch</span>
+          <input name="originBranch" type="text" [value]="currentOriginBranchName()" readonly>
+        </label>
 
         <label class="form-field">
           <span>Select batch</span>
@@ -179,6 +183,62 @@
           <button type="button" class="btn-submit" (click)="transferBatch()">Confirm Transfer</button>
         </footer>
       </aside>
+    </div>
+  }
+
+  @if (showBatchDetailModal()) {
+    @if (selectedBatch(); as batch) {
+    <div class="modal-backdrop" role="dialog" aria-modal="true">
+      <section class="batch-detail-modal">
+        <header class="detail-titlebar">
+          <h2>Batch Details - {{ batch.code }}</h2>
+          <button type="button" class="close-icon" (click)="closeBatchDialogs()" aria-label="Close batch details">
+            <mat-icon>close</mat-icon>
+          </button>
+        </header>
+
+        <div class="detail-body">
+          <p class="detail-label">Supply name</p>
+          <h3>{{ batch.supplyName }}</h3>
+
+          <div class="detail-grid">
+            <article>
+              <span>Current stock</span>
+              <strong>{{ batch.stock | number: '1.2-2' }}</strong>
+            </article>
+            <article>
+              <span>Expiration date</span>
+              <strong class="detail-exp">{{ batch.expirationDate ? (batch.expirationDate | date: 'MMM d, y') : 'No expiration' }}</strong>
+            </article>
+            <article>
+              <span>UOM</span>
+              <strong>{{ batchDetailUnitLabel(batch) }}</strong>
+            </article>
+            <article>
+              <span>Origin branch</span>
+              <strong>{{ branchName(batch.branchId) }}</strong>
+            </article>
+          </div>
+        </div>
+
+        <footer class="detail-actions">
+          <button type="button" class="btn-secondary" (click)="closeBatchDialogs()">Close</button>
+        </footer>
+      </section>
+    </div>
+    }
+  }
+
+  @if (batchPendingDelete(); as batchToDelete) {
+    <div class="modal-backdrop" role="dialog" aria-modal="true">
+      <section class="confirm-modal">
+        <h2>Delete batch?</h2>
+        <p>Are you sure you want to delete {{ batchToDelete.code }} batch?</p>
+        <footer class="modal-actions">
+          <button type="button" class="btn-secondary" (click)="cancelDeleteBatch()">Cancel</button>
+          <button type="button" class="btn-danger" (click)="confirmDeleteBatch()">Delete Batch</button>
+        </footer>
+      </section>
     </div>
   }
 </section>
