@@ -34,6 +34,19 @@
   letter-spacing: -0.3px;
 }
 
+.back-link {
+  display: inline-flex;
+  margin-bottom: 10px;
+  color: #1a5c3a;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
 .page-header-actions {
   display: flex;
   gap: 10px;

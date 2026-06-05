@@ -1,10 +1,8 @@
 import { Component, EventEmitter, Output, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { ResourceStore } from '../../../application/resource.store';
 import { IamStore as AuthService } from '../../../../iam/application/iam.store';
-import { RESOURCE_PATHS } from '../../resource-paths';
 
 const UNIT_MEASUREMENTS = ['Kilograms', 'Liters', 'Dozen', 'Grams', 'Units'] as const;
 
@@ -20,7 +18,6 @@ export class CreateCustomSupplyDialogComponent implements OnInit {
   @Output() onCreate = new EventEmitter<void>();
 
   private readonly store = inject(ResourceStore);
-  private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
 
   readonly supplyTemplates = this.store.supplyTemplates;
@@ -112,10 +109,9 @@ export class CreateCustomSupplyDialogComponent implements OnInit {
       fd.append('image', this.selectedImageFile, this.selectedImageFile.name);
     }
 
-    this.store.createCustomSupply(fd, accountId).subscribe((newSupply) => {
+    this.store.createCustomSupply(fd, accountId).subscribe(() => {
       this.onCreate.emit();
       this.onClose.emit();
-      this.router.navigate([RESOURCE_PATHS.customSupplies.detail(newSupply.id)]);
     });
   }
 }

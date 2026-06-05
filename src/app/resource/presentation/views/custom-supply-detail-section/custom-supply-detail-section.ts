@@ -1,13 +1,13 @@
 import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ResourceStore } from '../../../application/resource.store';
 
 @Component({
   selector: 'app-custom-supply-detail-section',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './custom-supply-detail-section.html',
   styleUrl: './custom-supply-detail-section.css',
 })
