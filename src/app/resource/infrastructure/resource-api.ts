@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, map, Observable } from 'rxjs';
 
+import { environment } from '../../../environments/environment';
 import { assembleBatch, BatchData } from './batch/batch.assembler';
 import { BATCH_ENDPOINT } from './batch/batch.endpoint';
 import type { CustomSupply } from '../domain/model/custom-supply.entity';
@@ -47,7 +48,7 @@ type BranchRootResponse =
 @Injectable({ providedIn: 'root' })
 export class ResourceApi {
   private readonly http = inject(HttpClient);
-  private readonly primaryBaseUrl = '/api/v1';
+  private readonly primaryBaseUrl = environment.platformProviderApiBaseUrl;
   private readonly fallbackBaseUrl = 'http://localhost:8080/api/v1';
   private currentBaseUrl = this.primaryBaseUrl;
 

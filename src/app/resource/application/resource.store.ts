@@ -27,6 +27,7 @@ import { assembleSupply } from '../infrastructure/supply/supply.assembler';
 import { SUPPLY_CATEGORIES_URL, SUPPLY_ENDPOINT } from '../infrastructure/supply/supply.endpoint';
 import type { SupplyResponse } from '../infrastructure/supply/supply.response';
 import { IamStore as AuthService } from '../../iam/application/iam.store';
+import { ProfilesStore } from '../../profiles/application/profiles.store';
 
 /**
  * Store responsible for managing the Resource bounded context state.
@@ -45,12 +46,14 @@ export class ResourceStore {
   readonly supplyTemplates = signal<Supply[]>([]);
   readonly supplyCategories = signal<string[]>([]);
   readonly branches = signal<BranchResource[]>([]);
+  readonly currentBranchId = signal('');
   readonly accountId = signal('6a1e6a7f6da7ea565b1c50b2');
 
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
   private readonly resourceApi = inject(ResourceApi);
   private readonly authService = inject(AuthService);
+  private readonly profilesStore = inject(ProfilesStore);
 
   /**
    * Loads custom supplies first, then batches enriched with their metadata.
@@ -74,16 +77,19 @@ export class ResourceStore {
       ),
     }).subscribe(({ customSupplies, branches }) => {
       this.customSupplies.set(customSupplies);
-      this.branches.set(branches);
+      this.setBranches(branches);
+      const branchId = this.currentBranchId();
 
       this.resourceApi
         .getBatch(this.accountId(), customSupplies)
         .pipe(
           tap((batch: BatchData) => {
-            this.totalActiveBatches.set(batch.totalActiveBatches);
+            const branchRows = this.rowsForBranch(batch.batches, branchId);
+
+            this.totalActiveBatches.set(branchRows.length);
             this.totalActiveBatchesDeltaPercent.set(batch.totalActiveBatchesDeltaPercent);
-            this.nearExpiry30Days.set(batch.nearExpiry30Days);
-            this.rows.set(batch.batches);
+            this.nearExpiry30Days.set(branchRows.filter((row) => this.isNearExpiry(row)).length);
+            this.rows.set(branchRows);
           }),
           catchError(() => {
             this.loadError.set(true);
@@ -113,7 +119,7 @@ export class ResourceStore {
         switchMap((branches) =>
           branches.length > 0 ? of(branches) : this.resourceApi.getBranches(),
         ),
-        tap((branches) => this.branches.set(branches)),
+        tap((branches) => this.setBranches(branches)),
         catchError(() => of([])),
       )
       .subscribe();
@@ -248,6 +254,12 @@ export class ResourceStore {
     return this.customSupplies().find((supply) => supply.id === id);
   }
 
+  setCurrentBranchId(branchId: string): void {
+    if (branchId) {
+      this.currentBranchId.set(branchId);
+    }
+  }
+
   createCustomSupply(formData: FormData, accountId: string): Observable<CustomSupply> {
     return this.http.post<CustomSupplyResponse>(CREATE_CUSTOM_SUPPLY_URL(accountId), formData).pipe(
       map((response) => assembleCustomSupply(response)),
@@ -317,6 +329,37 @@ export class ResourceStore {
     if (error.status === 401) {
       this.router.navigate(['/sign-in']);
     }
+  }
+
+  private setBranches(branches: BranchResource[]): void {
+    this.branches.set(branches);
+
+    const configuredBranchId = this.profilesStore.currentBranchId();
+    const configuredBranch = branches.find((branch) => branch.id === configuredBranchId);
+    const currentBranch = branches.find((branch) => branch.id === this.currentBranchId());
+    const nextBranchId = configuredBranch?.id ?? currentBranch?.id ?? branches[0]?.id ?? '';
+
+    this.currentBranchId.set(nextBranchId);
+  }
+
+  private rowsForBranch(rows: BatchRow[], branchId: string): BatchRow[] {
+    if (!branchId) return rows;
+
+    return rows.filter((row) => row.branchId === branchId);
+  }
+
+  private isNearExpiry(row: BatchRow): boolean {
+    if (!row.expirationDate) return false;
+
+    const expiration = new Date(row.expirationDate);
+    const today = new Date();
+    const thirtyDays = new Date(today);
+    today.setHours(0, 0, 0, 0);
+    thirtyDays.setDate(today.getDate() + 30);
+    thirtyDays.setHours(0, 0, 0, 0);
+    expiration.setHours(0, 0, 0, 0);
+
+    return expiration >= today && expiration <= thirtyDays;
   }
 
   private authOptions(): { headers?: HttpHeaders } {

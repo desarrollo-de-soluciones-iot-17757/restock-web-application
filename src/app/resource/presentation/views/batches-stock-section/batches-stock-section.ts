@@ -41,6 +41,7 @@ export class BatchesStockSection {
   protected readonly rows = this.store.rows;
   protected readonly customSupplies = this.store.customSupplies;
   protected readonly branches = this.store.branches;
+  protected readonly currentBranchId = this.store.currentBranchId;
 
   protected readonly categoryFilter = signal<CategoryFilter>('all');
   protected readonly stockLevelFilter = signal<StockLevelFilter>('any');
@@ -321,13 +322,9 @@ export class BatchesStockSection {
   }
 
   protected currentOriginBranch() {
-    const selectedBatch = this.selectedBatch();
-    if (selectedBatch) {
-      const batchBranch = this.branches().find((branch) => branch.id === selectedBatch.branchId);
-      if (batchBranch) return batchBranch;
-    }
+    const branchId = this.currentBranchId();
 
-    return this.branches()[0] ?? null;
+    return this.branches().find((branch) => branch.id === branchId) ?? this.branches()[0] ?? null;
   }
 
   protected branchName(branchId: string): string {
