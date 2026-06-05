@@ -26,10 +26,14 @@
             <input
               id="businessName"
               class="field-input"
+              [class.field-input--error]="form.get('businessName')?.invalid && form.get('businessName')?.touched"
               formControlName="businessName"
               placeholder="{{ 'profiles.registrationBusinessDetails.businessNamePlaceholder' | translate }}"
               autocomplete="organization"
             />
+            @if (form.get('businessName')?.invalid && form.get('businessName')?.touched) {
+              <span class="field-error">Business name is required.</span>
+            }
           </div>
 
           <div class="field-group">
@@ -184,6 +188,9 @@
       </div>
 
       <footer class="footer-actions">
+        @if (error()) {
+          <p class="form-error">{{ error() }}</p>
+        }
         <button type="button" class="btn btn-back" (click)="onBack()">
           <svg
             width="10"
@@ -199,8 +206,8 @@
           </svg>
           {{ 'profiles.registrationBusinessDetails.back' | translate }}
         </button>
-        <button type="submit" class="btn btn-create">
-          {{ 'profiles.registrationBusinessDetails.createAccount' | translate }}
+        <button type="submit" class="btn btn-create" [disabled]="loading()">
+          {{ loading() ? 'Creating...' : ('profiles.registrationBusinessDetails.createAccount' | translate) }}
           <svg
             width="10"
             height="10"

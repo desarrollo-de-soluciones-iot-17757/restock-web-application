@@ -6,8 +6,11 @@
     "overview": "Resumen",
     "inventory": "Inventario",
     "stock": "Existencias",
+    "customSupplies": "Suministros personalizados",
+    "batches": "Lotes",
     "discrepancies": "Discrepancias",
     "recipes": "Recetas",
+    "kits": "Kits",
     "sales": "Ventas",
     "alerts": "Alertas",
     "devices": "Dispositivos",
@@ -16,13 +19,16 @@
   "layout": {
     "search": {
       "default": "Buscar recetas, ingredientes o SKUs...",
-      "batches": "Buscar lotes..."
+      "batches": "Buscar lotes...",
+      "customSupplies": "Buscar suministros..."
     }
   },
   "shared": {
     "topBar": {
       "notificationsAria": "Notificaciones",
-      "helpAria": "Ayuda"
+      "helpAria": "Ayuda",
+      "userMenuAria": "Menú de usuario",
+      "signOut": "Cerrar sesión"
     }
   },
   "home": {
@@ -36,7 +42,8 @@
       "discrepancies": {
         "crumbs": "INVENTARIO > DISCREPANCIAS",
         "title": "Discrepancias",
-        "body": "Aquí se listarán las discrepancias de stock. La interfaz llegará después."
+        "emptyTitle": "No hay discrepancias detectadas",
+        "body": "Las discrepancias de inventario apareceran aqui cuando las auditorias de stock reporten diferencias."
       },
       "stock": {
         "crumbs": "INVENTARIO > LOTES",
@@ -44,7 +51,7 @@
         "transferBatch": "Transferir stock de lote",
         "customSupplies": "Insumos personalizados",
         "addBatch": "Añadir lote",
-        "errorLoad": "No se pudo cargar el inventario. Revisa la API o la conexión.",
+        "errorLoad": "No se pudo cargar el inventario. Revisa API o conexión.",
         "loading": "Cargando lotes…",
         "kpi": {
           "totalBatches": "LOTES ACTIVOS TOTALES",
@@ -184,6 +191,13 @@
     }
   },
   "iam": {
+    "forgotPassword": {
+      "title": "Restablecer contraseña",
+      "subtitle": "Ingresa tu correo electrónico para recibir un código de recuperación.",
+      "sendButton": "Enviar código de recuperación",
+      "sending": "Enviando...",
+      "backToLogin": "Volver al inicio de sesión"
+    },
     "authenticationSection": {
       "title": "¿Cómo usarás Restock?",
       "subtitle": "Selecciona tu entorno operativo principal para adaptar tu inventario inteligente",
@@ -204,8 +218,27 @@
       "confirmPasswordLabel": "Confirmar Contraseña",
       "confirmPasswordPlaceholder": "••••••••",
       "createAccount": "Crear Cuenta",
+      "creating": "Creando cuenta...",
       "alreadyHaveAccount": "¿Ya tienes una cuenta?",
       "returnToLogin": "Volver al Inicio de Sesión"
+    },
+    "signInForm": {
+      "infoTitle": "Inteligencia de inventario en tiempo real para el almacén moderno.",
+      "infoDescription": "Conecta tu hardware sin problemas. Supervisa niveles de stock, rastrea activos sensibles a la temperatura y automatiza el reabastecimiento.",
+      "tagline": "Inventario inteligente - Control en tiempo real",
+      "loginTitle": "Iniciar sesión",
+      "emailLabel": "DIRECCIÓN DE CORREO",
+      "emailPlaceholder": "nombre@organizacion.com",
+      "passwordLabel": "CONTRASEÑA",
+      "passwordPlaceholder": "••••••••",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "rememberMe": "Recordar este dispositivo por 30 días",
+      "loginButton": "INGRESAR",
+      "authenticating": "AUTENTICANDO...",
+      "ssoDivider": "O CONTINUAR CON SSO",
+      "ssoButton": "Inicio de sesión empresarial SSO",
+      "noAccount": "¿No tienes una cuenta?",
+      "signUpLink": "Regístrate"
     }
   },
   "profiles": {
@@ -265,6 +298,48 @@
       "scaleReadyBody": "Diseñado para conectar múltiples nodos de inventario",
       "privacyPolicy": "Política de Privacidad",
       "termsOfService": "Términos de Servicio"
+    }
+  },
+  "kits": {
+    "catalog": "Catálogo de Kits y Combos",
+    "subtitle": "Gestiona combinaciones de venta y kits de productos.",
+    "create": "Crear nuevo Kit",
+    "edit": "Editar detalles",
+    "save": "Guardar Kit",
+    "update": "Actualizar Kit",
+    "metrics": {
+      "totalKits": "TOTAL KITS",
+      "activeCombos": "COMBOS ACTIVOS",
+      "lowStockAlerts": "ALERTAS STOCK BAJO"
+    },
+    "states": {
+      "loadingProducts": "Cargando insumos desde Beeceptor...",
+      "emptyProducts": "Aún no se han añadido productos a este kit."
+    },
+    "actions": { "retry": "Reintentar Conexión", "cancel": "Cancelar", "save": "Guardar Kit" },
+    "form": {
+      "image": "IMAGEN DEL KIT",
+      "uploadImage": "Subir Imagen",
+      "name": "NOMBRE DEL KIT",
+      "namePlaceholder": "Ej. Kit de cena gourmet",
+      "price": "PRECIO DEL COMBO (USD)",
+      "recommendedHint": "Precio recomendado según componentes: S/ {{ price }}",
+      "description": "DESCRIPCIÓN DEL KIT",
+      "descPlaceholder": "Ej. Este kit premium contiene ingredientes seleccionados...",
+      "productSelector": "Selector de Productos",
+      "selectProduct": "SELECCIONAR PRODUCTO",
+      "selectPlaceholder": "--- Selecciona un producto ---",
+      "quantity": "CANTIDAD",
+      "addSupply": "Añadir Insumo",
+      "includedProducts": "PRODUCTOS INCLUIDOS ({{ count }})",
+      "totalCost": "Costo Total"
+    },
+    "table": {
+      "product": "Producto",
+      "sku": "SKU",
+      "qty": "Cant.",
+      "price": "Precio",
+      "actions": "Acciones"
     }
   }
 }

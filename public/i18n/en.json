@@ -6,8 +6,11 @@
     "overview": "Overview",
     "inventory": "Inventory",
     "stock": "Stock",
+    "customSupplies": "Custom supplies",
+    "batches": "Batches",
     "discrepancies": "Discrepancies",
     "recipes": "Recipes",
+    "kits": "Kits",
     "sales": "Sales",
     "alerts": "Alerts",
     "devices": "Devices",
@@ -16,13 +19,16 @@
   "layout": {
     "search": {
       "default": "Search recipes, ingredients, or SKUs...",
-      "batches": "Search batches..."
+      "batches": "Search batches...",
+      "customSupplies": "Search catalog items..."
     }
   },
   "shared": {
     "topBar": {
       "notificationsAria": "Notifications",
-      "helpAria": "Help"
+      "helpAria": "Help",
+      "userMenuAria": "User menu",
+      "signOut": "Sign out"
     }
   },
   "home": {
@@ -36,7 +42,8 @@
       "discrepancies": {
         "crumbs": "INVENTORY > DISCREPANCIES",
         "title": "Discrepancies",
-        "body": "This section will list stock discrepancies. UI coming next."
+        "emptyTitle": "No discrepancies detected",
+        "body": "Inventory discrepancies will appear here when stock audits report mismatches."
       },
       "stock": {
         "crumbs": "INVENTORY > BATCHES",
@@ -44,7 +51,7 @@
         "transferBatch": "Transfer Batch Stock",
         "customSupplies": "Custom Supplies",
         "addBatch": "Add Batch",
-        "errorLoad": "Could not load inventory. Check the API or your network.",
+        "errorLoad": "Could not load inventory. Check the API or network.",
         "loading": "Loading batches…",
         "kpi": {
           "totalBatches": "TOTAL ACTIVE BATCHES",
@@ -184,6 +191,13 @@
     }
   },
   "iam": {
+    "forgotPassword": {
+      "title": "Reset Password",
+      "subtitle": "Enter your email to receive a recovery code.",
+      "sendButton": "Send recovery code",
+      "sending": "Sending...",
+      "backToLogin": "Back to login"
+    },
     "authenticationSection": {
       "title": "How will you use Restock?",
       "subtitle": "Select your primary operational environment to tailor your smart inventory",
@@ -204,8 +218,27 @@
       "confirmPasswordLabel": "Confirm Password",
       "confirmPasswordPlaceholder": "••••••••",
       "createAccount": "Create Account",
+      "creating": "Creating account...",
       "alreadyHaveAccount": "Already have an account?",
       "returnToLogin": "Return to Login"
+    },
+    "signInForm": {
+      "infoTitle": "Real-time inventory intelligence for the modern warehouse.",
+      "infoDescription": "Connect your hardware seamlessly. Monitor stock levels, track temperature-sensitive assets, and automate replenishment.",
+      "tagline": "Smart inventory - Real-time control",
+      "loginTitle": "Login",
+      "emailLabel": "EMAIL ADDRESS",
+      "emailPlaceholder": "name@organization.com",
+      "passwordLabel": "PASSWORD",
+      "passwordPlaceholder": "••••••••",
+      "forgotPassword": "Forgot your password?",
+      "rememberMe": "Remember this device for 30 days",
+      "loginButton": "LOGIN",
+      "authenticating": "AUTHENTICATING...",
+      "ssoDivider": "OR CONTINUE WITH SSO",
+      "ssoButton": "Enterprise SSO Login",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign up"
     }
   },
   "profiles": {
@@ -265,6 +298,48 @@
       "scaleReadyBody": "Designed to connect multiple inventory nodes",
       "privacyPolicy": "Privacy Policy",
       "termsOfService": "Terms of Service"
+    }
+  },
+  "kits": {
+    "catalog": "Kits & Combos Catalog",
+    "subtitle": "Manage retail combinations and inventory-linked product kits.",
+    "create": "Create New Kit",
+    "edit": "Edit Details",
+    "save": "Save Kit",
+    "update": "Update Kit",
+    "metrics": {
+      "totalKits": "TOTAL KITS",
+      "activeCombos": "ACTIVE COMBOS",
+      "lowStockAlerts": "LOW STOCK ALERTS"
+    },
+    "states": {
+      "loadingProducts": "Loading supplies from Beeceptor...",
+      "emptyProducts": "No products added to this kit yet."
+    },
+    "actions": { "retry": "Retry Connection", "cancel": "Cancel", "save": "Save Kit" },
+    "form": {
+      "image": "KIT IMAGE",
+      "uploadImage": "Upload Image",
+      "name": "KIT NAME",
+      "namePlaceholder": "e.g. Gourmet Italian Dinner Kit",
+      "price": "COMBO PRICE (USD)",
+      "recommendedHint": "Recommended price based on components: S/ {{ price }}",
+      "description": "KIT DESCRIPTION",
+      "descPlaceholder": "e.g. This premium kit contains selective ingredients...",
+      "productSelector": "Product Selector",
+      "selectProduct": "SELECT PRODUCT",
+      "selectPlaceholder": "--- Select a product ---",
+      "quantity": "QUANTITY",
+      "addSupply": "Add Supply",
+      "includedProducts": "INCLUDED PRODUCTS ({{ count }})",
+      "totalCost": "Total Cost"
+    },
+    "table": {
+      "product": "Product",
+      "sku": "SKU",
+      "qty": "Qty",
+      "price": "Price",
+      "actions": "Actions"
     }
   }
 }
