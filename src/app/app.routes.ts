@@ -81,11 +81,15 @@ export const appRoutes: Routes = [
       },
       {
         path: 'devices',
+<<<<<<< Updated upstream
         loadComponent: () =>
           import('./shared/presentation/views/placeholder-page/placeholder-page').then(
             (m) => m.PlaceholderPage,
           ),
         data: { titleKey: 'nav.devices' },
+=======
+        loadChildren: devicesRoutes,
+>>>>>>> Stashed changes
         title: `${baseTitle} · Devices`,
       },
       {
