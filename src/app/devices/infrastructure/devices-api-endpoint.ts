@@ -13,9 +13,8 @@ import {
   ASSIGN_BATCH_URL,
   ASSIGN_THRESHOLD_URL,
   UPDATE_MEASUREMENT_URL,
-  CONFIRM_CONFIGURATION_URL,
+  UPDATE_DEVICE_STATUS_URL,
   UPDATE_WITHDRAWN_STOCK_URL,
-  DEACTIVATE_DEVICE_URL,
 } from './devices.endpoint';
 
 export interface AddSpecificationsRequest {
@@ -54,15 +53,15 @@ export class DevicesApiEndpoint extends ErrorHandlingEnabledBaseType {
     );
   }
 
-  createDevice(accountId: string, body: { macAddress: string; description: string }): Observable<Device> {
-    return this.http.post<DeviceResource>(CREATE_DEVICE_URL(accountId), body).pipe(
+  createDevice(body: { accountId: string; macAddress: string; description: string }): Observable<Device> {
+    return this.http.post<DeviceResource>(CREATE_DEVICE_URL(), body).pipe(
       map(r => this.assembler.toEntityFromResource(r)),
       catchError(this.handleError('Failed to create device')),
     );
   }
 
   addSpecifications(deviceId: string, body: AddSpecificationsRequest): Observable<Device> {
-    return this.http.post<DeviceResource>(ADD_SPECIFICATIONS_URL(deviceId), body).pipe(
+    return this.http.put<DeviceResource>(ADD_SPECIFICATIONS_URL(deviceId), body).pipe(
       map(r => this.assembler.toEntityFromResource(r)),
       catchError(this.handleError('Failed to add specifications')),
     );
@@ -96,10 +95,10 @@ export class DevicesApiEndpoint extends ErrorHandlingEnabledBaseType {
     );
   }
 
-  confirmConfiguration(deviceId: string): Observable<Device> {
-    return this.http.patch<DeviceResource>(CONFIRM_CONFIGURATION_URL(deviceId), null).pipe(
+  updateStatus(deviceId: string, status: 'CONFIGURED' | 'INACTIVE'): Observable<Device> {
+    return this.http.patch<DeviceResource>(UPDATE_DEVICE_STATUS_URL(deviceId), { status }).pipe(
       map(r => this.assembler.toEntityFromResource(r)),
-      catchError(this.handleError('Failed to confirm configuration')),
+      catchError(this.handleError('Failed to update device status')),
     );
   }
 
@@ -110,10 +109,4 @@ export class DevicesApiEndpoint extends ErrorHandlingEnabledBaseType {
     );
   }
 
-  deactivate(deviceId: string): Observable<Device> {
-    return this.http.patch<DeviceResource>(DEACTIVATE_DEVICE_URL(deviceId), null).pipe(
-      map(r => this.assembler.toEntityFromResource(r)),
-      catchError(this.handleError('Failed to deactivate device')),
-    );
-  }
 }

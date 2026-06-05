@@ -30,8 +30,8 @@ export class DevicesStore {
     return this.devices().find(d => d.id === id);
   }
 
-  createDevice(accountId: string, body: { macAddress: string; description: string }): Observable<Device> {
-    return this.devicesApi.createDevice(accountId, body).pipe(
+  createDevice(body: { accountId: string; macAddress: string; description: string }): Observable<Device> {
+    return this.devicesApi.createDevice(body).pipe(
       tap(device => this.devices.update(list => [...list, device])),
     );
   }
@@ -66,20 +66,14 @@ export class DevicesStore {
     );
   }
 
-  confirmConfiguration(deviceId: string): Observable<Device> {
-    return this.devicesApi.confirmConfiguration(deviceId).pipe(
+  updateStatus(deviceId: string, status: 'CONFIGURED' | 'INACTIVE'): Observable<Device> {
+    return this.devicesApi.updateStatus(deviceId, status).pipe(
       tap(updated => this._replaceDevice(updated)),
     );
   }
 
   updateWithdrawnStock(deviceId: string, amount: number): Observable<Device> {
     return this.devicesApi.updateWithdrawnStock(deviceId, amount).pipe(
-      tap(updated => this._replaceDevice(updated)),
-    );
-  }
-
-  deactivate(deviceId: string): Observable<Device> {
-    return this.devicesApi.deactivate(deviceId).pipe(
       tap(updated => this._replaceDevice(updated)),
     );
   }

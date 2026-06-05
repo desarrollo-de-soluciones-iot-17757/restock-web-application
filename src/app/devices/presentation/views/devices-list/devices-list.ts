@@ -99,6 +99,6 @@ export class DevicesList implements AfterViewChecked, OnInit {
   }
 
   deactivate(deviceId: string): void {
-    this.store.deactivate(deviceId).subscribe();
+    this.store.updateStatus(deviceId, 'INACTIVE').subscribe();
   }
 }

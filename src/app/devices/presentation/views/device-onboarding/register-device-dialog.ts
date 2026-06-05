@@ -37,7 +37,7 @@ export class RegisterDeviceDialog {
     this.loading.set(true);
     this.error.set(null);
     const { macAddress, description } = this.form.value;
-    this.devicesStore.createDevice(this.accountId, { macAddress, description }).subscribe({
+    this.devicesStore.createDevice({ accountId: this.accountId, macAddress, description }).subscribe({
       next: (device: Device) => this.dialogRef.close(device),
       error: (err: { message?: string }) => {
         this.error.set(err?.message ?? 'Failed to register device');

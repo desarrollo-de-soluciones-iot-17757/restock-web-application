@@ -214,7 +214,8 @@ export class DeviceOnboarding implements OnInit {
     const v = this.thresholdsForm.value;
     const device = this.currentDevice()!;
 
-    this.thresholdsStore.createThreshold(this.accountId, {
+    this.thresholdsStore.createThreshold({
+      accountId: this.accountId,
       customSupplyId: device.assignedBatchId ?? '',
       minStock: v.minStock,
       maxStock: v.maxStock,
@@ -227,7 +228,7 @@ export class DeviceOnboarding implements OnInit {
       switchMap(threshold => this.devicesStore.assignThreshold(device.id, threshold.id)),
       switchMap(updated => this.saveSpecificationsIfNeeded(updated)),
       switchMap(updated => this.assignBranchIfNeeded(updated)),
-      switchMap(updated => this.devicesStore.confirmConfiguration(updated.id)),
+      switchMap(updated => this.devicesStore.updateStatus(updated.id, 'CONFIGURED')),
     ).subscribe({
       next: updated => { this.currentDevice.set(updated); this.loading.set(false); },
       error: err => { this.pageError.set(err?.message ?? 'Failed to save thresholds'); this.loading.set(false); },
@@ -305,7 +306,7 @@ export class DeviceOnboarding implements OnInit {
     if (!this.currentDevice()) return;
     this.loading.set(true);
     this.pageError.set(null);
-    this.devicesStore.deactivate(this.currentDevice()!.id).subscribe({
+    this.devicesStore.updateStatus(this.currentDevice()!.id, 'INACTIVE').subscribe({
       next: () => { this.loading.set(false); this.router.navigate(['/devices']); },
       error: err => { this.pageError.set(err?.message ?? 'Failed to unlink device'); this.loading.set(false); },
     });

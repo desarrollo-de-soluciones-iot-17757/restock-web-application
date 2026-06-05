@@ -26,8 +26,8 @@ export class DeviceThresholdsStore {
     ).subscribe();
   }
 
-  createThreshold(accountId: string, body: CreateDeviceThresholdRequest): Observable<DeviceThreshold> {
-    return this.devicesApi.createThreshold(accountId, body).pipe(
+  createThreshold(body: CreateDeviceThresholdRequest): Observable<DeviceThreshold> {
+    return this.devicesApi.createThreshold(body).pipe(
       tap(threshold => this.thresholds.update(list => [...list, threshold])),
     );
   }

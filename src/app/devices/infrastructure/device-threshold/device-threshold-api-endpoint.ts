@@ -31,8 +31,8 @@ export class DeviceThresholdApiEndpoint extends ErrorHandlingEnabledBaseType {
     );
   }
 
-  createThreshold(accountId: string, body: CreateDeviceThresholdRequest): Observable<DeviceThreshold> {
-    return this.http.post<DeviceThresholdResource>(CREATE_THRESHOLD_URL(accountId), body).pipe(
+  createThreshold(body: CreateDeviceThresholdRequest): Observable<DeviceThreshold> {
+    return this.http.post<DeviceThresholdResource>(CREATE_THRESHOLD_URL(), body).pipe(
       map(r => this.assembler.toEntityFromResource(r)),
       catchError(this.handleError('Failed to create threshold')),
     );

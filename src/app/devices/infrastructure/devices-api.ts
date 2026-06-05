@@ -31,8 +31,8 @@ export class DevicesApi extends BaseApi {
 
   // --- Device onboarding steps ---
 
-  createDevice(accountId: string, body: { macAddress: string; description: string }): Observable<Device> {
-    return this.devicesEndpoint.createDevice(accountId, body);
+  createDevice(body: { accountId: string; macAddress: string; description: string }): Observable<Device> {
+    return this.devicesEndpoint.createDevice(body);
   }
 
   addSpecifications(deviceId: string, body: AddSpecificationsRequest): Observable<Device> {
@@ -55,18 +55,14 @@ export class DevicesApi extends BaseApi {
     return this.devicesEndpoint.updateMeasurement(deviceId, body);
   }
 
-  confirmConfiguration(deviceId: string): Observable<Device> {
-    return this.devicesEndpoint.confirmConfiguration(deviceId);
+  updateStatus(deviceId: string, status: 'CONFIGURED' | 'INACTIVE'): Observable<Device> {
+    return this.devicesEndpoint.updateStatus(deviceId, status);
   }
 
   // --- Device operations ---
 
   updateWithdrawnStock(deviceId: string, amount: number): Observable<Device> {
     return this.devicesEndpoint.updateWithdrawnStock(deviceId, amount);
-  }
-
-  deactivate(deviceId: string): Observable<Device> {
-    return this.devicesEndpoint.deactivate(deviceId);
   }
 
   // --- Threshold queries & mutations ---
@@ -79,7 +75,7 @@ export class DevicesApi extends BaseApi {
     return this.thresholdsEndpoint.getThresholdById(thresholdId);
   }
 
-  createThreshold(accountId: string, body: CreateDeviceThresholdRequest): Observable<DeviceThreshold> {
-    return this.thresholdsEndpoint.createThreshold(accountId, body);
+  createThreshold(body: CreateDeviceThresholdRequest): Observable<DeviceThreshold> {
+    return this.thresholdsEndpoint.createThreshold(body);
   }
 }
