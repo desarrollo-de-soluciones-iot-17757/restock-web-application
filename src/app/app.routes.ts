@@ -40,7 +40,7 @@ export const appRoutes: Routes = [
 
       {
         path: 'settings',
-        loadComponent: placeholder,
+        loadChildren: profilesRoute,
         data: { titleKey: 'nav.settings' },
         title: `${baseTitle} · Settings`,
       },
@@ -52,10 +52,6 @@ export const appRoutes: Routes = [
       },
       {
         path: 'devices',
-        loadComponent: () =>
-          import('./shared/presentation/views/placeholder-page/placeholder-page').then(
-            (m) => m.PlaceholderPage,
-          ),
         data: { titleKey: 'nav.devices' },
         loadChildren: devicesRoutes,
         title: `${baseTitle} · Devices`,
