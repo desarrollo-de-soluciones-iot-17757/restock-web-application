@@ -1,7 +1,4 @@
 /**
- * HTTP path for loading batch data.
- *
- * This path can point to Beeceptor during simulation or to the real backend
- * when the Resource API is available.
+ * HTTP path for loading batch data from the real Resource API.
  */
-export const BATCH_ENDPOINT = '/inventory/batch' as const;
+export const BATCH_ENDPOINT = 'batches' as const;

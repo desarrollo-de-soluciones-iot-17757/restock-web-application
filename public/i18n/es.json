@@ -6,6 +6,8 @@
     "overview": "Resumen",
     "inventory": "Inventario",
     "stock": "Existencias",
+    "customSupplies": "Suministros personalizados",
+    "batches": "Lotes",
     "discrepancies": "Discrepancias",
     "recipes": "Recetas",
     "kits": "Kits",
@@ -17,7 +19,8 @@
   "layout": {
     "search": {
       "default": "Buscar recetas, ingredientes o SKUs...",
-      "batches": "Buscar lotes..."
+      "batches": "Buscar lotes...",
+      "customSupplies": "Buscar suministros..."
     }
   },
   "shared": {
@@ -39,7 +42,8 @@
       "discrepancies": {
         "crumbs": "INVENTARIO > DISCREPANCIAS",
         "title": "Discrepancias",
-        "body": "Aquí se listarán las discrepancias de stock. La interfaz llegará después."
+        "emptyTitle": "No hay discrepancias detectadas",
+        "body": "Las discrepancias de inventario apareceran aqui cuando las auditorias de stock reporten diferencias."
       },
       "stock": {
         "crumbs": "INVENTARIO > LOTES",
@@ -47,7 +51,7 @@
         "transferBatch": "Transferir stock de lote",
         "customSupplies": "Insumos personalizados",
         "addBatch": "Añadir lote",
-        "errorLoad": "No se pudo cargar el inventario. Revisa la API o la conexión.",
+        "errorLoad": "No se pudo cargar el inventario. Revisa API o conexión.",
         "loading": "Cargando lotes…",
         "kpi": {
           "totalBatches": "LOTES ACTIVOS TOTALES",

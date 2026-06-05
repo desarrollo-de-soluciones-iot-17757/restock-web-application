@@ -3,32 +3,53 @@
  */
 export interface BatchItemResponse {
   id: string;
-  supplyName: string;
-  subtitle: string | null;
-  category: string;
-  uomLabel: string;
+  code: string;
+  currentStock: number | {
+    stock: number;
+    unitMeasurement: string;
+  };
+  unitMeasurement?: string;
+  customSupplyId: string;
+  branchId: string;
+  accountId: string | { value?: string; id?: string };
   expirationDate: string | null;
-  stock: number;
-  isPerishable: boolean;
-  perishableBadgeTone: 'neutral' | 'warning' | 'info';
-  rowHighlight: 'warning' | null;
-  minStock: number;
-  maxStock: number;
+  entryDate: string | null;
 }
 
 /**
  * Represents the batch payload received from the Resource API.
  */
 export interface BatchPayloadResponse {
-  totalActiveBatches: number;
-  totalActiveBatchesDeltaPercent: number;
-  nearExpiry30Days: number;
-  batches: BatchItemResponse[];
+  data?: BatchItemResponse[];
+  batches?: BatchItemResponse[];
 }
 
 /**
  * Represents the root response received from the Resource API.
  */
 export interface BatchRootResponse {
-  batch: BatchPayloadResponse;
+  data?: BatchItemResponse[];
+  batches?: BatchItemResponse[];
+  batch?: BatchPayloadResponse;
+}
+
+export interface CreateBatchRequest {
+  code: string;
+  currentStock: number;
+  customSupplyId: string;
+  branchId: string;
+  expirationDate: string;
+}
+
+export interface UpdateBatchRequest {
+  code: string;
+  currentStock: number;
+  expirationDate: string | null;
+}
+
+export interface TransferBatchRequest {
+  targetBranchId: string;
+  quantity: number;
+  unitMeasurement: string;
+  reason: string;
 }

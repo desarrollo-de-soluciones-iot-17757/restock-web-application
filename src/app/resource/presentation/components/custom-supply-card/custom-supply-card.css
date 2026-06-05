@@ -130,7 +130,8 @@
   flex: 1;
 }
 
-.view-btn {
+.view-btn,
+.delete-btn {
   flex: 0 0 42px;
   padding: 9px;
 }

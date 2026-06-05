@@ -1,9 +1,25 @@
 import { Component, EventEmitter, Input, Output, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { ResourceStore } from '../../../application/resource.store';
 import { CustomSupply } from '../../../domain/model/custom-supply.entity';
+
+const UNIT_MEASUREMENTS = ['Kilograms', 'Liters', 'Dozen', 'Grams', 'Units'] as const;
+const UNIT_ALIASES: Record<string, string> = {
+  kg: 'Kilograms',
+  kilogram: 'Kilograms',
+  kilograms: 'Kilograms',
+  l: 'Liters',
+  liter: 'Liters',
+  liters: 'Liters',
+  doz: 'Dozen',
+  dozen: 'Dozen',
+  g: 'Grams',
+  gram: 'Grams',
+  grams: 'Grams',
+  unit: 'Units',
+  units: 'Units',
+};
 
 @Component({
   selector: 'app-edit-custom-supply-dialog',
@@ -18,42 +34,34 @@ export class EditCustomSupplyDialogComponent implements OnInit {
   @Output() onUpdate = new EventEmitter<void>();
 
   private readonly store = inject(ResourceStore);
-  private readonly router = inject(Router);
-  private readonly route = inject(ActivatedRoute);
 
-  readonly supplyTemplates = this.store.supplyTemplates;
+  readonly unitMeasurements = UNIT_MEASUREMENTS;
 
   selectedImageFile: File | null = null;
   imagePreviewUrl: string | null = null;
+  private imagePreviewObjectUrl: string | null = null;
 
   formData = {
-    categoryId: '',
-    supplyId: '',
     name: '',
-    unitMeasurement: '',
+    unitMeasurement: UNIT_MEASUREMENTS[0] as string,
     minimumStock: null as number | null,
     maximumStock: null as number | null,
     description: '',
     unitPriceAmount: null as number | null,
     unitPriceCurrencyCode: 'PEN',
-    supplyContent: null as number | null,
   };
 
   private originalDataStr = '';
 
   ngOnInit(): void {
-    this.store.loadSupplyTemplates();
     this.formData = {
-      categoryId: this.customSupply.supply.category,
-      supplyId: this.customSupply.supply.id,
       name: this.customSupply.name,
-      unitMeasurement: this.customSupply.unit.abbreviation,
+      unitMeasurement: this.unitMeasurementName(this.customSupply.unit.name || this.customSupply.unit.abbreviation),
       minimumStock: this.customSupply.minStock,
       maximumStock: this.customSupply.maxStock,
-      description: this.customSupply.supply.description,
+      description: this.customSupply.description,
       unitPriceAmount: this.customSupply.unitPrice,
       unitPriceCurrencyCode: 'PEN',
-      supplyContent: null,
     };
     this.imagePreviewUrl = this.customSupply.imgUrl || null;
     this.originalDataStr = JSON.stringify(this.formData);
@@ -63,29 +71,32 @@ export class EditCustomSupplyDialogComponent implements OnInit {
     return this.originalDataStr !== JSON.stringify(this.formData);
   }
 
-  get uniqueCategories(): string[] {
-    return [...new Set(this.supplyTemplates().map(t => t.category))];
-  }
-
-  get isPerishable(): boolean {
-    return this.customSupply.supply.perishable;
-  }
-
   onImageSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (file) {
       this.selectedImageFile = file;
       this.readImagePreview(file);
+      input.value = '';
+    }
+  }
+
+  onImageDrop(event: DragEvent): void {
+    event.preventDefault();
+    const file = event.dataTransfer?.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      this.selectedImageFile = file;
+      this.readImagePreview(file);
     }
   }
 
   private readImagePreview(file: File): void {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      this.imagePreviewUrl = e.target?.result as string;
-    };
-    reader.readAsDataURL(file);
+    if (this.imagePreviewObjectUrl) {
+      URL.revokeObjectURL(this.imagePreviewObjectUrl);
+    }
+
+    this.imagePreviewObjectUrl = URL.createObjectURL(file);
+    this.imagePreviewUrl = this.imagePreviewObjectUrl;
   }
 
   cancel(): void {
@@ -110,8 +121,11 @@ export class EditCustomSupplyDialogComponent implements OnInit {
       this.originalDataStr = JSON.stringify(this.formData);
       this.onUpdate.emit();
       this.onClose.emit();
-      this.router.navigate(['..'], { relativeTo: this.route });
     });
+  }
+
+  private unitMeasurementName(value: string): string {
+    return UNIT_ALIASES[value.trim().toLowerCase()] ?? value;
   }
 }
 
