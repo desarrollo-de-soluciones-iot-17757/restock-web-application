@@ -51,8 +51,13 @@
           </svg>
         </span>
       </div>
-      <div class="kpi-big-value">— <span class="kpi-unit">Units</span></div>
-      <div class="kpi-delta kpi-delta-up">No data yet</div>
+      <div class="kpi-big-value">
+        {{ activeBatchCount() > 0 ? totalStock() : '—' }}
+        <span class="kpi-unit">{{ supply.unit.abbreviation }}</span>
+      </div>
+      <div class="kpi-delta kpi-delta-up">
+        {{ activeBatchCount() > 0 ? (activeBatchCount() + ' active batches') : 'No data yet' }}
+      </div>
     </div>
     <div class="kpi-card">
       <div class="kpi-card-header">
@@ -63,9 +68,16 @@
           </svg>
         </span>
       </div>
-      <div class="kpi-big-value">— <span class="kpi-unit">Batches</span></div>
+      <div class="kpi-big-value">
+        {{ activeBatchCount() > 0 ? activeBatchCount() : '—' }}
+        <span class="kpi-unit">Batches</span>
+      </div>
       <div class="kpi-bar-container">
-        <div class="kpi-bar"><div class="kpi-bar-fill" style="width: 0%"></div></div>
+        <div class="kpi-bar">
+          <div class="kpi-bar-fill"
+               [style.width.%]="supply.maxStock > 0 ? (totalStock() / supply.maxStock) * 100 : 0">
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -74,18 +86,6 @@
       <h3>Active Batches</h3>
       <a class="view-history-link" href="#">View All History →</a>
     </div>
-
-    <!--
-      TODO: replace placeholder rows with @for once loadBatchesByCustomSupply is called.
-
-      Columns map to GET /api/v1/batches response:
-        CODE           → batch.code
-        STOCK          → batch.currentStock
-        UNIT           → batch.unitMeasurementAbbreviation
-        ENTRY DATE     → batch.entryDate
-        EXPIRY DATE    → batch.expirationDate
-        HEALTH STATUS  → getBatchHealth(batch.expirationDate)
-    -->
     <table class="batches-table">
       <thead>
         <tr>
@@ -98,38 +98,27 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td class="col-code">BCH-001</td>
-          <td>450</td>
-          <td>kg</td>
-          <td>Oct 01, 2024</td>
-          <td>Oct 24, 2024</td>
-          <td><span class="health-badge badge-fresh">Fresh</span></td>
-        </tr>
-        <tr>
-          <td class="col-code">BCH-002</td>
-          <td>120</td>
-          <td>kg</td>
-          <td>Sep 05, 2024</td>
-          <td>Sep 18, 2024</td>
-          <td><span class="health-badge badge-expiring">Expiring Soon</span></td>
-        </tr>
-        <tr>
-          <td class="col-code">BCH-003</td>
-          <td>300</td>
-          <td>kg</td>
-          <td>Oct 15, 2024</td>
-          <td>Nov 02, 2024</td>
-          <td><span class="health-badge badge-fresh">Fresh</span></td>
-        </tr>
-        <tr>
-          <td class="col-code">BCH-004</td>
-          <td>80</td>
-          <td>kg</td>
-          <td>Aug 10, 2024</td>
-          <td>Aug 29, 2024</td>
-          <td><span class="health-badge badge-critical">Critical Care</span></td>
-        </tr>
+        @if (batches().length === 0) {
+          <tr class="empty-row">
+            <td colspan="6">
+              <span class="empty-text">No active batches. Click "+ Add Batch" to start tracking stock.</span>
+            </td>
+          </tr>
+        }
+        @for (batch of batches(); track batch.id) {
+          <tr>
+            <td class="col-code">{{ batch.code }}</td>
+            <td>{{ batch.currentStock }}</td>
+            <td>{{ batch.unitMeasurementAbbreviation }}</td>
+            <td>{{ batch.entryDate ? (batch.entryDate | date:'mediumDate') : '—' }}</td>
+            <td>{{ batch.expirationDate ? (batch.expirationDate | date:'mediumDate') : '—' }}</td>
+            <td>
+              <span class="health-badge" [ngClass]="'badge-' + getBatchHealth(batch.expirationDate)">
+                {{ getBatchHealthLabel(batch.expirationDate) }}
+              </span>
+            </td>
+          </tr>
+        }
       </tbody>
     </table>
   </div>
