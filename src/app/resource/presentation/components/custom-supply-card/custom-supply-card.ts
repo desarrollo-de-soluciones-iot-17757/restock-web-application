@@ -13,6 +13,7 @@ export class CustomSupplyCardComponent {
   @Input({ required: true }) customSupply!: CustomSupply;
   @Output() onEdit = new EventEmitter<CustomSupply>();
   @Output() onView = new EventEmitter<string>();
+  @Output() onDelete = new EventEmitter<CustomSupply>();
 
   edit(): void {
     this.onEdit.emit(this.customSupply);
@@ -20,5 +21,9 @@ export class CustomSupplyCardComponent {
 
   view(): void {
     this.onView.emit(this.customSupply.id);
+  }
+
+  delete(): void {
+    this.onDelete.emit(this.customSupply);
   }
 }

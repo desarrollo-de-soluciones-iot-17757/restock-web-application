@@ -2,9 +2,12 @@ import { UpperCasePipe } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { catchError, of } from 'rxjs';
 import { Profile } from '../../../domain/model/profile.entity';
 import { ProfilesStore } from '../../../application/profiles.store';
 import { UpdateProfileCommand } from '../../../domain/model/update-profile.command';
+import { ResourceApi, type BranchResource } from '../../../../resource/infrastructure/resource-api';
+import { IamStore as AuthService } from '../../../../iam/application/iam.store';
 
 /** Local snapshot for “discard changes” on the profile tab (primitives only). */
 interface ProfileFieldSnapshot {
@@ -28,6 +31,8 @@ interface ProfileFieldSnapshot {
 export class SystemPreferences {
   private readonly store = inject(ProfilesStore);
   private readonly translate = inject(TranslateService);
+  private readonly resourceApi = inject(ResourceApi);
+  private readonly authService = inject(AuthService);
 
   activeTab = signal<'general' | 'profile' | 'branches'>('general');
 
@@ -35,7 +40,7 @@ export class SystemPreferences {
   timezone = signal('UTC -05:00 Eastern Time (US & Canada)');
   currency = signal('USD - United States Dollar ($)');
   language = signal(this.translate.getCurrentLang() || 'en');
-  branch = signal('Main Branch');
+  branch = signal(this.store.currentBranchId());
   emailNotifications = signal(true);
   smsAlerts = signal(false);
 
@@ -62,7 +67,7 @@ export class SystemPreferences {
     { code: 'es', label: 'Spanish' },
   ];
 
-  readonly branches = ['Main Branch', 'Branch North', 'Branch South', 'Branch East', 'Branch West'];
+  readonly branchOptions = signal<BranchResource[]>([]);
 
   // ── Profile tab (editable copies of the aggregate) ──
   profileEntityId = signal('');
@@ -80,6 +85,8 @@ export class SystemPreferences {
   private savedProfileFields: ProfileFieldSnapshot | null = null;
 
   constructor() {
+    this.loadBranchOptions();
+
     // Profile data is loaded from `Layout` for the shell; this view syncs when `profile()` updates.
     effect(() => {
       const profile = this.store.profile();
@@ -128,13 +135,14 @@ export class SystemPreferences {
     this.timezone.set('UTC -05:00 Eastern Time (US & Canada)');
     this.currency.set('USD - United States Dollar ($)');
     this.language.set('English (US)');
-    this.branch.set('Main Branch');
+    this.branch.set(this.store.currentBranchId() || this.branchOptions()[0]?.id || '');
     this.emailNotifications.set(true);
     this.smsAlerts.set(false);
   }
 
   savePreferences(): void {
     this.translate.use(this.language());
+    this.store.setCurrentBranchId(this.branch());
   }
 
   setLanguage(languageCode: string): void {
@@ -171,5 +179,25 @@ export class SystemPreferences {
       birthDate: this.birthDate(),
     });
     this.store.updateProfile(cmd);
+  }
+
+  private loadBranchOptions(): void {
+    const accountId = this.authService.currentUser()?.accountId ?? '';
+
+    this.resourceApi
+      .getBranches(accountId)
+      .pipe(catchError(() => of([])))
+      .subscribe((branches) => {
+        this.branchOptions.set(branches);
+
+        const savedBranchId = this.store.currentBranchId();
+        const savedExists = branches.some((branch) => branch.id === savedBranchId);
+        const nextBranchId = savedExists ? savedBranchId : branches[0]?.id ?? '';
+
+        this.branch.set(nextBranchId);
+        if (nextBranchId && nextBranchId !== savedBranchId) {
+          this.store.setCurrentBranchId(nextBranchId);
+        }
+      });
   }
 }

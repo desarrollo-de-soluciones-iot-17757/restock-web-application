@@ -7,6 +7,8 @@ import { Business } from '../domain/model/business.entity';
 import { LoadProfilesStateCommand } from '../domain/model/load-profiles-state.command';
 import { UpdateProfileCommand } from '../domain/model/update-profile.command';
 
+const PROFILE_BRANCH_ID_KEY = 'restock.profile.currentBranchId';
+
 /**
  * Exposes state with signals, orchestrates domain commands, and delegates HTTP to {@link ProfilesApi}.
  */
@@ -18,11 +20,13 @@ export class ProfilesStore {
   private readonly businessSignal = signal<Business | null>(null);
   private readonly errorSignal = signal<string | null>(null);
   private readonly loadingSignal = signal<boolean>(false);
+  private readonly currentBranchIdSignal = signal<string>(this.loadCurrentBranchId());
 
   readonly profile = this.profileSignal.asReadonly();
   readonly business = this.businessSignal.asReadonly();
   readonly error = this.errorSignal.asReadonly();
   readonly loading = this.loadingSignal.asReadonly();
+  readonly currentBranchId = this.currentBranchIdSignal.asReadonly();
 
   readonly hasProfile = computed(() => this.profileSignal() !== null);
   readonly hasBusiness = computed(() => this.businessSignal() !== null);
@@ -98,6 +102,11 @@ export class ProfilesStore {
       });
   }
 
+  setCurrentBranchId(branchId: string): void {
+    this.currentBranchIdSignal.set(branchId);
+    this.saveCurrentBranchId(branchId);
+  }
+
   /**
    * @param error - Value captured in the RxJS `error` callback.
    * @param fallback - Default message if it's not an instance of `Error`.
@@ -109,5 +118,25 @@ export class ProfilesStore {
         : error.message;
     }
     return fallback;
+  }
+
+  private loadCurrentBranchId(): string {
+    try {
+      return localStorage.getItem(PROFILE_BRANCH_ID_KEY) ?? '';
+    } catch {
+      return '';
+    }
+  }
+
+  private saveCurrentBranchId(branchId: string): void {
+    try {
+      if (branchId) {
+        localStorage.setItem(PROFILE_BRANCH_ID_KEY, branchId);
+      } else {
+        localStorage.removeItem(PROFILE_BRANCH_ID_KEY);
+      }
+    } catch {
+      // Preference persistence is best-effort only.
+    }
   }
 }

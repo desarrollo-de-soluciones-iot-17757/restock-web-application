@@ -11,8 +11,8 @@ export class Supply implements BaseEntity {
     public readonly id: string,
     public readonly name: string,
     public readonly description: string,
-    public readonly perishable: boolean,
     public readonly category: string,
+    public readonly isPerishable: boolean,
   ) {}
 
   /**
@@ -21,18 +21,18 @@ export class Supply implements BaseEntity {
    * @param id Unique supply identifier.
    * @param name Supply name.
    * @param description Supply description.
-   * @param perishable Indicates whether the supply can expire.
    * @param category Supply category.
+   * @param isPerishable Indicates whether the supply can expire.
    * @returns A new {@link Supply} instance.
    */
   static create(
     id: string,
     name: string,
     description: string,
-    perishable: boolean,
     category: string,
+    isPerishable: boolean,
   ): Supply {
-    return new Supply(id, name, description, perishable, category);
+    return new Supply(id, name, description, category, isPerishable);
   }
 
   /**
@@ -41,6 +41,13 @@ export class Supply implements BaseEntity {
    * @returns An empty {@link Supply} instance.
    */
   static empty(): Supply {
-    return new Supply('', '', '', false, '');
+    return new Supply('', '', '', '', false);
+  }
+
+  /**
+   * Backward-compatible alias for older resource views.
+   */
+  get perishable(): boolean {
+    return this.isPerishable;
   }
 }

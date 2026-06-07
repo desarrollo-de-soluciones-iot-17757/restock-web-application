@@ -80,8 +80,8 @@
           <div class="field-group">
             <label class="field-label">{{ 'settings.branch.label' | translate }}</label>
             <select class="field-select" [ngModel]="branch()" (ngModelChange)="branch.set($event)">
-              @for (b of branches; track b) {
-                <option [value]="b">{{ b }}</option>
+              @for (b of branchOptions(); track b.id) {
+                <option [value]="b.id">{{ b.name }}</option>
               }
             </select>
           </div>
