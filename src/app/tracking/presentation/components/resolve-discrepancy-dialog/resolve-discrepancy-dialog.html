@@ -1,0 +1,77 @@
+<div class="modal-overlay">
+  <div class="modal-content modal-md">
+    <div class="modal-header">
+      <h2>Resolve Stock Discrepancy</h2>
+      <button class="close-btn" (click)="cancel()">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="info-box">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#92400e" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span>Resolving this discrepancy will adjust the digital inventory to reflect the physical stock reading from the smart scale.</span>
+      </div>
+
+      <div class="section-block">
+        <h4>Supply Information</h4>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Supply Name</span>
+            <span class="info-value">--</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Category</span>
+            <span class="info-value">--</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Unit</span>
+            <span class="info-value">--</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Digital Stock</span>
+            <span class="info-value">--</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">IoT Reading</span>
+            <span class="info-value">--</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Detected Gap</span>
+            <span class="info-value info-value-danger">--</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>CAUSE OF DISCREPANCY</label>
+        <select class="form-control" [value]="selectedCause()" (change)="selectedCause.set(($any($event.target).value))">
+          <option value="" disabled selected>Select a cause</option>
+          @for (cause of causes; track cause) {
+            <option [value]="cause">{{ cause }}</option>
+          }
+        </select>
+      </div>
+
+      @if (causeInfo) {
+        <div class="info-box info-box-dynamic">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#065f46" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          <span>{{ causeInfo }}</span>
+        </div>
+      }
+
+      <div class="form-group">
+        <label>JUSTIFICATION / EVIDENCE</label>
+        <textarea class="form-control" rows="4" [(ngModel)]="justification"
+                  placeholder="Describe the justification or attach evidence for this resolution..."></textarea>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-cancel" (click)="cancel()">Cancel</button>
+      <button class="btn btn-primary" (click)="confirm()" [disabled]="!selectedCause()">CONFIRM &amp; APPLY ACTION</button>
+    </div>
+  </div>
+</div>

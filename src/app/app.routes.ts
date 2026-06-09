@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { requireAuthGuard } from './iam/infrastructure/require-auth.guard';
 import { Layout } from './shared/presentation/components/layout/layout';
 import { resourceInventoryRoutes } from './resource/presentation/resource.routes';
+import { trackingInventoryRoutes } from './tracking/presentation/tracking.routes';
 
 const baseTitle = 'RestockWebApplication';
 
@@ -33,7 +34,7 @@ export const appRoutes: Routes = [
       { path: '', loadComponent: homePage, title: `${baseTitle} · Overview` },
       { path: 'home', loadComponent: homePage, title: `${baseTitle} · Overview` },
 
-      { path: 'inventory', children: resourceInventoryRoutes },
+      { path: 'inventory', children: [...resourceInventoryRoutes, ...trackingInventoryRoutes] },
       { path: 'recipes', loadChildren: recipesRoute, title: `${baseTitle} · Recipes` },
       { path: 'kits', loadChildren: kitsRoute, title: `${baseTitle} · Kits` },
       { path: 'sales', loadChildren: salesRoute, title: `${baseTitle} · Sales` },
