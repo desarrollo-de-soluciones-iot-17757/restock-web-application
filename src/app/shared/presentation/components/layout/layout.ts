@@ -32,8 +32,11 @@ export class Layout {
 
   readonly searchPlaceholderKey = computed(() => {
     const url = this.currentUrl();
-    if (url.startsWith('/inventory/stock')) {
+    if (url.startsWith('/inventory/batches') || url.startsWith('/inventory/stock')) {
       return 'layout.search.batches';
+    }
+    if (url.startsWith('/inventory/custom-supplies')) {
+      return 'layout.search.customSupplies';
     }
     return 'layout.search.default';
   });
@@ -45,11 +48,13 @@ export class Layout {
       icon: 'inventory_2',
       link: '/inventory',
       children: [
-        { labelKey: 'nav.stock', link: '/inventory/stock' },
+        { labelKey: 'nav.customSupplies', link: '/inventory/custom-supplies' },
+        { labelKey: 'nav.batches', link: '/inventory/batches' },
         { labelKey: 'nav.discrepancies', link: '/inventory/discrepancies' },
       ],
     },
     { labelKey: 'nav.recipes', icon: 'restaurant_menu', link: '/recipes' },
+    { labelKey: 'nav.kits', icon: 'inventory', link: '/kits' },
     { labelKey: 'nav.sales', icon: 'trending_up', link: '/sales' },
     { labelKey: 'nav.alerts', icon: 'notifications', link: '/alerts' },
     { labelKey: 'nav.devices', icon: 'router', link: '/devices' },

@@ -216,7 +216,7 @@
       "name": "Elena",
       "last_name": "Kovac",
       "phone_number": "999100200",
-      "avatar_url": "https://via.placeholder.com/150",
+      "avatar_url": "https://placehold.co/150",
       "gender": "UNKNOWN",
       "birth_date": "2026-05-14T22:16:19.636Z"
     }
@@ -226,7 +226,7 @@
       "id": "business_1778796992301",
       "owner_id": "user_1",
       "ruc": "0000000000",
-      "picture_url": "https://via.placeholder.com/150",
+      "picture_url": "https://placehold.co/150",
       "company_name": "nexus",
       "main_location": "av.test, san francisco, Canada"
     }

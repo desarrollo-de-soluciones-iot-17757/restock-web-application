@@ -1,11 +1,9 @@
-import { Component, EventEmitter, Output, signal, computed, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Component, inject, signal, computed } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { catchError, of } from 'rxjs';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
-import { ProfilesApi } from '../../../infrastructure/profiles-api';
-import { Business } from '../../../domain/model/business.entity';
+import { IamStore } from '../../../../iam/application/iam.store';
 
 @Component({
   selector: 'app-registration-business-details',
@@ -15,32 +13,50 @@ import { Business } from '../../../domain/model/business.entity';
   styleUrl: './registration-business-details.css',
 })
 export class RegistrationBusinessDetails {
-  @Output() createAccount = new EventEmitter<object>();
-
   private readonly router = inject(Router);
-  private readonly profilesApi = inject(ProfilesApi);
+  private readonly iamStore = inject(IamStore);
+
+  readonly loading = this.iamStore.loading;
+  readonly error = this.iamStore.error;
 
   readonly countries = [
-    'United States', 'Canada', 'Mexico', 'Argentina', 'Brazil',
-    'Colombia', 'Chile', 'Peru', 'Spain', 'United Kingdom',
+    'United States',
+    'Canada',
+    'Mexico',
+    'Argentina',
+    'Brazil',
+    'Colombia',
+    'Chile',
+    'Peru',
+    'Spain',
+    'United Kingdom',
   ];
 
   readonly allCategories = [
-    'Pharmaceuticals', 'IoT Sensors', 'Cold Storage', 'Electronics',
-    'Food & Beverage', 'Automotive', 'Medical Devices', 'Retail',
-    'Manufacturing', 'Logistics',
+    'Pharmaceuticals',
+    'IoT Sensors',
+    'Cold Storage',
+    'Electronics',
+    'Food & Beverage',
+    'Automotive',
+    'Medical Devices',
+    'Retail',
+    'Manufacturing',
+    'Logistics',
   ];
 
   readonly selectedCategories = signal<string[]>([
-    'Pharmaceuticals', 'IoT Sensors', 'Cold Storage',
+    'Pharmaceuticals',
+    'IoT Sensors',
+    'Cold Storage',
   ]);
 
   readonly availableToAdd = computed(() =>
-    this.allCategories.filter((c) => !this.selectedCategories().includes(c))
+    this.allCategories.filter((c) => !this.selectedCategories().includes(c)),
   );
 
   readonly form = new FormGroup({
-    businessName: new FormControl(''),
+    businessName: new FormControl('', [Validators.required]),
     phoneNumber: new FormControl(''),
     address: new FormControl(''),
     city: new FormControl(''),
@@ -65,29 +81,16 @@ export class RegistrationBusinessDetails {
   }
 
   onCreateAccount(): void {
-    this.createAccount.emit({
-      ...this.form.value,
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    this.iamStore.completeSignUp({
+      businessName: this.form.value.businessName!,
+      phone: this.form.value.phoneNumber ?? undefined,
+      country: this.form.value.country ?? undefined,
       categories: this.selectedCategories(),
     });
-
-    this.storeBusiness()
-      .pipe(catchError(() => of(null)))
-      .subscribe(() => {
-        void this.router.navigate(['/profiles']);
-      });
-  }
-
-  private storeBusiness() {
-    const formValue = this.form.value;
-    const business = new Business({
-      businessId: `business_${Date.now()}`,
-      companyName: formValue.businessName ?? '',
-      ruc: '0000000000',
-      pictureUrl: 'https://via.placeholder.com/150',
-      mainLocation: `${formValue.address ?? ''}, ${formValue.city ?? ''}, ${formValue.country ?? ''}`,
-      ownerId: 'user_1',
-    });
-
-    return this.profilesApi.createBusiness(business);
   }
 }

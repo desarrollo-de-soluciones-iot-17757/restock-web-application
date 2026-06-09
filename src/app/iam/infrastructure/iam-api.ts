@@ -2,6 +2,7 @@
 import { Observable } from 'rxjs';
 import { BaseApi } from '../../shared/infrastructure/base-api';
 import { SignUpCommand } from '../domain/model/sign-up.command';
+import { SignUpResponse } from './sign-up/sign-up.response';
 import { User } from '../domain/model/user.entity';
 import { SignUpApiEndpoint } from './sign-up/sign-up-api-endpoint';
 import { SignInApiEndpoint } from './sign-in/sign-in-api-endpoint';
@@ -27,7 +28,7 @@ export class IamApi extends BaseApi {
    * Registers a new user.
    * @param command - The sign-up command containing user credentials.
    */
-  signUp(command: SignUpCommand): Observable<void> {
+  signUp(command: SignUpCommand): Observable<SignUpResponse> {
     return this.signUpEndpoint.signUp(command);
   }
 

@@ -1,0 +1,77 @@
+<div class="modal-overlay">
+  <div class="modal-content modal-md">
+    <div class="modal-header">
+      <h2>Recalibrate Scale</h2>
+      <button class="close-btn" (click)="cancel()">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="info-box">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#065f46" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+        <span>
+          Recalibration resets the smart scale sensor to ensure accurate stock measurements.
+          This action will dismiss the current discrepancy and flag the device for monitoring.
+        </span>
+      </div>
+
+      <div class="section-block">
+        <h4>Device Information</h4>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Device ID</span>
+            <span class="info-value">--</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Storage Unit</span>
+            <span class="info-value">--</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Last Calibration</span>
+            <span class="info-value">--</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Current Reading</span>
+            <span class="info-value">--</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>CALIBRATION ACTION</label>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="calibrationAction" value="force_tare"
+                   [checked]="selectedAction() === 'force_tare'"
+                   (change)="selectedAction.set('force_tare')">
+            <div class="radio-content">
+              <strong>Force Tare Reset (Zero Calibration)</strong>
+              <span>Resets the scale to zero and calibrates the sensor. Use when the scale shows an offset reading.</span>
+            </div>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="calibrationAction" value="schedule_maintenance"
+                   [checked]="selectedAction() === 'schedule_maintenance'"
+                   (change)="selectedAction.set('schedule_maintenance')">
+            <div class="radio-content">
+              <strong>Schedule On-site Maintenance Visit</strong>
+              <span>Arranges a technician visit to inspect and recalibrate the device physically.</span>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>RECALIBRATION NOTE</label>
+        <textarea class="form-control" rows="3" [(ngModel)]="recalibrationNote"
+                  placeholder="Add any additional notes about the recalibration..."></textarea>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-cancel" (click)="cancel()">Cancel</button>
+      <button class="btn btn-primary" (click)="confirm()">Recalibrate &amp; Dismiss Discrepancy</button>
+    </div>
+  </div>
+</div>

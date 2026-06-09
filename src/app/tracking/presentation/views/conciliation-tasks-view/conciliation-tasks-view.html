@@ -1,0 +1,95 @@
+<section class="conciliation-page">
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1 class="page-title">Conciliation Tasks</h1>
+    </div>
+    <div class="page-header-actions">
+      <a class="btn btn-outline" [routerLink]="historyPath">Resolution History</a>
+      <button class="btn btn-primary" (click)="null">Sync Scales</button>
+    </div>
+  </div>
+
+  <div class="summary-card">
+    <div class="summary-card-body">
+      <span class="summary-label">Pending Tasks</span>
+      <div class="summary-value-row">
+        <span class="summary-value">{{ store.pendingTasksCount() }}</span>
+        <span class="summary-badge badge-critical">CRITICAL</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-panel">
+    <div class="table-panel-header">
+      <h3>Active Discrepancies</h3>
+      <div class="filter-group">
+        <label>Filter:</label>
+        <select class="filter-select" [value]="filterSeverity" (change)="setFilter(($any($event.target).value))">
+          <option value="ALL">All Severity</option>
+          <option value="CRITICAL">Critical</option>
+          <option value="HIGH">Warning</option>
+          <option value="LOW">Low</option>
+        </select>
+      </div>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Supply</th>
+          <th>Device ID</th>
+          <th>Digital Stock</th>
+          <th>Scale Physical Stock</th>
+          <th>Deviation</th>
+          <th>Severity</th>
+          <th>Detection Time</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (filteredDiscrepancies.length === 0) {
+          <tr class="empty-row">
+            <td colspan="9">
+              <span class="empty-text">No active discrepancies found.</span>
+            </td>
+          </tr>
+        }
+        @for (row of filteredDiscrepancies; track row.id) {
+          <tr>
+            <td class="col-supply">{{ row.supplyName }}</td>
+            <td class="col-device">{{ row.deviceId }}</td>
+            <td>{{ row.digitalStock | number }}</td>
+            <td>{{ row.physicalStock | number }}</td>
+            <td>
+              <span class="deviation-value" [class.deviation-negative]="row.deviation < 0"
+                    [class.deviation-positive]="row.deviation > 0">
+                {{ row.deviation > 0 ? '+' : '' }}{{ row.deviation | number }}
+              </span>
+            </td>
+            <td>
+              <span class="status-badge" [ngClass]="getSeverityClass(row.severity)">
+                {{ getSeverityLabel(row.severity) }}
+              </span>
+            </td>
+            <td>{{ row.detectionTime | date:'medium' }}</td>
+            <td>
+              <span class="status-badge badge-pending">PENDING REVIEW</span>
+            </td>
+            <td class="col-actions">
+              <a class="btn btn-sm btn-investigate"
+                 [routerLink]="['/inventory/discrepancies', row.id]">
+                Investigate
+              </a>
+              <button class="btn-icon kebab" (click)="null" aria-label="More actions">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/>
+                </svg>
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

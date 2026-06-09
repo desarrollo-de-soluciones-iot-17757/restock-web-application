@@ -1,0 +1,128 @@
+<div class="detail-section" *ngIf="customSupply() as supply">
+  <div class="page-header">
+    <div class="page-header-left">
+      <a class="back-link" routerLink="/inventory/custom-supplies" aria-label="Back to custom supplies">&larr;</a>
+      <nav class="breadcrumb">
+        <span>Inventory</span>
+        <span class="sep">›</span>
+        <span>Custom Supplies</span>
+        <span class="sep">›</span>
+        <span class="current">{{ supply.name }}</span>
+      </nav>
+      <h1 class="page-title">{{ supply.name }}</h1>
+    </div>
+  </div>
+  <div class="top-row">
+    <div class="info-card">
+      <div class="info-card-left">
+        <img [src]="supply.imgUrl" alt="{{ supply.name }}" class="supply-thumbnail">
+        <div>
+          <span class="perishable-badge" [ngClass]="supply.isPerishable() ? 'badge-perishable' : 'badge-non-perishable'">
+            {{ supply.isPerishable() ? 'PERISHABLE' : 'NON-PERISHABLE' }}
+          </span>
+          <p class="supply-sku">{{ supply.supply.id }}</p>
+        </div>
+      </div>
+      <div class="info-card-fields">
+        <div class="info-field">
+          <span class="field-label">Category</span>
+          <span class="field-value">{{ supply.category }}</span>
+        </div>
+        <div class="info-field">
+          <span class="field-label">UOM</span>
+          <span class="field-value">{{ supply.unit.name }} ({{ supply.unit.abbreviation }})</span>
+        </div>
+        <div class="info-field">
+          <span class="field-label">Unit Price</span>
+          <span class="field-value">{{ supply.unitPrice }} PEN</span>
+        </div>
+        <div class="info-field">
+          <span class="field-label">Min. Stock</span>
+          <span class="field-value">{{ supply.minStock }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-card-header">
+        <span class="kpi-card-title">Total Stock</span>
+        <span class="kpi-card-icon kpi-icon-teal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+          </svg>
+        </span>
+      </div>
+      <div class="kpi-big-value">
+        {{ activeBatchCount() > 0 ? totalStock() : '—' }}
+        <span class="kpi-unit">{{ supply.unit.abbreviation }}</span>
+      </div>
+      <div class="kpi-delta kpi-delta-up">
+        {{ activeBatchCount() > 0 ? (activeBatchCount() + ' active batches') : 'No data yet' }}
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-card-header">
+        <span class="kpi-card-title">Active Batches</span>
+        <span class="kpi-card-icon kpi-icon-blue">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          </svg>
+        </span>
+      </div>
+      <div class="kpi-big-value">
+        {{ activeBatchCount() > 0 ? activeBatchCount() : '—' }}
+        <span class="kpi-unit">Batches</span>
+      </div>
+      <div class="kpi-bar-container">
+        <div class="kpi-bar">
+          <div class="kpi-bar-fill"
+               [style.width.%]="supply.maxStock > 0 ? (totalStock() / supply.maxStock) * 100 : 0">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="batches-panel">
+    <div class="batches-panel-header">
+      <h3>Active Batches</h3>
+      <a class="view-history-link" href="#">View All History →</a>
+    </div>
+    <table class="batches-table">
+      <thead>
+        <tr>
+          <th>CODE</th>
+          <th>STOCK</th>
+          <th>UNIT</th>
+          <th>ENTRY DATE</th>
+          <th>EXPIRY DATE</th>
+          <th>HEALTH STATUS</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (batches().length === 0) {
+          <tr class="empty-row">
+            <td colspan="6">
+              <span class="empty-text">No active batches. Click "+ Add Batch" to start tracking stock.</span>
+            </td>
+          </tr>
+        }
+        @for (batch of batches(); track batch.id) {
+          <tr>
+            <td class="col-code">{{ batch.code }}</td>
+            <td>{{ batch.currentStock }}</td>
+            <td>{{ batch.unitMeasurementAbbreviation }}</td>
+            <td>{{ batch.entryDate ? (batch.entryDate | date:'mediumDate') : '—' }}</td>
+            <td>{{ batch.expirationDate ? (batch.expirationDate | date:'mediumDate') : '—' }}</td>
+            <td>
+              <span class="health-badge" [ngClass]="'badge-' + getBatchHealth(batch.expirationDate)">
+                {{ getBatchHealthLabel(batch.expirationDate) }}
+              </span>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="not-found" *ngIf="!customSupply()">
+  <p>Supply not found.</p>
+</div>
