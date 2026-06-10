@@ -1,1 +1,286 @@
-<p>dashboard-section works!</p>
+<div class="page-shell">
+  <div class="page-topbar">
+    <nav class="breadcrumb" aria-label="breadcrumb">
+      <span class="bc-root">South Branch</span>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">Overview</span>
+    </nav>
+    <div class="range-group" role="group" aria-label="Date range">
+      <button
+        type="button"
+        (click)="onRangeChange('7d')"
+        [class.range-active]="selectedRange() === '7d'"
+      >
+        Last 7 days
+      </button>
+      <button
+        type="button"
+        (click)="onRangeChange('30d')"
+        [class.range-active]="selectedRange() === '30d'"
+      >
+        Last 30 days
+      </button>
+      <button
+        type="button"
+        (click)="onRangeChange('90d')"
+        [class.range-active]="selectedRange() === '90d'"
+      >
+        Last 90 days
+      </button>
+    </div>
+  </div>
+  <div class="top-cards-row">
+    <div class="top-card">
+      <div class="top-card-header">
+        <span class="top-card-label">ACTIVE METRICS</span>
+        <i class="ti ti-chart-bar top-card-icon" aria-hidden="true"></i>
+      </div>
+      <div class="top-card-headline">{{ metrics().length }}/{{ metrics().length }}</div>
+      <div class="top-card-sub">All categories reporting</div>
+      <div class="activity-bars" aria-hidden="true">
+        <span class="bar bar-full"></span>
+        <span class="bar bar-full"></span>
+        <span class="bar bar-full"></span>
+        <span class="bar bar-full"></span>
+        <span class="bar bar-full"></span>
+        <span class="bar bar-full"></span>
+        <span class="bar bar-mid"></span>
+      </div>
+    </div>
+    <div class="top-card top-card-secondary">
+      <div class="top-card-header">
+        <span class="top-card-label">NETWORK STATUS</span>
+        <i class="ti ti-wifi top-card-icon" aria-hidden="true"></i>
+      </div>
+      <div class="status-pill">
+        <span class="status-dot" aria-hidden="true"></span>
+        STABLE
+      </div>
+      <div class="top-card-sub top-card-sub--spaced">Latency: 24ms</div>
+      <div class="activity-bars activity-bars-sm" aria-hidden="true">
+        <span class="bar bar-dim bar-short"></span>
+        <span class="bar bar-mid bar-short"></span>
+        <span class="bar bar-mid bar-short"></span>
+        <span class="bar bar-full bar-short"></span>
+        <span class="bar bar-full bar-short"></span>
+      </div>
+    </div>
+  </div>
+  <div class="section-header">
+    <h1 class="section-title">Smart Scale Status</h1>
+    <button type="button" class="btn-link-green" (click)="viewAllUnits()">View All Units</button>
+  </div>
+  <div class="kpi-grid">
+    <article class="kpi-card">
+      <div class="kpi-card-top">
+        <span class="kpi-device-id">INVENTORY</span>
+        <span class="badge-online">ACTIVE</span>
+      </div>
+      <div class="kpi-metrics-grid">
+        <div class="kpi-metric">
+          <span class="kpi-metric-label">Created</span>
+          <span class="kpi-metric-value">{{ inventoryStats().createdSum }}</span>
+        </div>
+        <div class="kpi-metric">
+          <span class="kpi-metric-label">Low stock</span>
+          <span class="kpi-metric-value">{{ inventoryStats().lowStockCount }}</span>
+        </div>
+        <div class="kpi-metric">
+          <span class="kpi-metric-label">Out of stock</span>
+          <span class="kpi-metric-value" [class.value-danger]="inventoryStats().zeroStockCount > 0">
+            {{ inventoryStats().zeroStockCount }}
+          </span>
+        </div>
+        <div class="kpi-metric">
+          <span class="kpi-metric-label">Status</span>
+          <span class="kpi-metric-value kpi-value-green">
+            {{ inventoryStats().zeroStockCount > 0 ? '⚠ Alert' : 'OK' }}
+          </span>
+        </div>
+      </div>
+    </article>
+    <article class="kpi-card">
+      <div class="kpi-card-top">
+        <span class="kpi-device-id">WORKERS</span>
+        <span class="badge-online">ACTIVE</span>
+      </div>
+      <div class="kpi-metrics-grid">
+        <div class="kpi-metric">
+          <span class="kpi-metric-label">Hired</span>
+          <span class="kpi-metric-value kpi-value-green">{{ workersStats().hired }}</span>
+        </div>
+        <div class="kpi-metric">
+          <span class="kpi-metric-label">Fired</span>
+          <span class="kpi-metric-value" [class.value-danger]="workersStats().fired > 0">
+            {{ workersStats().fired }}
+          </span>
+        </div>
+        <div class="kpi-metric">
+          <span class="kpi-metric-label">Net</span>
+          <span
+            class="kpi-metric-value"
+            [class.kpi-value-green]="workersStats().net > 0"
+            [class.value-danger]="workersStats().net < 0"
+          >
+            {{ workersStats().net > 0 ? '+' : '' }}{{ workersStats().net }}
+          </span>
+        </div>
+        <div class="kpi-metric">
+          <span class="kpi-metric-label">Trend</span>
+          <span class="kpi-metric-value kpi-value-green">
+            {{ workersStats().net >= 0 ? '↑' : '↓' }}
+          </span>
+        </div>
+      </div>
+    </article>
+    <article class="kpi-card">
+      <div class="kpi-card-top">
+        <span class="kpi-device-id">NOTIFICATIONS</span>
+        <span class="badge-online">ACTIVE</span>
+      </div>
+      <div class="kpi-metrics-grid">
+        <div class="kpi-metric">
+          <span class="kpi-metric-label">Received</span>
+          <span class="kpi-metric-value">{{ notificationsStats().sum }}</span>
+        </div>
+        <div class="kpi-metric">
+          <span class="kpi-metric-label">Last refresh</span>
+          <span class="kpi-metric-value kpi-metric-value--sm">
+            {{
+              notificationsStats().lastRefreshedAt
+                ? (notificationsStats().lastRefreshedAt | date: 'HH:mm')
+                : 'N/A'
+            }}
+          </span>
+        </div>
+        <div class="kpi-metric">
+          <span class="kpi-metric-label">Period</span>
+          <span class="kpi-metric-value kpi-metric-value--sm">{{ selectedRange() }}</span>
+        </div>
+        <div class="kpi-metric">
+          <span class="kpi-metric-label">Channel</span>
+          <span class="kpi-metric-value kpi-value-green">Push</span>
+        </div>
+      </div>
+    </article>
+    <article class="kpi-card">
+      <div class="kpi-card-top">
+        <span class="kpi-device-id">SALES</span>
+        <span class="badge-online">ACTIVE</span>
+      </div>
+      <div class="kpi-metrics-grid">
+        <div class="kpi-metric">
+          <span class="kpi-metric-label">Orders</span>
+          <span class="kpi-metric-value">{{ salesStats().salesMade }}</span>
+        </div>
+        <div class="kpi-metric">
+          <span class="kpi-metric-label">Recipes</span>
+          <span class="kpi-metric-value kpi-value-green">
+            {{ salesStats().recipesProfit | number }}
+          </span>
+        </div>
+        <div class="kpi-metric">
+          <span class="kpi-metric-label">Kits</span>
+          <span class="kpi-metric-value kpi-value-green">
+            {{ salesStats().kitsProfit | number }}
+          </span>
+        </div>
+        <div class="kpi-metric">
+          <span class="kpi-metric-label">Status</span>
+          <span class="kpi-metric-value kpi-value-green">On track</span>
+        </div>
+      </div>
+    </article>
+  </div>
+  <div class="table-card">
+    <div class="table-card-header">
+      <h2 class="table-card-title">Latest Detected Metrics</h2>
+      <div class="table-card-actions">
+        <label for="categoryFilter" class="sr-only">Filter by category</label>
+        <div class="filter-btn-wrap">
+          <i class="ti ti-adjustments-horizontal filter-icon" aria-hidden="true"></i>
+          <select
+            id="categoryFilter"
+            (change)="onCategoryChange($event)"
+            [value]="categoryFilter()"
+          >
+            <option value="All">Filter</option>
+            <option value="INVENTORY">Inventory</option>
+            <option value="WORKERS">Workers</option>
+            <option value="NOTIFICATIONS">Notifications</option>
+            <option value="SALES">Sales</option>
+          </select>
+        </div>
+        <button type="button" class="btn-export-solid" (click)="exportPdf()">Export PDF</button>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>TIMESTAMP</th>
+            <th>ITEM NAME</th>
+            <th>CATEGORY</th>
+            <th>RESOURCE ID</th>
+            <th class="col-right">VALUE</th>
+            <th>DATE RANGE</th>
+            <th class="col-right">STATUS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of paginatedRows()">
+            <td class="cell-mono">{{ row.timestamp | date: 'HH:mm:ss' }}</td>
+            <td class="cell-bold">{{ row.typeFormatted }}</td>
+            <td>
+              <span [class]="'badge ' + categoryBadgeClass(row.category)">
+                {{ row.category }}
+              </span>
+            </td>
+            <td class="cell-mono cell-secondary">{{ row.resourceId }}</td>
+            <td class="col-right">
+              <span [class.value-danger]="row.value < 0" [class.cell-bold]="row.value < 0">
+                {{ row.value | number }}
+              </span>
+            </td>
+            <td class="cell-secondary">
+              {{ row.startDate | date: 'MMM d' }} → {{ row.endDate | date: 'MMM d' }}
+            </td>
+            <td class="col-right">
+              <span [class]="row.value < 0 ? 'status-pending' : 'status-resolved'">
+                {{ row.value < 0 ? 'PENDING REVIEW' : 'RESOLVED' }}
+              </span>
+            </td>
+          </tr>
+          <tr *ngIf="paginatedRows().length === 0">
+            <td colspan="7" class="cell-empty">No metrics found.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-footer">
+      <span class="footer-info">
+        Showing {{ fromItem() }}–{{ toItem() }} of {{ totalItems() }}
+      </span>
+      <div class="footer-pagination">
+        <button
+          type="button"
+          class="page-btn"
+          [disabled]="!canPrev()"
+          (click)="onPrevPage()"
+          aria-label="Previous page"
+        >
+          ← Prev
+        </button>
+        <button
+          type="button"
+          class="page-btn"
+          [disabled]="!canNext()"
+          (click)="onNextPage()"
+          aria-label="Next page"
+        >
+          Next →
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
