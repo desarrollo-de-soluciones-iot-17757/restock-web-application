@@ -48,5 +48,12 @@ export const environment = {
   platformProviderKitsRegisterEndpointPath: 'kits/register',
   platformProviderKitsEndpointPath: 'kits',
   platformProviderProductsEndpointPath: 'products',
+
+  // Analytics
+  analyticsApi: {
+    analyticsBaseUrl: 'https://restock-api-analytics.free.beeceptor.com',
+    analyticsHttpPath: '/analytics/metrics',
+  },
+  platformProviderAnalyticsEndpointPath: 'metrics'
 };
 
