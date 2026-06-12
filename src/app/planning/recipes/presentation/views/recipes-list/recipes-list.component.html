@@ -119,7 +119,7 @@
   [mode]="store.modalMode()!"
   [recipe]="store.modalMode() === 'edit' ? store.selectedRecipe() : null"
   [availableSupplies]="store.customSupplies()"
-  [accountId]="store.accountId()"
+  [accountId]="accountId"
   [saving]="store.saving()"
   (onClose)="store.closeModal()"
   (onCreate)="store.create($event.cmd, $event.pendingIngredients)"

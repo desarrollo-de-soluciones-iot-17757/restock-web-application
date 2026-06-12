@@ -154,7 +154,7 @@
   mode="edit"
   [recipe]="recipe"
   [availableSupplies]="store.customSupplies()"
-  [accountId]="store.accountId()"
+  [accountId]="accountId"
   [saving]="store.saving()"
   (onClose)="store.closeModal(); refreshRecipe()"
   (onUpdate)="store.update($event.cmd); refreshRecipe()"
