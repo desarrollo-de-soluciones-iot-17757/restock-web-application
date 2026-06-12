@@ -35,7 +35,10 @@ export const environment = {
     baseUrl: 'https://restock-api-profiles.free.beeceptor.com',
     fallbackBaseUrl: 'https://profiles-restock-api.free.beeceptor.com',
   },
-
+  recipesApi: {
+    baseUrl: '/api/v1',
+    fallbackBaseUrl: 'http://localhost:8080/api/v1',
+  },
   // IAM & Profiles
   platformProviderApiBaseUrl: 'http://localhost:8080/api/v1',
   platformProviderSignInEndpointPath: 'auth/sign-in',
