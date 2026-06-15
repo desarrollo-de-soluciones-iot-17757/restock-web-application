@@ -215,6 +215,7 @@ export class DeviceOnboarding implements OnInit {
     const device = this.currentDevice()!;
 
     this.thresholdsStore.createThreshold({
+      deviceId: device.id,
       accountId: this.accountId,
       customSupplyId: device.assignedBatchId ?? '',
       minStock: v.minStock,
