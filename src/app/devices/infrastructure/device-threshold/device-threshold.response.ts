@@ -14,6 +14,7 @@ export interface DeviceThresholdResource extends BaseResource {
 }
 
 export interface CreateDeviceThresholdRequest {
+  deviceId: string;
   accountId: string;
   customSupplyId: string;
   minStock: number;
