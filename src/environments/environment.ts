@@ -65,8 +65,11 @@ export const environment = {
 
   // Analytics
   analyticsApi: {
-    analyticsBaseUrl: 'https://restock-api-analytics.free.beeceptor.com',
+    analyticsBaseUrl: 'http://localhost:8080',
     analyticsHttpPath: '/analytics/metrics',
+    customSuppliesStockDiscrepanciesPath: '/custom-supplies/{id}/stock-discrepancies',
+    accountsRecentSalesPath: '/accounts/{accountId}/recent-sales',
+    accountsCriticalProductsPath: '/accounts/{accountId}/critical-products',
   },
   platformProviderAnalyticsEndpointPath: 'metrics',
 };
