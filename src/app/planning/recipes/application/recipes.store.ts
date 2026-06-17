@@ -140,6 +140,7 @@ export class RecipesStore {
       sku: cmd.sku,
       imageUrl: cmd.imageUrl ?? '',
       sellingPrice: cmd.sellingPrice,
+      status: cmd.status,
     }).subscribe({
       next: entity => {
         this._patchRecipe(entity);
