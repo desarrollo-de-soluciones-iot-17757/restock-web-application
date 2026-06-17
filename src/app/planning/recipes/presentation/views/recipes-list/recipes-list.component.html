@@ -66,7 +66,7 @@
 
   <!-- GRID -->
   <section *ngIf="!store.loading()" class="recipes-grid">
-    <div *ngFor="let recipe of store.filteredRecipes()" class="recipe-card">
+    <div *ngFor="let recipe of store.filteredRecipes()" class="recipe-card" [class.inactive-card]="recipe.status === 'INACTIVE'">
 
       <!-- IMAGE -->
       <div class="card-image-wrapper" (click)="goToDetail(recipe)">
