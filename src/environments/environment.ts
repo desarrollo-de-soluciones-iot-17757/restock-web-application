@@ -67,9 +67,10 @@ export const environment = {
   analyticsApi: {
     analyticsBaseUrl: 'http://localhost:8080',
     analyticsHttpPath: '/analytics/metrics',
-    customSuppliesStockDiscrepanciesPath: '/custom-supplies/{id}/stock-discrepancies',
-    accountsRecentSalesPath: '/accounts/{accountId}/recent-sales',
-    accountsCriticalProductsPath: '/accounts/{accountId}/critical-products',
+    customSuppliesStockDiscrepanciesPath: '/api/v1/custom-supplies/{id}/stock-discrepancies',
+    accountsRecentSalesPath: '/api/v1/accounts/{accountId}/recent-sales',
+    accountsCriticalProductsPath: '/api/v1/accounts/{accountId}/critical-products',
+    defaultStockDiscrepanciesSupplyId: '' as string,
   },
   platformProviderAnalyticsEndpointPath: 'metrics',
 };

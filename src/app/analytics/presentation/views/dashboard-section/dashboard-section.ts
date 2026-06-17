@@ -1,7 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { NgFor, NgIf,DatePipe, DecimalPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, effect } from '@angular/core';
+import { NgFor, NgIf, DatePipe, DecimalPipe } from '@angular/common';
 import { AnalyticsStore } from '../../../application/analytics.store';
+import { IamStore } from '../../../../iam/application/iam.store';
 import { MetricCategory, MetricType } from '../../../domain/model/metric.entity';
+import { environment } from '../../../../../environments/environment';
 
 interface MetricRow {
   id: string;
@@ -24,18 +26,50 @@ interface MetricRow {
 })
 export class DashboardSectionComponent {
   private readonly store = inject(AnalyticsStore);
+  private readonly iamStore = inject(IamStore);
 
   readonly isLoading = this.store.isLoading;
   readonly selectedRange = this.store.selectedRange;
   readonly metrics = this.store.metrics;
 
+  readonly stockDiscrepancies = this.store.stockDiscrepancies;
+  readonly stockDiscrepanciesLoading = this.store.stockDiscrepanciesLoading;
+
+  readonly recentSales = this.store.recentSales;
+  readonly recentSalesLoading = this.store.recentSalesLoading;
+
+  readonly criticalProducts = this.store.criticalProducts;
+  readonly criticalProductsLoading = this.store.criticalProductsLoading;
+
   constructor() {
     this.store.loadMetrics(this.selectedRange());
+
+    const supplyId = environment.analyticsApi.defaultStockDiscrepanciesSupplyId;
+    if (supplyId) {
+      this.store.loadStockDiscrepancies(supplyId);
+    }
+
+    const accountId = this.iamStore.currentUser()?.accountId;
+    if (accountId) {
+      this.store.loadRecentSales(accountId);
+      this.store.loadCriticalProducts(accountId);
+    }
+
+    effect(() => {
+      const currentUser = this.iamStore.currentUser();
+      if (currentUser?.accountId) {
+        this.store.loadRecentSales(currentUser.accountId);
+        this.store.loadCriticalProducts(currentUser.accountId);
+      }
+    });
   }
 
   readonly categoryFilter = signal<MetricCategory | 'All'>('All');
   readonly currentPage = signal<number>(1);
   readonly pageSize = 10;
+
+  readonly salesStartDate = signal<string>('');
+  readonly salesEndDate = signal<string>('');
 
   readonly inventoryStats = computed(() => {
     const allMetrics = this.metrics();
@@ -113,6 +147,21 @@ export class DashboardSectionComponent {
 
   readonly canPrev = computed(() => this.currentPage() > 1);
   readonly canNext = computed(() => this.currentPage() < this.totalPages());
+
+  readonly highRiskDiscrepancies = computed(() =>
+    this.stockDiscrepancies().filter(d => d.riskLevel === 'HIGH')
+  );
+
+  readonly totalStockDeficit = computed(() =>
+    this.criticalProducts().reduce((sum, p) => sum + p.stockDeficit, 0)
+  );
+
+  readonly totalSalesAmount = computed(() =>
+    this.recentSales()
+      .filter(s => s.totalAmount !== null)
+      .reduce((sum, s) => sum + (s.totalAmount ?? 0), 0)
+  );
+
   onRangeChange(range: '7d' | '30d' | '90d'): void {
     this.store.loadMetrics(range);
     this.currentPage.set(1);
@@ -134,6 +183,32 @@ export class DashboardSectionComponent {
     if (this.canPrev()) {
       this.currentPage.update((p) => p - 1);
     }
+  }
+
+  onStartDateChange(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.salesStartDate.set(target.value);
+  }
+
+  onEndDateChange(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.salesEndDate.set(target.value);
+  }
+
+  applyDateFilter(): void {
+    const accountId = this.iamStore.currentUser()?.accountId;
+    if (!accountId) return;
+    const start = this.salesStartDate() || undefined;
+    const end = this.salesEndDate() || undefined;
+    this.store.loadRecentSales(accountId, start, end);
+  }
+
+  clearDateFilter(): void {
+    this.salesStartDate.set('');
+    this.salesEndDate.set('');
+    const accountId = this.iamStore.currentUser()?.accountId;
+    if (!accountId) return;
+    this.store.loadRecentSales(accountId);
   }
 
   exportPdf(): void {
