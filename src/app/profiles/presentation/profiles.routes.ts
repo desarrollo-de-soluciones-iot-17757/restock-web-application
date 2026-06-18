@@ -13,6 +13,11 @@ const registrationBusinessDetails = () =>
     (m) => m.RegistrationBusinessDetails,
   );
 
+const registrationBranchSetup = () =>
+  import('./view/registration-branch-setup/registration-branch-setup').then(
+    (m) => m.RegistrationBranchSetup,
+  );
+
 /**
  * Routes for the profiles module.
  */
@@ -34,6 +39,11 @@ export const profilesRoutes: Routes = [
         path: 'business',
         loadComponent: registrationBusinessDetails,
         title: 'Business details',
+      },
+      {
+        path: 'branch',
+        loadComponent: registrationBranchSetup,
+        title: 'Set up your first branch',
       },
     ],
   },
