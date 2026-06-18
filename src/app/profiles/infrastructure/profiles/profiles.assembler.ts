@@ -19,9 +19,8 @@ export class ProfilesAssembler implements BaseAssembler<Profile, ProfileResource
    * @param resource - Single profile document from the API.
    */
   toEntityFromResource(resource: ProfileResource): Profile {
-    const profileId = resource.id ?? String(resource.id);
     return new Profile({
-      profileId,
+      profileId: resource.id ?? '',
       userId: resource.user_id ?? '',
       name: resource.name ?? '',
       lastName: resource.last_name ?? '',
@@ -34,17 +33,17 @@ export class ProfilesAssembler implements BaseAssembler<Profile, ProfileResource
 
   /**
    * @param entity - Domain aggregate to send on create/update.
+   * `id` is intentionally omitted — the backend assigns the MongoDB ObjectId.
    */
   toResourceFromEntity(entity: Profile): ProfileResource {
     return {
-      id: entity.profileId.getValue(),
       user_id: entity.userId.getValue(),
       name: entity.name,
       last_name: entity.lastName,
       phone_number: entity.phoneNumber.getValue(),
-      avatar_url: entity.avatarUrl.getValue(),
+      avatar_url: entity.avatarUrl.getValue() || 'https://placehold.co/150',
       gender: entity.gender,
       birth_date: entity.birthDate.getValue(),
-    };
+    } as ProfileResource;
   }
 }
