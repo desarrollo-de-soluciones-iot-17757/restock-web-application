@@ -39,8 +39,10 @@ export class IamStore {
     phoneNumber: string;
     avatarUrl: string | null;
   } | null>(null);
+  private readonly pendingAccountIdSignal = signal<string | null>(null);
 
   readonly currentUser = this.currentUserSignal.asReadonly();
+  readonly pendingAccountId = this.pendingAccountIdSignal.asReadonly();
   readonly error = this.errorSignal.asReadonly();
   readonly loading = this.loadingSignal.asReadonly();
   readonly successMessage = this.successMessageSignal.asReadonly();
@@ -92,14 +94,14 @@ export class IamStore {
         const userId = response.id;
 
         const profile = new Profile({
-          profileId: `profile_${Date.now()}`,
-          userId: userId,
+          profileId: '',
+          userId: userId ?? '',
           name: pendingProfile?.firstName ?? '',
           lastName: pendingProfile?.lastName ?? '',
           phoneNumber: pendingProfile?.phoneNumber ?? '',
-          avatarUrl: pendingProfile?.avatarUrl ?? 'https://placehold.co/150',
-          gender: 'UNKNOWN',
-          birthDate: new Date().toISOString(),
+          avatarUrl: pendingProfile?.avatarUrl ?? '',
+          gender: '',
+          birthDate: '',
         });
 
         const business = new Business({
@@ -118,12 +120,24 @@ export class IamStore {
         });
 
         this.registeredUsers.register(email, password);
-        this.clearAuthSession();
-        this.successMessageSignal.set(
-          'Account created successfully. Log in with your email and password.',
-        );
-        this.loadingSignal.set(false);
-        void this.router.navigate(['/sign-in'], { replaceUrl: true });
+        this.pendingAccountIdSignal.set(response.accountId);
+
+        // Auto sign-in to acquire a JWT for the branch-setup step.
+        // The interceptor will attach it so /api/v1/branches returns 200, not 401.
+        const signInCmd = new SignInCommand({ email, password });
+        this.iamApi.signIn(signInCmd).subscribe({
+          next: (user) => {
+            this.setCurrentUser(user);
+            this.loadingSignal.set(false);
+            void this.router.navigate(['/profiles/register/branch'], { replaceUrl: true });
+          },
+          error: () => {
+            // Token unavailable — proceed without it; branch creation may fail but user can skip.
+            this.clearAuthSession();
+            this.loadingSignal.set(false);
+            void this.router.navigate(['/profiles/register/branch'], { replaceUrl: true });
+          },
+        });
       },
       error: (error) => {
         if (error instanceof HttpErrorResponse && error.status === 409) {
@@ -192,6 +206,10 @@ export class IamStore {
 
   clearSuccessMessage(): void {
     this.successMessageSignal.set(null);
+  }
+
+  clearPendingAccountId(): void {
+    this.pendingAccountIdSignal.set(null);
   }
 
   private setCurrentUser(user: User | null): void {
