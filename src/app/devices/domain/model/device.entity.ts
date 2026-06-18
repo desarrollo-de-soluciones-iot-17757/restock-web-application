@@ -13,7 +13,7 @@ export class Device implements BaseEntity {
   private _branchId: string | null;
   private _assignedBatchId: string | null;
   private _supplyThresholdId: string | null;
-  private _netWeight: number | null;
+  private _unitStockWeight: number | null;
   private _tareWeight: number | null;
   private _grossWeight: number | null;
   private _calibrationDate: string | null;
@@ -33,7 +33,7 @@ export class Device implements BaseEntity {
     branchId: string | null;
     assignedBatchId: string | null;
     supplyThresholdId: string | null;
-    netWeight: number | null;
+    unitStockWeight: number | null;
     tareWeight: number | null;
     grossWeight: number | null;
     calibrationDate: string | null;
@@ -52,7 +52,7 @@ export class Device implements BaseEntity {
     this._branchId = props.branchId;
     this._assignedBatchId = props.assignedBatchId;
     this._supplyThresholdId = props.supplyThresholdId;
-    this._netWeight = props.netWeight;
+    this._unitStockWeight = props.unitStockWeight;
     this._tareWeight = props.tareWeight;
     this._grossWeight = props.grossWeight;
     this._calibrationDate = props.calibrationDate;
@@ -74,7 +74,7 @@ export class Device implements BaseEntity {
   get branchId(): string | null { return this._branchId; }
   get assignedBatchId(): string | null { return this._assignedBatchId; }
   get supplyThresholdId(): string | null { return this._supplyThresholdId; }
-  get netWeight(): number | null { return this._netWeight; }
+  get unitStockWeight(): number | null { return this._unitStockWeight; }
   get tareWeight(): number | null { return this._tareWeight; }
   get grossWeight(): number | null { return this._grossWeight; }
   get calibrationDate(): string | null { return this._calibrationDate; }

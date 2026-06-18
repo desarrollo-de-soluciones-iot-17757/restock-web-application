@@ -55,7 +55,7 @@ export class DevicesApi extends BaseApi {
     return this.devicesEndpoint.updateMeasurement(deviceId, body);
   }
 
-  updateStatus(deviceId: string, status: 'CONFIGURED' | 'INACTIVE'): Observable<Device> {
+  updateStatus(deviceId: string, status: 'CALIBRATED' | 'INACTIVE'): Observable<Device> {
     return this.devicesEndpoint.updateStatus(deviceId, status);
   }
 

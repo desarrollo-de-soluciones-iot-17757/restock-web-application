@@ -89,6 +89,7 @@
             class="status-badge"
             [class.registered]="device.status === 'REGISTERED'"
             [class.configured]="device.status === 'CONFIGURED'"
+            [class.active]="device.status === 'CALIBRATED'"
             [class.active]="device.status === 'ACTIVE'"
             [class.inactive]="device.status === 'INACTIVE'"
           >{{ device.status }}</span>
