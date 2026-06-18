@@ -220,13 +220,16 @@
           <label class="field-label" for="gender">{{ 'settings.profile.fields.gender' | translate }}</label>
           <div class="field-with-icon">
             <span class="field-with-icon__icon material-icons">person_outline</span>
-            <input
+            <select
               id="gender"
-              class="field-input field-input--indented"
-              type="text"
+              class="field-select field-select--indented"
               [ngModel]="gender()"
-              (ngModelChange)="gender.set($event)"
-              [placeholder]="'settings.profile.placeholders.gender' | translate" />
+              (ngModelChange)="gender.set($event)">
+              <option value="">{{ 'settings.profile.gender.placeholder' | translate }}</option>
+              @for (opt of genderOptions; track opt.value) {
+                <option [value]="opt.value">{{ opt.labelKey | translate }}</option>
+              }
+            </select>
           </div>
         </div>
 
@@ -242,6 +245,20 @@
               [ngModel]="phone()"
               (ngModelChange)="phone.set($event)"
               [placeholder]="'settings.profile.placeholders.phone' | translate" />
+          </div>
+        </div>
+
+        <!-- Birth Date -->
+        <div class="field-group">
+          <label class="field-label" for="birthDate">{{ 'settings.profile.fields.birthDate' | translate }}</label>
+          <div class="field-with-icon">
+            <span class="field-with-icon__icon material-icons">calendar_today</span>
+            <input
+              id="birthDate"
+              class="field-input field-input--indented"
+              type="date"
+              [ngModel]="birthDate()"
+              (ngModelChange)="birthDate.set($event)" />
           </div>
         </div>
 
@@ -284,12 +301,196 @@
   <!-- ══════════════════ BRANCHES TAB ══════════════════ -->
   @if (activeTab() === 'branches') {
     <div class="preferences-body">
+
       <div class="main-column">
         <div class="card">
-          <h2 class="card-title">{{ 'settings.branches.title' | translate }}</h2>
-          <p class="page-subtitle">{{ 'settings.branches.comingSoon' | translate }}</p>
+          <!-- Card header with title + action -->
+          <div class="branches-card-header">
+            <div class="card-header">
+              <span class="card-icon material-icons">account_tree</span>
+              <h2 class="card-title">{{ 'settings.branches.title' | translate }}</h2>
+            </div>
+            @if (!showCreateForm()) {
+              <button class="btn-add-branch" type="button" (click)="openCreateForm()">
+                <span class="material-icons">add</span>
+                {{ 'settings.branches.new' | translate }}
+              </button>
+            }
+          </div>
+
+          <!-- Loading state -->
+          @if (branchesLoading()) {
+            <div class="branches-loading">
+              <span class="spinner-sm"></span>
+              {{ 'settings.branches.loading' | translate }}
+            </div>
+          }
+
+          <!-- Error state -->
+          @if (branchesError()) {
+            <div class="branches-error">
+              <span class="material-icons">warning_amber</span>
+              {{ branchesError() }}
+            </div>
+          }
+
+          <!-- Branch list -->
+          @if (!branchesLoading()) {
+            @if (allBranches().length === 0) {
+              <div class="branches-empty">
+                <span class="material-icons branches-empty__icon">storefront</span>
+                <p class="branches-empty__title">{{ 'settings.branches.empty' | translate }}</p>
+                <p class="branches-empty__hint">{{ 'settings.branches.emptyHint' | translate }}</p>
+              </div>
+            } @else {
+              <div class="branches-list">
+                @for (b of allBranches(); track b.id) {
+                  <div class="branch-row" [class.branch-row--active]="b.id === currentBranchId()">
+                    <div class="branch-row__left">
+                      <div class="branch-row__icon-wrap" [class.branch-row__icon-wrap--active]="b.id === currentBranchId()">
+                        <span class="material-icons">storefront</span>
+                      </div>
+                      <div class="branch-row__info">
+                        <span class="branch-row__name">{{ b.name }}</span>
+                        @if (b.status) {
+                          <span class="branch-row__status" [class.branch-row__status--active]="b.status === 'ACTIVE'">
+                            {{ b.status }}
+                          </span>
+                        }
+                      </div>
+                    </div>
+                    <div class="branch-row__right">
+                      @if (b.id === currentBranchId()) {
+                        <span class="branch-row__badge">
+                          <span class="material-icons">check_circle</span>
+                          {{ 'settings.branches.active' | translate }}
+                        </span>
+                      } @else {
+                        <button class="btn-switch" type="button" (click)="switchBranch(b.id)">
+                          {{ 'settings.branches.switch' | translate }}
+                        </button>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          }
+
+          <!-- Create branch form -->
+          @if (showCreateForm()) {
+            <div class="create-branch-form">
+              <div class="create-branch-form__header">
+                <span class="create-branch-form__title">{{ 'settings.branches.newTitle' | translate }}</span>
+              </div>
+
+              <form [formGroup]="newBranchForm" (ngSubmit)="submitCreateBranch()">
+                <div class="create-form-grid">
+                  <div class="field-group">
+                    <label class="field-label" for="newBranchName">{{ 'settings.branches.fields.name' | translate }}</label>
+                    <input
+                      id="newBranchName"
+                      class="field-input"
+                      [class.field-input--error]="newBranchForm.get('name')?.invalid && newBranchForm.get('name')?.touched"
+                      formControlName="name"
+                      [placeholder]="'settings.branches.fields.namePlaceholder' | translate"
+                    />
+                    @if (newBranchForm.get('name')?.invalid && newBranchForm.get('name')?.touched) {
+                      <span class="field-error-sm">{{ 'settings.branches.fields.nameRequired' | translate }}</span>
+                    }
+                  </div>
+
+                  <div class="field-group">
+                    <label class="field-label" for="newBranchAddress">{{ 'settings.branches.fields.address' | translate }}</label>
+                    <input
+                      id="newBranchAddress"
+                      class="field-input"
+                      [class.field-input--error]="newBranchForm.get('address')?.invalid && newBranchForm.get('address')?.touched"
+                      formControlName="address"
+                      [placeholder]="'settings.branches.fields.addressPlaceholder' | translate"
+                    />
+                    @if (newBranchForm.get('address')?.invalid && newBranchForm.get('address')?.touched) {
+                      <span class="field-error-sm">{{ 'settings.branches.fields.required' | translate }}</span>
+                    }
+                  </div>
+
+                  <div class="field-group">
+                    <label class="field-label" for="newBranchCity">{{ 'settings.branches.fields.city' | translate }}</label>
+                    <input
+                      id="newBranchCity"
+                      class="field-input"
+                      [class.field-input--error]="newBranchForm.get('city')?.invalid && newBranchForm.get('city')?.touched"
+                      formControlName="city"
+                      [placeholder]="'settings.branches.fields.cityPlaceholder' | translate"
+                    />
+                    @if (newBranchForm.get('city')?.invalid && newBranchForm.get('city')?.touched) {
+                      <span class="field-error-sm">{{ 'settings.branches.fields.required' | translate }}</span>
+                    }
+                  </div>
+
+                  <div class="field-group">
+                    <label class="field-label" for="newBranchCountry">{{ 'settings.branches.fields.country' | translate }}</label>
+                    <select id="newBranchCountry" class="field-select" formControlName="country">
+                      @for (c of countries; track c) {
+                        <option [value]="c">{{ c }}</option>
+                      }
+                    </select>
+                  </div>
+
+                  <div class="field-group">
+                    <label class="field-label" for="newBranchRegion">{{ 'settings.branches.fields.regionOrState' | translate }}</label>
+                    <input
+                      id="newBranchRegion"
+                      class="field-input"
+                      [class.field-input--error]="newBranchForm.get('regionOrState')?.invalid && newBranchForm.get('regionOrState')?.touched"
+                      formControlName="regionOrState"
+                      [placeholder]="'settings.branches.fields.regionOrStatePlaceholder' | translate"
+                    />
+                    @if (newBranchForm.get('regionOrState')?.invalid && newBranchForm.get('regionOrState')?.touched) {
+                      <span class="field-error-sm">{{ 'settings.branches.fields.required' | translate }}</span>
+                    }
+                  </div>
+                </div>
+
+                @if (branchesCreateError()) {
+                  <div class="create-form-error">
+                    <span class="material-icons">warning_amber</span>
+                    {{ branchesCreateError()! | translate }}
+                  </div>
+                }
+
+                <div class="create-form-actions">
+                  <button type="button" class="btn btn--secondary" (click)="cancelCreateForm()">
+                    {{ 'settings.branches.cancel' | translate }}
+                  </button>
+                  <button type="submit" class="btn btn--primary" [disabled]="branchesCreateLoading()">
+                    @if (branchesCreateLoading()) {
+                      <span class="spinner-btn"></span>
+                    }
+                    {{ 'settings.branches.createBtn' | translate }}
+                  </button>
+                </div>
+              </form>
+            </div>
+          }
         </div>
       </div>
+
+      <!-- Side info card -->
+      <div class="side-column">
+        <div class="card card--info">
+          <div class="card-header">
+            <span class="material-icons status-icon">info</span>
+            <span class="status-title">{{ 'settings.branches.infoTitle' | translate }}</span>
+          </div>
+          <p class="status-description">{{ 'settings.branches.infoBody' | translate }}</p>
+          <div class="branches-stat">
+            <span class="branches-stat__value">{{ allBranches().length }}</span>
+            <span class="branches-stat__label">{{ 'settings.branches.statLabel' | translate }}</span>
+          </div>
+        </div>
+      </div>
+
     </div>
   }
 

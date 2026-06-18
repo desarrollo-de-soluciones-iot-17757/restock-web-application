@@ -1,15 +1,15 @@
 import { UpperCasePipe } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { catchError, of } from 'rxjs';
+import { finalize } from 'rxjs';
 import { Profile } from '../../../domain/model/profile.entity';
 import { ProfilesStore } from '../../../application/profiles.store';
 import { UpdateProfileCommand } from '../../../domain/model/update-profile.command';
-import { ResourceApi, type BranchResource } from '../../../../resource/infrastructure/resource-api';
-import { IamStore as AuthService } from '../../../../iam/application/iam.store';
+import { ResourceStore } from '../../../../resource/application/resource.store';
+import { IamStore } from '../../../../iam/application/iam.store';
 
-/** Local snapshot for “discard changes” on the profile tab (primitives only). */
+/** Local snapshot for "discard changes" on the profile tab (primitives only). */
 interface ProfileFieldSnapshot {
   profileId: string;
   userId: string;
@@ -24,15 +24,15 @@ interface ProfileFieldSnapshot {
 @Component({
   selector: 'app-system-preferences',
   standalone: true,
-  imports: [FormsModule, UpperCasePipe, TranslateModule],
+  imports: [FormsModule, ReactiveFormsModule, UpperCasePipe, TranslateModule],
   templateUrl: './system-preferences.html',
   styleUrl: './system-preferences.css',
 })
 export class SystemPreferences {
   private readonly store = inject(ProfilesStore);
   private readonly translate = inject(TranslateService);
-  private readonly resourceApi = inject(ResourceApi);
-  private readonly authService = inject(AuthService);
+  private readonly resourceStore = inject(ResourceStore);
+  private readonly iamStore = inject(IamStore);
 
   activeTab = signal<'general' | 'profile' | 'branches'>('general');
 
@@ -40,7 +40,7 @@ export class SystemPreferences {
   timezone = signal('UTC -05:00 Eastern Time (US & Canada)');
   currency = signal('USD - United States Dollar ($)');
   language = signal(this.translate.getCurrentLang() || 'en');
-  branch = signal(this.store.currentBranchId());
+  branch = signal(this.resourceStore.currentBranchId());
   emailNotifications = signal(true);
   smsAlerts = signal(false);
 
@@ -67,9 +67,38 @@ export class SystemPreferences {
     { code: 'es', label: 'Spanish' },
   ];
 
-  readonly branchOptions = signal<BranchResource[]>([]);
+  // Branches come from the ResourceStore — no local copy needed.
+  readonly branchOptions = computed(() => this.resourceStore.branches());
+  readonly allBranches = computed(() => this.resourceStore.branches());
+  readonly currentBranchId = computed(() => this.resourceStore.currentBranchId());
 
-  // ── Profile tab (editable copies of the aggregate) ──
+  // ── Branches tab ──
+  readonly branchesLoading = signal(false);
+  readonly branchesError = signal<string | null>(null);
+  readonly branchesCreateLoading = signal(false);
+  readonly branchesCreateError = signal<string | null>(null);
+  readonly showCreateForm = signal(false);
+
+  readonly newBranchForm = new FormGroup({
+    name:          new FormControl('', [Validators.required]),
+    address:       new FormControl('', [Validators.required]),
+    city:          new FormControl('', [Validators.required]),
+    country:       new FormControl('United States', [Validators.required]),
+    regionOrState: new FormControl('', [Validators.required]),
+    description:   new FormControl(''),
+  });
+
+  readonly countries = [
+    'United States', 'Canada', 'Mexico', 'Argentina', 'Brazil',
+    'Colombia', 'Chile', 'Peru', 'Spain', 'United Kingdom',
+  ];
+
+  readonly genderOptions = [
+    { value: 'MALE',   labelKey: 'settings.profile.gender.male' },
+    { value: 'FEMALE', labelKey: 'settings.profile.gender.female' },
+  ];
+
+  // ── Profile tab ──
   profileEntityId = signal('');
   firstName = signal('');
   lastName = signal('');
@@ -85,22 +114,27 @@ export class SystemPreferences {
   private savedProfileFields: ProfileFieldSnapshot | null = null;
 
   constructor() {
-    this.loadBranchOptions();
+    if (this.resourceStore.branches().length === 0) {
+      this.resourceStore.loadBranches();
+    }
 
-    // Profile data is loaded from `Layout` for the shell; this view syncs when `profile()` updates.
     effect(() => {
       const profile = this.store.profile();
-      if (!profile) {
-        return;
-      }
+      if (!profile) return;
       this.applyProfile(profile);
       this.captureSnapshot(profile);
     });
+
+    // Keep the general-tab branch selector in sync when branches load.
+    effect(() => {
+      const branches = this.resourceStore.branches();
+      const saved = this.resourceStore.currentBranchId();
+      const exists = branches.some((b) => b.id === saved);
+      const next = exists ? saved : branches[0]?.id ?? '';
+      this.branch.set(next);
+    });
   }
 
-  /**
-   * Copies aggregate getters into the template-bound signals.
-   */
   private applyProfile(profile: Profile): void {
     this.profileEntityId.set(profile.id);
     this.firstName.set(profile.name);
@@ -111,9 +145,6 @@ export class SystemPreferences {
     this.birthDate.set(profile.birthDate.getValue());
   }
 
-  /**
-   * Persists the last applied server state for discard support.
-   */
   private captureSnapshot(profile: Profile): void {
     this.savedProfileFields = {
       profileId: profile.id,
@@ -129,20 +160,29 @@ export class SystemPreferences {
 
   setTab(tab: 'general' | 'profile' | 'branches'): void {
     this.activeTab.set(tab);
+    if (tab === 'branches' && this.resourceStore.branches().length === 0) {
+      this.branchesLoading.set(true);
+      this.resourceStore.loadBranches();
+      // branchesLoading cleared reactively once branches signal populates
+      // Use a short timeout as fallback since loadBranches is fire-and-forget.
+      setTimeout(() => this.branchesLoading.set(false), 3000);
+    }
   }
+
+  // ── General tab actions ────────────────────────────────────────────────────
 
   discardChanges(): void {
     this.timezone.set('UTC -05:00 Eastern Time (US & Canada)');
     this.currency.set('USD - United States Dollar ($)');
     this.language.set('English (US)');
-    this.branch.set(this.store.currentBranchId() || this.branchOptions()[0]?.id || '');
+    this.branch.set(this.resourceStore.currentBranchId() || this.branchOptions()[0]?.id || '');
     this.emailNotifications.set(true);
     this.smsAlerts.set(false);
   }
 
   savePreferences(): void {
     this.translate.use(this.language());
-    this.store.setCurrentBranchId(this.branch());
+    this.resourceStore.setCurrentBranchId(this.branch());
   }
 
   setLanguage(languageCode: string): void {
@@ -150,11 +190,11 @@ export class SystemPreferences {
     this.translate.use(languageCode);
   }
 
+  // ── Profile tab actions ───────────────────────────────────────────────────
+
   discardProfileChanges(): void {
     const snap = this.savedProfileFields;
-    if (!snap) {
-      return;
-    }
+    if (!snap) return;
     this.profileEntityId.set(snap.profileId);
     this.firstName.set(snap.firstName);
     this.lastName.set(snap.lastName);
@@ -164,13 +204,14 @@ export class SystemPreferences {
     this.birthDate.set(snap.birthDate);
   }
 
-  /**
-   * Sends an {@link UpdateProfileCommand} through the store (no direct API usage in the view).
-   */
   saveProfileChanges(): void {
+    const userId =
+      this.store.profile()?.userId.getValue() ||
+      this.iamStore.currentUser()?.id ||
+      '';
     const cmd = new UpdateProfileCommand({
       profileId: this.profileEntityId(),
-      userId: this.store.profile()?.userId.getValue() ?? '',
+      userId,
       name: this.firstName(),
       lastName: this.lastName(),
       phoneNumber: this.phone(),
@@ -181,23 +222,54 @@ export class SystemPreferences {
     this.store.updateProfile(cmd);
   }
 
-  private loadBranchOptions(): void {
-    const accountId = this.authService.currentUser()?.accountId ?? '';
+  // ── Branches tab actions ──────────────────────────────────────────────────
 
-    this.resourceApi
-      .getBranches(accountId)
-      .pipe(catchError(() => of([])))
-      .subscribe((branches) => {
-        this.branchOptions.set(branches);
+  switchBranch(branchId: string): void {
+    this.resourceStore.setCurrentBranchId(branchId);
+    this.branch.set(branchId);
+  }
 
-        const savedBranchId = this.store.currentBranchId();
-        const savedExists = branches.some((branch) => branch.id === savedBranchId);
-        const nextBranchId = savedExists ? savedBranchId : branches[0]?.id ?? '';
+  openCreateForm(): void {
+    this.newBranchForm.reset({ country: 'United States' });
+    this.branchesCreateError.set(null);
+    this.showCreateForm.set(true);
+  }
 
-        this.branch.set(nextBranchId);
-        if (nextBranchId && nextBranchId !== savedBranchId) {
-          this.store.setCurrentBranchId(nextBranchId);
-        }
+  cancelCreateForm(): void {
+    this.showCreateForm.set(false);
+    this.branchesCreateError.set(null);
+  }
+
+  submitCreateBranch(): void {
+    if (this.newBranchForm.invalid) {
+      this.newBranchForm.markAllAsTouched();
+      return;
+    }
+
+    const accountId = this.resourceStore.accountId();
+
+    this.branchesCreateLoading.set(true);
+    this.branchesCreateError.set(null);
+
+    this.resourceStore
+      .createBranch({
+        accountId,
+        name:          this.newBranchForm.value.name!,
+        address:       this.newBranchForm.value.address!,
+        city:          this.newBranchForm.value.city!,
+        country:       this.newBranchForm.value.country!,
+        regionOrState: this.newBranchForm.value.regionOrState ?? undefined,
+        description:   this.newBranchForm.value.description ?? undefined,
+      })
+      .pipe(finalize(() => this.branchesCreateLoading.set(false)))
+      .subscribe({
+        next: (branch) => {
+          this.showCreateForm.set(false);
+          this.switchBranch(branch.id);
+        },
+        error: () => {
+          this.branchesCreateError.set('settings.branches.createError');
+        },
       });
   }
 }

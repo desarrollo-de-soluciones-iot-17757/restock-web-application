@@ -555,6 +555,343 @@
   color: #9ca3af;
 }
 
+/* ══════════════════ BRANCHES TAB ══════════════════ */
+
+.branches-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.btn-add-branch {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #006c49;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: Inter, sans-serif;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.btn-add-branch:hover {
+  background: #005538;
+}
+
+.btn-add-branch .material-icons {
+  font-size: 16px;
+}
+
+/* Loading / error */
+.branches-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #6c7a71;
+  padding: 8px 0;
+}
+
+.branches-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #b91c1c;
+  padding: 8px 12px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+}
+
+.branches-error .material-icons {
+  font-size: 16px;
+}
+
+/* Empty state */
+.branches-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 32px 16px;
+  gap: 8px;
+}
+
+.branches-empty__icon {
+  font-size: 40px;
+  color: #d1d5db;
+}
+
+.branches-empty__title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6c7a71;
+}
+
+.branches-empty__hint {
+  margin: 0;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* Branch list rows */
+.branches-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.branch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  background: #fafafa;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.branch-row--active {
+  border-color: rgba(0, 108, 73, 0.3);
+  background: rgba(0, 108, 73, 0.04);
+}
+
+.branch-row__left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.branch-row__icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.branch-row__icon-wrap--active {
+  background: rgba(0, 108, 73, 0.1);
+}
+
+.branch-row__icon-wrap .material-icons {
+  font-size: 18px;
+  color: #6c7a71;
+}
+
+.branch-row__icon-wrap--active .material-icons {
+  color: #006c49;
+}
+
+.branch-row__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.branch-row__name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #181c1c;
+}
+
+.branch-row__status {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+
+.branch-row__status--active {
+  color: #006c49;
+}
+
+.branch-row__right {
+  flex-shrink: 0;
+}
+
+.branch-row__badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #006c49;
+}
+
+.branch-row__badge .material-icons {
+  font-size: 14px;
+}
+
+.btn-switch {
+  padding: 6px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: Inter, sans-serif;
+  color: #3c4a42;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.btn-switch:hover {
+  border-color: #006c49;
+  color: #006c49;
+  background: rgba(0, 108, 73, 0.04);
+}
+
+/* Create branch form */
+.create-branch-form {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 20px;
+  margin-top: 4px;
+}
+
+.create-branch-form__header {
+  margin-bottom: 16px;
+}
+
+.create-branch-form__title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #006c49;
+}
+
+.create-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.create-form-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #b91c1c;
+  margin-top: 12px;
+}
+
+.create-form-error .material-icons {
+  font-size: 16px;
+}
+
+.create-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #f3f4f6;
+}
+
+/* Spinners */
+.spinner-sm {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #d1d5db;
+  border-top-color: #006c49;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+.spinner-btn {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-right: 6px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Info side card */
+.card--info {
+  background: rgba(16, 185, 129, 0.05);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.branches-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 6px;
+  border: 1px solid rgba(16, 185, 129, 0.12);
+  gap: 4px;
+}
+
+.branches-stat__value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #006c49;
+  line-height: 1;
+}
+
+.branches-stat__label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: #6c7a71;
+}
+
+/* Reuse field-input for the create form inputs */
+.create-branch-form .field-input {
+  padding: 10px 14px;
+  font-size: 13px;
+}
+
+.create-branch-form .field-select {
+  padding: 10px 14px;
+  font-size: 13px;
+  width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  background: #fff;
+  font-family: Inter, sans-serif;
+  cursor: pointer;
+  appearance: none;
+  transition: border-color 0.15s;
+}
+
+.create-branch-form .field-select:focus {
+  outline: none;
+  border-color: #006c49;
+}
+
+.field-error-sm {
+  font-size: 11px;
+  color: #dc2626;
+}
+
 /* ── Footer ── */
 .preferences-footer {
   display: flex;
