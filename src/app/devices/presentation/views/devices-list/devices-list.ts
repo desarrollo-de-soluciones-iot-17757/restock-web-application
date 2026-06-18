@@ -58,7 +58,7 @@ export class DevicesList implements AfterViewChecked, OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   readonly configuredCount = computed(() =>
-    this.store.devices().filter(d => d.status === 'CONFIGURED' || d.status === 'ACTIVE').length
+    this.store.devices().filter(d => d.status === 'CONFIGURED' || d.status === 'CALIBRATED' || d.status === 'ACTIVE').length
   );
 
   readonly registeredCount = computed(() =>
