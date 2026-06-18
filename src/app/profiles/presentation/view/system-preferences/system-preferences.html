@@ -174,20 +174,34 @@
         <div class="avatar-section">
           <div class="avatar-wrapper">
             <img
-              [src]="avatarUrl() || 'https://placehold.co/96x96'"
+              [src]="profileImagePreview() || avatarUrl() || 'https://placehold.co/96x96'"
               class="avatar-img"
               alt="Profile photo" />
-            <button class="avatar-edit-btn" type="button" aria-label="Edit photo">
+            <label class="avatar-edit-btn" for="profileImageInput" aria-label="Edit photo" style="cursor:pointer">
               <span class="material-icons">edit</span>
-            </button>
+            </label>
           </div>
           <div class="avatar-meta">
             <span class="avatar-meta__label">{{ 'settings.profile.photo.label' | translate }}</span>
             <span class="avatar-meta__hint">{{ 'settings.profile.photo.hint' | translate }}</span>
+            @if (profileImageFile()) {
+              <span class="avatar-selected-name">{{ profileImageFile()!.name }}</span>
+            }
             <div class="avatar-meta__actions">
-              <button class="btn-outline-sm" type="button">{{ 'settings.profile.photo.upload' | translate }}</button>
-              <button class="btn-danger-ghost-sm" type="button">{{ 'settings.profile.photo.remove' | translate }}</button>
+              <label class="btn-outline-sm" for="profileImageInput" style="cursor:pointer">
+                {{ 'settings.profile.photo.upload' | translate }}
+              </label>
+              <button class="btn-danger-ghost-sm" type="button"
+                (click)="profileImageFile.set(null); profileImagePreview.set(null)">
+                {{ 'settings.profile.photo.remove' | translate }}
+              </button>
             </div>
+            <input
+              id="profileImageInput"
+              type="file"
+              accept="image/*"
+              style="display:none"
+              (change)="onProfileImageSelected($event)" />
           </div>
         </div>
 
@@ -273,24 +287,93 @@
         </div>
       </div>
 
-      <!-- Business sidebar -->
+      <!-- Business form card -->
       <div class="side-column">
         <div class="card">
-          <p class="section-label">{{ 'settings.business.title' | translate }}</p>
+          <div class="card-header">
+            <span class="card-icon material-icons">business</span>
+            <h2 class="card-title">{{ 'settings.business.title' | translate }}</h2>
+          </div>
+
           @if (profileLoading()) {
             <p class="branch-empty">{{ 'settings.business.loading' | translate }}</p>
-          }
-          @if (business(); as b) {
-            <div class="branch-item">
-              <span class="material-icons branch-item__icon">business</span>
-              <div class="branch-item__info">
-                <span class="branch-item__name">{{ b.companyName }}</span>
-                <span class="branch-item__status">{{ b.mainLocation.getValue() }}</span>
+          } @else {
+
+            <div class="field-group">
+              <label class="field-label" for="bizName">{{ 'settings.business.fields.companyName' | translate }}</label>
+              <input
+                id="bizName"
+                class="field-input"
+                type="text"
+                [ngModel]="businessName()"
+                (ngModelChange)="businessName.set($event)"
+                [placeholder]="'settings.business.placeholders.companyName' | translate" />
+            </div>
+
+            <div class="field-group">
+              <label class="field-label" for="bizRuc">{{ 'settings.business.fields.ruc' | translate }}</label>
+              <input
+                id="bizRuc"
+                class="field-input"
+                type="text"
+                [ngModel]="businessRuc()"
+                (ngModelChange)="businessRuc.set($event)"
+                [placeholder]="'settings.business.placeholders.ruc' | translate" />
+            </div>
+
+            <div class="field-group">
+              <label class="field-label" for="bizLocation">{{ 'settings.business.fields.mainLocation' | translate }}</label>
+              <div class="field-with-icon">
+                <span class="field-with-icon__icon material-icons">location_on</span>
+                <input
+                  id="bizLocation"
+                  class="field-input field-input--indented"
+                  type="text"
+                  [ngModel]="businessLocation()"
+                  (ngModelChange)="businessLocation.set($event)"
+                  [placeholder]="'settings.business.placeholders.mainLocation' | translate" />
               </div>
             </div>
-          }
-          @if (!business() && !profileLoading()) {
-            <p class="branch-empty">{{ 'settings.business.empty' | translate }}</p>
+
+            <!-- Business image -->
+            <div class="field-group">
+              <label class="field-label">{{ 'settings.business.fields.picture' | translate }}</label>
+              <div class="avatar-section avatar-section--sm">
+                <div class="avatar-wrapper avatar-wrapper--sm">
+                  <img
+                    [src]="businessImagePreview() || businessPictureUrl() || 'https://placehold.co/64x64'"
+                    class="avatar-img avatar-img--sm"
+                    alt="Business logo" />
+                </div>
+                <div class="avatar-meta">
+                  @if (businessImageFile()) {
+                    <span class="avatar-selected-name">{{ businessImageFile()!.name }}</span>
+                  }
+                  <label class="btn-outline-sm" for="businessImageInput" style="cursor:pointer">
+                    {{ 'settings.business.actions.uploadPicture' | translate }}
+                  </label>
+                  <input
+                    id="businessImageInput"
+                    type="file"
+                    accept="image/*"
+                    style="display:none"
+                    (change)="onBusinessImageSelected($event)" />
+                </div>
+              </div>
+            </div>
+
+            @if (profileError(); as err) {
+              <div class="profile-error" role="alert">{{ err }}</div>
+            }
+
+            <div class="profile-action-bar">
+              <button class="btn btn--secondary" type="button" (click)="discardBusinessChanges()">
+                {{ 'settings.business.actions.discard' | translate }}
+              </button>
+              <button class="btn btn--primary" type="button" (click)="saveBusinessChanges()">
+                {{ 'settings.business.actions.save' | translate }}
+              </button>
+            </div>
           }
         </div>
       </div>
@@ -449,6 +532,26 @@
                     @if (newBranchForm.get('regionOrState')?.invalid && newBranchForm.get('regionOrState')?.touched) {
                       <span class="field-error-sm">{{ 'settings.branches.fields.required' | translate }}</span>
                     }
+                  </div>
+                </div>
+
+                <!-- Branch image -->
+                <div class="field-group">
+                  <label class="field-label">{{ 'settings.branches.fields.image' | translate }}</label>
+                  <div class="branch-image-picker">
+                    @if (branchImagePreview()) {
+                      <img [src]="branchImagePreview()!" class="branch-image-preview" alt="Branch preview" />
+                    }
+                    <label class="btn-outline-sm" for="branchImageInput" style="cursor:pointer">
+                      <span class="material-icons" style="font-size:16px;vertical-align:middle">upload</span>
+                      {{ branchImageFile() ? branchImageFile()!.name : ('settings.branches.fields.imagePlaceholder' | translate) }}
+                    </label>
+                    <input
+                      id="branchImageInput"
+                      type="file"
+                      accept="image/*"
+                      style="display:none"
+                      (change)="onBranchImageSelected($event)" />
                   </div>
                 </div>
 

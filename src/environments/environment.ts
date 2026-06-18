@@ -1,77 +1,49 @@
-/**
- * Production defaults. For local dev overrides see `environment.development.ts`
- * (swapped via `fileReplacements` in `angular.json`).
- */
 export const environment = {
   production: true,
-  resourceApi: {
-    /**
-     * Beeceptor (or any HTTP) origin **without** trailing slash, e.g.
-     * `https://tu-proyecto.free.beeceptor.com`
-     *
-     * When `null` or blank, inventory uses {@link SimulatedBatchInventoryRepository}.
-     */
-    batchInventoryBaseUrl: null as string | null,
-    /**
-     * Path appended to `batchInventoryBaseUrl` (GET). Keep in sync with
-     * `BATCH_INVENTORY_API_ENDPOINT` in `resource/infrastructure/batch-inventory-api-endpoint.ts`.
-     */
-    batchInventoryHttpPath: '/inventory/batch-inventory',
-  },
 
-  salesAPI: {
-    salesBaseUrl: 'https://restock-api-sales.free.beeceptor.com',
-  },
+  // Se tiene que cambiar por la url de Render
+  // baseUrl: 'https://restock-web-services-iot.onrender.com/api/v1',
+  baseUrl: 'http://localhost:8080/api/v1',
 
-  // Sales Management API
-  platformProviderSalesEndpointsPath: 'sales',
-
-  /**
-   * Profiles bounded context: HTTP API origin (no trailing slash).
-   * When null, the app uses the development default inside profiles infrastructure.
-   */
-  profilesApi: {
-    /** Replace with your production profiles API origin when available. */
-    baseUrl: 'https://restock-api-profiles.free.beeceptor.com',
-    fallbackBaseUrl: 'https://profiles-restock-api.free.beeceptor.com',
-  },
-  recipesApi: {
-    baseUrl: '/api/v1',
-    fallbackBaseUrl: 'http://localhost:8080/api/v1',
-  },
-  // IAM & Profiles
-  platformProviderApiBaseUrl: 'http://localhost:8080/api/v1',
-  platformProviderSignInEndpointPath: 'auth/sign-in',
+  // Authentication
   platformProviderSignUpEndpointPath: 'auth/sign-up',
-  platformProviderRegistrationBusinessDetailsEndpointPath: 'businesses',
-  platformProviderRegistrationPersonalProfileEndpointPath: 'profiles',
-
-  // Resources
-  platformProviderCustomSuppliesEndpointPath: 'custom-supplies',
-  platformProviderSuppliesEndpointPath: 'supplies',
-  platformProviderSupplyCategoriesEndpointPath: 'supplies/categories',
-
-  // IAM
-  //https://restock-api-iam-login.free.beeceptor.com
-  platformProviderIamApiBaseUrlForSignIn: 'https://restock-api-iam-login.free.beeceptor.com',
+  platformProviderSignInEndpointPath: 'auth/sign-in',
   platformProviderForgotPasswordEndpointPath: 'auth/forgot-password',
 
-  // Kits
-  platformProviderKitUpdateApiBaseUrl: 'https://u202314101.free.beeceptor.com/kits/K-992',
-  platformProviderKitApiBaseUrl: 'https://restock-api-planning-kits.free.beeceptor.com',
-  platformProviderKitsRegisterEndpointPath: 'kits/register',
-  platformProviderKitsEndpointPath: 'kits',
+  // Profiles & Businesses
+  platformProviderRegistrationPersonalProfileEndpointPath: 'profiles',
+  platformProviderRegistrationBusinessDetailsEndpointPath: 'businesses',
+
+  // Supplies
+  platformProviderSuppliesEndpointPath: 'supplies',
+  platformProviderSupplyCategoriesEndpointPath: 'supplies/categories',
+  platformProviderCustomSuppliesEndpointPath: 'custom-supplies',
+
+  // Inventory
+  platformProviderBatchesEndpointPath: 'batches',
+  platformProviderBranchesEndpointPath: 'branches',
+
+  // Devices & IoT
+  platformProviderDevicesEndpointPath: 'devices',
+  platformProviderDeviceThresholdsEndpointPath: 'device-thresholds',
+  platformProviderTelemetriesEndpointPath: 'telemetries',
+
+  // Products (Kits & Combos in the UI → /products on the backend)
+  platformProviderKitsEndpointPath: 'products',
+  platformProviderKitsRegisterEndpointPath: 'products',
   platformProviderProductsEndpointPath: 'products',
 
-  // Analytics
-  analyticsApi: {
-    analyticsBaseUrl: 'http://localhost:8080',
-    analyticsHttpPath: '/analytics/metrics',
-    customSuppliesStockDiscrepanciesPath: '/api/v1/custom-supplies/{id}/stock-discrepancies',
-    accountsRecentSalesPath: '/api/v1/accounts/{accountId}/recent-sales',
-    accountsCriticalProductsPath: '/api/v1/accounts/{accountId}/critical-products',
-    defaultStockDiscrepanciesSupplyId: '' as string,
-  },
-  platformProviderAnalyticsEndpointPath: 'metrics',
-};
+  // Notifications
+  platformProviderNotificationsEndpointPath: 'notifications',
+  platformProviderPushSubscriptionsEndpointPath: 'push-subscriptions',
 
+  // Analytics
+  platformProviderAnalyticsEndpointPath: 'metrics',
+  analyticsStockDiscrepanciesPath: '/custom-supplies/{id}/stock-discrepancies',
+  analyticsRecentSalesPath: '/accounts/{accountId}/recent-sales',
+  analyticsCriticalProductsPath: '/accounts/{accountId}/critical-products',
+  analyticsDefaultStockDiscrepanciesSupplyId: '' as string,
+
+  // Sales
+  platformProviderSalesEndpointsPath: 'sales',
+};

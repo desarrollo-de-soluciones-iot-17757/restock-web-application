@@ -6,6 +6,7 @@ import { finalize } from 'rxjs';
 import { Profile } from '../../../domain/model/profile.entity';
 import { ProfilesStore } from '../../../application/profiles.store';
 import { UpdateProfileCommand } from '../../../domain/model/update-profile.command';
+import { UpdateBusinessCommand } from '../../../domain/model/update-business.command';
 import { ResourceStore } from '../../../../resource/application/resource.store';
 import { IamStore } from '../../../../iam/application/iam.store';
 
@@ -106,6 +107,21 @@ export class SystemPreferences {
   avatarUrl = signal('');
   gender = signal('');
   birthDate = signal('');
+  profileImageFile = signal<File | null>(null);
+  profileImagePreview = signal<string | null>(null);
+
+  // ── Business tab ──
+  businessId = signal('');
+  businessName = signal('');
+  businessRuc = signal('');
+  businessLocation = signal('');
+  businessPictureUrl = signal('');
+  businessImageFile = signal<File | null>(null);
+  businessImagePreview = signal<string | null>(null);
+
+  // ── Branch create image ──
+  branchImageFile = signal<File | null>(null);
+  branchImagePreview = signal<string | null>(null);
 
   readonly profileLoading = computed(() => this.store.loading());
   readonly business = computed(() => this.store.business());
@@ -123,6 +139,16 @@ export class SystemPreferences {
       if (!profile) return;
       this.applyProfile(profile);
       this.captureSnapshot(profile);
+    });
+
+    effect(() => {
+      const biz = this.store.business();
+      if (!biz) return;
+      this.businessId.set(biz.id);
+      this.businessName.set(biz.companyName);
+      this.businessRuc.set(biz.ruc);
+      this.businessLocation.set(biz.mainLocation.getValue());
+      this.businessPictureUrl.set(biz.pictureUrl.getValue());
     });
 
     // Keep the general-tab branch selector in sync when branches load.
@@ -192,6 +218,33 @@ export class SystemPreferences {
 
   // ── Profile tab actions ───────────────────────────────────────────────────
 
+  onProfileImageSelected(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    this.profileImageFile.set(file);
+    const reader = new FileReader();
+    reader.onload = (e) => this.profileImagePreview.set(e.target?.result as string);
+    reader.readAsDataURL(file);
+  }
+
+  onBusinessImageSelected(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    this.businessImageFile.set(file);
+    const reader = new FileReader();
+    reader.onload = (e) => this.businessImagePreview.set(e.target?.result as string);
+    reader.readAsDataURL(file);
+  }
+
+  onBranchImageSelected(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    this.branchImageFile.set(file);
+    const reader = new FileReader();
+    reader.onload = (e) => this.branchImagePreview.set(e.target?.result as string);
+    reader.readAsDataURL(file);
+  }
+
   discardProfileChanges(): void {
     const snap = this.savedProfileFields;
     if (!snap) return;
@@ -218,8 +271,41 @@ export class SystemPreferences {
       avatarUrl: this.avatarUrl(),
       gender: this.gender(),
       birthDate: this.birthDate(),
+      imageFile: this.profileImageFile() ?? undefined,
     });
     this.store.updateProfile(cmd);
+    this.profileImageFile.set(null);
+    this.profileImagePreview.set(null);
+  }
+
+  // ── Business tab actions ──────────────────────────────────────────────────
+
+  discardBusinessChanges(): void {
+    const biz = this.store.business();
+    if (!biz) return;
+    this.businessName.set(biz.companyName);
+    this.businessRuc.set(biz.ruc);
+    this.businessLocation.set(biz.mainLocation.getValue());
+    this.businessPictureUrl.set(biz.pictureUrl.getValue());
+  }
+
+  saveBusinessChanges(): void {
+    const userId =
+      this.store.business()?.ownerId.getValue() ||
+      this.iamStore.currentUser()?.id ||
+      '';
+    const cmd = new UpdateBusinessCommand(
+      this.businessId(),
+      userId,
+      this.businessName(),
+      this.businessRuc(),
+      this.businessPictureUrl(),
+      this.businessLocation(),
+      this.businessImageFile() ?? undefined,
+    );
+    this.store.saveBusiness(cmd);
+    this.businessImageFile.set(null);
+    this.businessImagePreview.set(null);
   }
 
   // ── Branches tab actions ──────────────────────────────────────────────────
@@ -260,11 +346,14 @@ export class SystemPreferences {
         country:       this.newBranchForm.value.country!,
         regionOrState: this.newBranchForm.value.regionOrState ?? undefined,
         description:   this.newBranchForm.value.description ?? undefined,
+        image:         this.branchImageFile() ?? undefined,
       })
       .pipe(finalize(() => this.branchesCreateLoading.set(false)))
       .subscribe({
         next: (branch) => {
           this.showCreateForm.set(false);
+          this.branchImageFile.set(null);
+          this.branchImagePreview.set(null);
           this.switchBranch(branch.id);
         },
         error: () => {

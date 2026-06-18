@@ -189,7 +189,28 @@
     "business": {
       "title": "BUSINESS",
       "loading": "Loading…",
-      "empty": "No business found."
+      "empty": "No business found.",
+      "fields": {
+        "companyName": "COMPANY NAME",
+        "ruc": "TAX ID / RUC",
+        "mainLocation": "MAIN LOCATION"
+      },
+      "placeholders": {
+        "companyName": "e.g. Nexus Logistics",
+        "ruc": "e.g. 20123456789",
+        "mainLocation": "e.g. Lima, Peru"
+      },
+      "actions": {
+        "discard": "DISCARD",
+        "save": "SAVE BUSINESS",
+        "uploadPicture": "UPLOAD LOGO"
+      },
+      "fields": {
+        "companyName": "COMPANY NAME",
+        "ruc": "TAX ID / RUC",
+        "mainLocation": "MAIN LOCATION",
+        "picture": "BUSINESS LOGO"
+      }
     },
     "branches": {
       "title": "Branch Management",
@@ -217,7 +238,9 @@
         "cityPlaceholder": "San Francisco",
         "country": "COUNTRY",
         "regionOrState": "STATE / REGION",
-        "regionOrStatePlaceholder": "e.g. California"
+        "regionOrStatePlaceholder": "e.g. California",
+        "image": "BRANCH IMAGE",
+        "imagePlaceholder": "Choose image…"
       }
     }
   },

@@ -40,8 +40,8 @@ import type {
 @Injectable({ providedIn: 'root' })
 export class ResourceApi {
   private readonly http = inject(HttpClient);
-  private readonly primaryBaseUrl = environment.platformProviderApiBaseUrl;
-  private readonly fallbackBaseUrl = 'http://localhost:8080/api/v1';
+  private readonly primaryBaseUrl = environment.baseUrl;
+  private readonly fallbackBaseUrl = environment.baseUrl;
   private currentBaseUrl = this.primaryBaseUrl;
 
   private withFallback<T>(operation: () => Observable<T>): Observable<T> {

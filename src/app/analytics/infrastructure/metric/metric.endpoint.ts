@@ -1,7 +1,7 @@
 import { environment } from '../../../../environments/environment';
 
 export class MetricEndpoint {
-  private static readonly baseUrl = environment.analyticsApi.analyticsBaseUrl;
+  private static readonly baseUrl = environment.baseUrl;
   private static readonly path = environment.platformProviderAnalyticsEndpointPath;
 
   static get metrics(): string {

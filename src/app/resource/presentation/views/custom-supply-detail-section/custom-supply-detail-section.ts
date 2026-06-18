@@ -32,7 +32,7 @@ export class CustomSupplyDetailSectionComponent {
   private readonly store = inject(ResourceStore);
   private readonly http = inject(HttpClient);
 
-  private readonly batchesUrl = `${environment.platformProviderApiBaseUrl}/batches`;
+  private readonly batchesUrl = `${environment.baseUrl}/batches`;
 
   params = toSignal(this.route.paramMap);
 

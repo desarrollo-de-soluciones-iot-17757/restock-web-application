@@ -21,29 +21,25 @@ export class ProfilesAssembler implements BaseAssembler<Profile, ProfileResource
   toEntityFromResource(resource: ProfileResource): Profile {
     return new Profile({
       profileId: resource.id ?? '',
-      userId: resource.user_id ?? '',
+      userId: resource.userId ?? '',
       name: resource.name ?? '',
-      lastName: resource.last_name ?? '',
-      phoneNumber: resource.phone_number ?? '',
-      avatarUrl: resource.avatar_url ?? '',
+      lastName: resource.lastName ?? '',
+      phoneNumber: resource.phoneNumber ?? '',
+      avatarUrl: resource.avatarUrl ?? '',
       gender: resource.gender ?? '',
-      birthDate: resource.birth_date ?? '',
+      birthDate: resource.birthDate ?? '',
     });
   }
 
-  /**
-   * @param entity - Domain aggregate to send on create/update.
-   * `id` is intentionally omitted — the backend assigns the MongoDB ObjectId.
-   */
   toResourceFromEntity(entity: Profile): ProfileResource {
     return {
-      user_id: entity.userId.getValue(),
+      userId: entity.userId.getValue(),
       name: entity.name,
-      last_name: entity.lastName,
-      phone_number: entity.phoneNumber.getValue(),
-      avatar_url: entity.avatarUrl.getValue() || 'https://placehold.co/150',
+      lastName: entity.lastName,
+      phoneNumber: entity.phoneNumber.getValue(),
+      avatarUrl: entity.avatarUrl.getValue() || 'https://placehold.co/150',
       gender: entity.gender,
-      birth_date: entity.birthDate.getValue(),
+      birthDate: entity.birthDate.getValue(),
     } as ProfileResource;
   }
 }

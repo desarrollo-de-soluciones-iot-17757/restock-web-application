@@ -1,6 +1,6 @@
 import { environment } from '../../../../environments/environment';
 
-const BASE = `${environment.platformProviderApiBaseUrl}/${environment.platformProviderBranchesEndpointPath}`;
+const BASE = `${environment.baseUrl}/${environment.platformProviderBranchesEndpointPath}`;
 
 export const BRANCHES_URL = BASE;
 export const BRANCHES_BY_ACCOUNT_URL = (accountId: string) =>

@@ -35,9 +35,8 @@ export class RecipesApiEndpoint extends BaseApiEndpoint<
     protected override readonly http: HttpClient,
     private readonly recipesAssembler: RecipesAssembler
   ) {
-    // Se extraen las URLs desde el environment
-    const primary = environment.recipesApi.baseUrl;
-    const fallback = environment.recipesApi.fallbackBaseUrl;
+    const primary = environment.baseUrl;
+    const fallback = environment.baseUrl;
 
     super(http, `${primary}/products`, recipesAssembler);
 

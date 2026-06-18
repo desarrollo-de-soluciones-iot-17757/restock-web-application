@@ -36,26 +36,20 @@ export class ProfilesApi extends BaseApi {
     return this.profilesEndpoint.getById(id);
   }
 
-  /**
-   * Persists a new profile document.
-   */
-  createProfile(profile: Profile): Observable<Profile> {
-    return this.profilesEndpoint.create(profile);
+  createProfile(profile: Profile, imageFile?: File): Observable<Profile> {
+    return this.profilesEndpoint.createWithImage(profile, imageFile);
   }
 
-  /**
-   * @param profile - Aggregate state to persist.
-   * @param id - Profile document id (path segment).
-   */
-  updateProfile(profile: Profile, id: string): Observable<Profile> {
-    return this.profilesEndpoint.update(profile, id);
+  updateProfile(profile: Profile, id: string, imageFile?: File): Observable<Profile> {
+    return this.profilesEndpoint.updateWithImage(profile, id, imageFile);
   }
 
-  /**
-   * Persists a new business document.
-   */
-  createBusiness(business: Business): Observable<Business> {
-    return this.businessesEndpoint.create(business);
+  createBusiness(business: Business, imageFile?: File): Observable<Business> {
+    return this.businessesEndpoint.createWithImage(business, imageFile);
+  }
+
+  updateBusiness(business: Business, id: string, imageFile?: File): Observable<Business> {
+    return this.businessesEndpoint.updateWithImage(business, id, imageFile);
   }
 
   /**

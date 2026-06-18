@@ -189,7 +189,28 @@
     "business": {
       "title": "NEGOCIO",
       "loading": "Cargando…",
-      "empty": "No se encontró negocio."
+      "empty": "No se encontró negocio.",
+      "fields": {
+        "companyName": "NOMBRE DE EMPRESA",
+        "ruc": "RUC / ID FISCAL",
+        "mainLocation": "UBICACIÓN PRINCIPAL"
+      },
+      "placeholders": {
+        "companyName": "ej. Nexus Logistics",
+        "ruc": "ej. 20123456789",
+        "mainLocation": "ej. Lima, Perú"
+      },
+      "actions": {
+        "discard": "DESCARTAR",
+        "save": "GUARDAR NEGOCIO",
+        "uploadPicture": "SUBIR LOGO"
+      },
+      "fields": {
+        "companyName": "NOMBRE DE EMPRESA",
+        "ruc": "RUC / ID FISCAL",
+        "mainLocation": "UBICACIÓN PRINCIPAL",
+        "picture": "LOGO DEL NEGOCIO"
+      }
     },
     "branches": {
       "title": "Gestión de Sucursales",
@@ -217,7 +238,9 @@
         "cityPlaceholder": "Ciudad de México",
         "country": "PAÍS",
         "regionOrState": "ESTADO / REGIÓN",
-        "regionOrStatePlaceholder": "p.ej. Jalisco"
+        "regionOrStatePlaceholder": "p.ej. Jalisco",
+        "image": "IMAGEN DE SUCURSAL",
+        "imagePlaceholder": "Elegir imagen…"
       }
     }
   },
