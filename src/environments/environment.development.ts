@@ -24,7 +24,10 @@ export const environment = {
     baseUrl: 'https://restock-api-profiles.free.beeceptor.com',
     fallbackBaseUrl: 'https://profiles-restock-api.free.beeceptor.com',
   },
-
+  recipesApi: {
+    baseUrl: '/api/v1',
+    fallbackBaseUrl: 'http://localhost:8080/api/v1',
+  },
   // IAM & Profiles
   platformProviderApiBaseUrl: 'http://localhost:8080/api/v1',
   platformProviderSignInEndpointPath: 'auth/sign-in',
@@ -51,9 +54,13 @@ export const environment = {
 
   // Analytics
   analyticsApi: {
-    analyticsBaseUrl: 'https://restock-api-analytics.free.beeceptor.com',
+    analyticsBaseUrl: 'http://localhost:8080',
     analyticsHttpPath: '/analytics/metrics',
+    customSuppliesStockDiscrepanciesPath: '/api/v1/custom-supplies/{id}/stock-discrepancies',
+    accountsRecentSalesPath: '/api/v1/accounts/{accountId}/recent-sales',
+    accountsCriticalProductsPath: '/api/v1/accounts/{accountId}/critical-products',
+    defaultStockDiscrepanciesSupplyId: 'cs-001' as string,
   },
-  platformProviderAnalyticsEndpointPath: 'metrics'
+  platformProviderAnalyticsEndpointPath: 'metrics',
 };
 

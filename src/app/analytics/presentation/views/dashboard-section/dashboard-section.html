@@ -35,8 +35,8 @@
         <span class="top-card-label">ACTIVE METRICS</span>
         <i class="ti ti-chart-bar top-card-icon" aria-hidden="true"></i>
       </div>
-      <div class="top-card-headline">{{ metrics().length }}/{{ metrics().length }}</div>
-      <div class="top-card-sub">All categories reporting</div>
+      <div class="top-card-headline">{{ (stockDiscrepancies().length + criticalProducts().length + recentSales().length) }}/3</div>
+      <div class="top-card-sub">All data sources reporting</div>
       <div class="activity-bars" aria-hidden="true">
         <span class="bar bar-full"></span>
         <span class="bar bar-full"></span>
@@ -49,14 +49,14 @@
     </div>
     <div class="top-card top-card-secondary">
       <div class="top-card-header">
-        <span class="top-card-label">NETWORK STATUS</span>
+        <span class="top-card-label">SYSTEM STATUS</span>
         <i class="ti ti-wifi top-card-icon" aria-hidden="true"></i>
       </div>
       <div class="status-pill">
         <span class="status-dot" aria-hidden="true"></span>
         STABLE
       </div>
-      <div class="top-card-sub top-card-sub--spaced">Latency: 24ms</div>
+      <div class="top-card-sub top-card-sub--spaced">All endpoints responsive</div>
       <div class="activity-bars activity-bars-sm" aria-hidden="true">
         <span class="bar bar-dim bar-short"></span>
         <span class="bar bar-mid bar-short"></span>
@@ -66,221 +66,152 @@
       </div>
     </div>
   </div>
-  <div class="section-header">
-    <h1 class="section-title">Smart Scale Status</h1>
-    <button type="button" class="btn-link-green" (click)="viewAllUnits()">View All Units</button>
+  <div class="summary-row">
+    <div class="summary-card">
+      <div class="summary-card-label">Stock Discrepancies</div>
+      <div class="summary-card-value" [class.value-danger]="highRiskDiscrepancies().length > 0">
+        {{ stockDiscrepancies().length }}
+      </div>
+      <div class="summary-card-sub">{{ highRiskDiscrepancies().length }} high risk</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-card-label">Critical Products</div>
+      <div class="summary-card-value" [class.value-danger]="criticalProducts().length > 0">
+        {{ criticalProducts().length }}
+      </div>
+      <div class="summary-card-sub">Deficit: {{ totalStockDeficit() | number: '1.1-1' }}</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-card-label">Recent Sales</div>
+      <div class="summary-card-value">{{ recentSales().length }}</div>
+      <div class="summary-card-sub">Total: ${{ totalSalesAmount() | number: '1.2-2' }}</div>
+    </div>
   </div>
-  <div class="kpi-grid">
-    <article class="kpi-card">
-      <div class="kpi-card-top">
-        <span class="kpi-device-id">INVENTORY</span>
-        <span class="badge-online">ACTIVE</span>
+  <div class="analytics-section" *ngIf="stockDiscrepancies().length > 0">
+    <div class="section-header">
+      <h2 class="section-title">Stock Discrepancies</h2>
+      <span class="section-badge">{{ stockDiscrepancies().length }} Items</span>
+    </div>
+    <div class="table-card">
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>DISCREPANCY ID</th>
+              <th>PHYSICAL STOCK</th>
+              <th>SYSTEM STOCK</th>
+              <th class="col-right">DIFFERENCE</th>
+              <th>RISK LEVEL</th>
+              <th>RECONCILED</th>
+              <th>STATUS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let disc of stockDiscrepancies()">
+              <td class="cell-mono">{{ disc.discrepancyId }}</td>
+              <td>{{ disc.physicalStock | number: '1.2-2' }}</td>
+              <td>{{ disc.systemStock | number: '1.2-2' }}</td>
+              <td class="col-right cell-bold" [class.value-danger]="disc.difference > 5">
+                {{ disc.difference | number: '1.2-2' }}
+              </td>
+              <td>
+                <span [class]="'badge badge-' + disc.riskLevel.toLowerCase()">
+                  {{ disc.riskLevel }}
+                </span>
+              </td>
+              <td>
+                <span [class]="disc.isConciliated ? 'status-resolved' : 'status-pending'">{{ disc.isConciliated ? 'Yes' : 'No' }}</span>
+              </td>
+              <td><span [class]="disc.status === 'RESOLVED' ? 'status-resolved' : 'status-pending'">{{ disc.status }}</span></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <div class="kpi-metrics-grid">
-        <div class="kpi-metric">
-          <span class="kpi-metric-label">Created</span>
-          <span class="kpi-metric-value">{{ inventoryStats().createdSum }}</span>
-        </div>
-        <div class="kpi-metric">
-          <span class="kpi-metric-label">Low stock</span>
-          <span class="kpi-metric-value">{{ inventoryStats().lowStockCount }}</span>
-        </div>
-        <div class="kpi-metric">
-          <span class="kpi-metric-label">Out of stock</span>
-          <span class="kpi-metric-value" [class.value-danger]="inventoryStats().zeroStockCount > 0">
-            {{ inventoryStats().zeroStockCount }}
-          </span>
-        </div>
-        <div class="kpi-metric">
-          <span class="kpi-metric-label">Status</span>
-          <span class="kpi-metric-value kpi-value-green">
-            {{ inventoryStats().zeroStockCount > 0 ? '⚠ Alert' : 'OK' }}
-          </span>
-        </div>
-      </div>
-    </article>
-    <article class="kpi-card">
-      <div class="kpi-card-top">
-        <span class="kpi-device-id">WORKERS</span>
-        <span class="badge-online">ACTIVE</span>
-      </div>
-      <div class="kpi-metrics-grid">
-        <div class="kpi-metric">
-          <span class="kpi-metric-label">Hired</span>
-          <span class="kpi-metric-value kpi-value-green">{{ workersStats().hired }}</span>
-        </div>
-        <div class="kpi-metric">
-          <span class="kpi-metric-label">Fired</span>
-          <span class="kpi-metric-value" [class.value-danger]="workersStats().fired > 0">
-            {{ workersStats().fired }}
-          </span>
-        </div>
-        <div class="kpi-metric">
-          <span class="kpi-metric-label">Net</span>
-          <span
-            class="kpi-metric-value"
-            [class.kpi-value-green]="workersStats().net > 0"
-            [class.value-danger]="workersStats().net < 0"
-          >
-            {{ workersStats().net > 0 ? '+' : '' }}{{ workersStats().net }}
-          </span>
-        </div>
-        <div class="kpi-metric">
-          <span class="kpi-metric-label">Trend</span>
-          <span class="kpi-metric-value kpi-value-green">
-            {{ workersStats().net >= 0 ? '↑' : '↓' }}
-          </span>
-        </div>
-      </div>
-    </article>
-    <article class="kpi-card">
-      <div class="kpi-card-top">
-        <span class="kpi-device-id">NOTIFICATIONS</span>
-        <span class="badge-online">ACTIVE</span>
-      </div>
-      <div class="kpi-metrics-grid">
-        <div class="kpi-metric">
-          <span class="kpi-metric-label">Received</span>
-          <span class="kpi-metric-value">{{ notificationsStats().sum }}</span>
-        </div>
-        <div class="kpi-metric">
-          <span class="kpi-metric-label">Last refresh</span>
-          <span class="kpi-metric-value kpi-metric-value--sm">
-            {{
-              notificationsStats().lastRefreshedAt
-                ? (notificationsStats().lastRefreshedAt | date: 'HH:mm')
-                : 'N/A'
-            }}
-          </span>
-        </div>
-        <div class="kpi-metric">
-          <span class="kpi-metric-label">Period</span>
-          <span class="kpi-metric-value kpi-metric-value--sm">{{ selectedRange() }}</span>
-        </div>
-        <div class="kpi-metric">
-          <span class="kpi-metric-label">Channel</span>
-          <span class="kpi-metric-value kpi-value-green">Push</span>
-        </div>
-      </div>
-    </article>
-    <article class="kpi-card">
-      <div class="kpi-card-top">
-        <span class="kpi-device-id">SALES</span>
-        <span class="badge-online">ACTIVE</span>
-      </div>
-      <div class="kpi-metrics-grid">
-        <div class="kpi-metric">
-          <span class="kpi-metric-label">Orders</span>
-          <span class="kpi-metric-value">{{ salesStats().salesMade }}</span>
-        </div>
-        <div class="kpi-metric">
-          <span class="kpi-metric-label">Recipes</span>
-          <span class="kpi-metric-value kpi-value-green">
-            {{ salesStats().recipesProfit | number }}
-          </span>
-        </div>
-        <div class="kpi-metric">
-          <span class="kpi-metric-label">Kits</span>
-          <span class="kpi-metric-value kpi-value-green">
-            {{ salesStats().kitsProfit | number }}
-          </span>
-        </div>
-        <div class="kpi-metric">
-          <span class="kpi-metric-label">Status</span>
-          <span class="kpi-metric-value kpi-value-green">On track</span>
-        </div>
-      </div>
-    </article>
+    </div>
   </div>
-  <div class="table-card">
-    <div class="table-card-header">
-      <h2 class="table-card-title">Latest Detected Metrics</h2>
-      <div class="table-card-actions">
-        <label for="categoryFilter" class="sr-only">Filter by category</label>
-        <div class="filter-btn-wrap">
-          <i class="ti ti-adjustments-horizontal filter-icon" aria-hidden="true"></i>
-          <select
-            id="categoryFilter"
-            (change)="onCategoryChange($event)"
-            [value]="categoryFilter()"
-          >
-            <option value="All">Filter</option>
-            <option value="INVENTORY">Inventory</option>
-            <option value="WORKERS">Workers</option>
-            <option value="NOTIFICATIONS">Notifications</option>
-            <option value="SALES">Sales</option>
-          </select>
-        </div>
-        <button type="button" class="btn-export-solid" (click)="exportPdf()">Export PDF</button>
+  <div class="analytics-section" *ngIf="criticalProducts().length > 0">
+    <div class="section-header">
+      <h2 class="section-title">Critical Products (Low Stock)</h2>
+      <span class="section-badge">{{ criticalProducts().length }} Products</span>
+    </div>
+    <div class="table-card">
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>PRODUCT NAME</th>
+              <th>SUPPLY ID</th>
+              <th>BRANCH</th>
+              <th class="col-right">TOTAL STOCK</th>
+              <th class="col-right">MIN STOCK</th>
+              <th class="col-right">DEFICIT</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let product of criticalProducts()">
+              <td class="cell-bold">{{ product.productName }}</td>
+              <td class="cell-mono">{{ product.supplyId }}</td>
+              <td>{{ product.branchName }}</td>
+              <td class="col-right">{{ product.totalStock | number: '1.2-2' }}</td>
+              <td class="col-right">{{ product.minStock | number: '1.2-2' }}</td>
+              <td class="col-right cell-bold value-danger">{{ product.stockDeficit | number: '1.2-2' }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
-    <div class="table-responsive">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>TIMESTAMP</th>
-            <th>ITEM NAME</th>
-            <th>CATEGORY</th>
-            <th>RESOURCE ID</th>
-            <th class="col-right">VALUE</th>
-            <th>DATE RANGE</th>
-            <th class="col-right">STATUS</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let row of paginatedRows()">
-            <td class="cell-mono">{{ row.timestamp | date: 'HH:mm:ss' }}</td>
-            <td class="cell-bold">{{ row.typeFormatted }}</td>
-            <td>
-              <span [class]="'badge ' + categoryBadgeClass(row.category)">
-                {{ row.category }}
-              </span>
-            </td>
-            <td class="cell-mono cell-secondary">{{ row.resourceId }}</td>
-            <td class="col-right">
-              <span [class.value-danger]="row.value < 0" [class.cell-bold]="row.value < 0">
-                {{ row.value | number }}
-              </span>
-            </td>
-            <td class="cell-secondary">
-              {{ row.startDate | date: 'MMM d' }} → {{ row.endDate | date: 'MMM d' }}
-            </td>
-            <td class="col-right">
-              <span [class]="row.value < 0 ? 'status-pending' : 'status-resolved'">
-                {{ row.value < 0 ? 'PENDING REVIEW' : 'RESOLVED' }}
-              </span>
-            </td>
-          </tr>
-          <tr *ngIf="paginatedRows().length === 0">
-            <td colspan="7" class="cell-empty">No metrics found.</td>
-          </tr>
-        </tbody>
-      </table>
+  </div>
+  <div class="analytics-section" *ngIf="recentSales().length > 0 || recentSalesLoading()">
+    <div class="section-header">
+      <h2 class="section-title">Recent Sales</h2>
+      <span class="section-badge">{{ recentSales().length }} Sales</span>
     </div>
-    <div class="table-footer">
-      <span class="footer-info">
-        Showing {{ fromItem() }}–{{ toItem() }} of {{ totalItems() }}
-      </span>
-      <div class="footer-pagination">
-        <button
-          type="button"
-          class="page-btn"
-          [disabled]="!canPrev()"
-          (click)="onPrevPage()"
-          aria-label="Previous page"
-        >
-          ← Prev
-        </button>
-        <button
-          type="button"
-          class="page-btn"
-          [disabled]="!canNext()"
-          (click)="onNextPage()"
-          aria-label="Next page"
-        >
-          Next →
-        </button>
+    <div class="date-filter-bar">
+      <label class="date-filter-label" for="startDate">From</label>
+      <input
+        id="startDate"
+        type="date"
+        class="date-input"
+        [value]="salesStartDate()"
+        (change)="onStartDateChange($event)"
+      />
+      <label class="date-filter-label" for="endDate">To</label>
+      <input
+        id="endDate"
+        type="date"
+        class="date-input"
+        [value]="salesEndDate()"
+        (change)="onEndDateChange($event)"
+      />
+      <button type="button" class="btn-filter-apply" (click)="applyDateFilter()">Apply</button>
+      <button type="button" class="btn-filter-clear" (click)="clearDateFilter()">Clear</button>
+    </div>
+    <div class="table-card">
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>SALE ID</th>
+              <th>BRANCH</th>
+              <th class="col-right">AMOUNT</th>
+              <th>DATE</th>
+              <th>STATUS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let sale of recentSales()">
+              <td class="cell-mono">{{ sale.saleId }}</td>
+              <td>{{ sale.branchId ?? '-' }}</td>
+              <td class="col-right">{{ sale.totalAmount ? ('$' + (sale.totalAmount | number: '1.2-2')) : '-' }}</td>
+              <td>{{ sale.saleDate | date: 'MMM d, yyyy' }}</td>
+              <td><span class="status-resolved">{{ sale.status ?? 'COMPLETED' }}</span></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
+  </div>
+  <div class="empty-state" *ngIf="stockDiscrepancies().length === 0 && criticalProducts().length === 0 && recentSales().length === 0 && !recentSalesLoading()">
+    <p>No analytics data found.</p>
   </div>
 </div>

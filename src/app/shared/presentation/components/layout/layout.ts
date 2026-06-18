@@ -41,7 +41,9 @@ export class Layout {
     return 'layout.search.default';
   });
 
-  navItems = signal<NavItem[]>([
+  private readonly userRole = computed(() => this.iamStore.currentUser()?.roleId ?? '');
+
+  private readonly allNavItems: NavItem[] = [
     { labelKey: 'nav.overview', icon: 'grid_view', link: '/home' },
     {
       labelKey: 'nav.inventory',
@@ -53,13 +55,34 @@ export class Layout {
         { labelKey: 'nav.discrepancies', link: '/inventory/discrepancies' },
       ],
     },
-    { labelKey: 'nav.recipes', icon: 'restaurant_menu', link: '/recipes' },
-    { labelKey: 'nav.kits', icon: 'inventory', link: '/kits' },
+    { 
+      labelKey: 'nav.recipes', 
+      icon: 'restaurant_menu', 
+      link: '/recipes',
+      allowedRoles: ['RESTAURANTADMIN']
+    },
+    { 
+      labelKey: 'nav.kits', 
+      icon: 'inventory', 
+      link: '/kits',
+      allowedRoles: ['RETAILADMIN']
+    },
     { labelKey: 'nav.sales', icon: 'trending_up', link: '/sales' },
     { labelKey: 'nav.alerts', icon: 'notifications', link: '/alerts' },
     { labelKey: 'nav.devices', icon: 'router', link: '/devices' },
     { labelKey: 'nav.settings', icon: 'settings', link: '/settings' },
-  ]);
+  ];
+
+  readonly navItems = computed(() => {
+    const currentRole = this.userRole();
+    
+    return this.allNavItems.filter(item => {
+      if (!item.allowedRoles || item.allowedRoles.length === 0) {
+        return true;
+      }
+      return item.allowedRoles.includes(currentRole);
+    });
+  });
 
   userName = computed(() => {
     const p = this.profilesStore.profile();

@@ -112,17 +112,43 @@ export class ResourceStore {
 
   loadInventoryContext(accountId = this.accountId()): void {
     this.setAccountId(accountId);
-    this.loadCustomSuppliesByAccount(accountId);
-    this.resourceApi
-      .getBranches(accountId)
-      .pipe(
+    if (!accountId) return;
+
+    this.loading.set(true);
+    this.loadError.set(false);
+
+    forkJoin({
+      customSupplies: this.fetchCustomSuppliesByAccount(accountId).pipe(
+        catchError((error: any) => {
+          this.handleAuthError(error);
+          return of([]);
+        }),
+      ),
+      branches: this.resourceApi.getBranches(accountId).pipe(
         switchMap((branches) =>
           branches.length > 0 ? of(branches) : this.resourceApi.getBranches(),
         ),
-        tap((branches) => this.setBranches(branches)),
         catchError(() => of([])),
-      )
-      .subscribe();
+      ),
+    }).pipe(
+      switchMap(({ customSupplies, branches }) => {
+        this.customSupplies.set(customSupplies);
+        this.setBranches(branches);
+        return this.resourceApi.getBatch(accountId, customSupplies);
+      }),
+      tap((batch: BatchData) => {
+        this.totalActiveBatches.set(batch.totalActiveBatches);
+        this.totalActiveBatchesDeltaPercent.set(batch.totalActiveBatchesDeltaPercent);
+        this.nearExpiry30Days.set(batch.nearExpiry30Days);
+        this.rows.set(batch.batches);
+      }),
+      catchError(() => {
+        this.loadError.set(true);
+        this.rows.set([]);
+        return EMPTY;
+      }),
+      finalize(() => this.loading.set(false)),
+    ).subscribe();
   }
 
   createBatch(command: CreateBatchCommand): void {

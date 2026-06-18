@@ -46,7 +46,10 @@ export class DeviceOnboarding implements OnInit {
 
   readonly assignBatchForm: FormGroup = this.fb.group({
     batchId: ['', Validators.required],
-    netWeight: [null, [Validators.required, Validators.min(0)]],
+  });
+
+  readonly calibrationForm: FormGroup = this.fb.group({
+    unitStockWeight: [null, [Validators.required, Validators.min(0)]],
     tareWeight: [0, [Validators.required, Validators.min(0)]],
     weightUnitName: ['gram', Validators.required],
     weightUnitAbbreviation: ['g', Validators.required],
@@ -76,8 +79,16 @@ export class DeviceOnboarding implements OnInit {
     effect(() => {
       const accountId = this.iamStore.currentUser()?.accountId ?? '';
       if (accountId) {
-        untracked(() => this.resourceStore.loadCustomSuppliesByAccount(accountId));
+        untracked(() => this.resourceStore.loadInventoryContext(accountId));
       }
+    });
+
+    effect(() => {
+      this.prefillThresholds();
+    });
+
+    effect(() => {
+      this.prefillCalibration();
     });
   }
 
@@ -96,7 +107,7 @@ export class DeviceOnboarding implements OnInit {
         branchId: s._branchId ?? s.branchId ?? null,
         assignedBatchId: s._assignedBatchId ?? s.assignedBatchId ?? null,
         supplyThresholdId: s._supplyThresholdId ?? s.supplyThresholdId ?? null,
-        netWeight: s._netWeight ?? s.netWeight ?? null,
+        unitStockWeight: s._unitStockWeight ?? s.unitStockWeight ?? s.netWeight ?? null,
         tareWeight: s._tareWeight ?? s.tareWeight ?? null,
         grossWeight: s._grossWeight ?? s.grossWeight ?? null,
         calibrationDate: s._calibrationDate ?? s.calibrationDate ?? null,
@@ -111,9 +122,17 @@ export class DeviceOnboarding implements OnInit {
         firmwareVersion: device.firmwareVersion ?? '',
       });
       this.branchForm.patchValue({ branchId: device.branchId ?? '' });
+      this.assignBatchForm.patchValue({ batchId: device.assignedBatchId ?? '' });
+      this.calibrationForm.patchValue({
+        unitStockWeight: device.unitStockWeight,
+        tareWeight: device.tareWeight ?? 0,
+        weightUnitName: device.weightUnitName ?? 'gram',
+        weightUnitAbbreviation: device.weightUnitAbbreviation ?? 'g',
+      });
     } else {
       this.router.navigate(['/devices']);
     }
+    this.resourceStore.loadInventoryContext(this.accountId);
     this.thresholdsStore.loadThresholdsForAccount(this.accountId);
   }
 
@@ -125,6 +144,7 @@ export class DeviceOnboarding implements OnInit {
     const labels: Record<DeviceStatus, string> = {
       REGISTERED: 'AWAITING SETUP',
       CONFIGURED: 'CONFIGURED',
+      CALIBRATED: 'CALIBRATED',
       ACTIVE: 'Online',
       INACTIVE: 'Inactive',
     };
@@ -135,6 +155,7 @@ export class DeviceOnboarding implements OnInit {
     const classes: Record<DeviceStatus, string> = {
       REGISTERED: 'badge-pending',
       CONFIGURED: 'badge-configured',
+      CALIBRATED: 'badge-active',
       ACTIVE: 'badge-active',
       INACTIVE: 'badge-inactive',
     };
@@ -156,21 +177,111 @@ export class DeviceOnboarding implements OnInit {
     return this.branchForm.getRawValue().branchId !== (device.branchId ?? '');
   }
 
+  hasCalibration(device: Device): boolean {
+    return device.unitStockWeight !== null && !!device.weightUnitName;
+  }
+
   batchName(id: string): string {
-    const supplies = this.resourceStore.customSupplies();
-    const batch = supplies.find(s => s.id === id);
-    if (batch) return batch.name;
-    return supplies.length === 0 ? 'Loading batch...' : 'Unknown batch';
+    const batches = this.resourceStore.rows();
+    const batch = batches.find(row => row.id === id);
+    if (batch) return `${batch.code} · ${batch.supplyName}`;
+    return batches.length === 0 ? 'Loading batch...' : 'Unknown batch';
+  }
+
+  branchName(id: string): string {
+    const branches = this.resourceStore.branches();
+    const branch = branches.find(b => b.id === id);
+    if (branch) return branch.name;
+    return branches.length === 0 ? 'Loading branch...' : id;
+  }
+
+  selectedBatchCustomSupplyId(device: Device): string {
+    const batch = this.resourceStore.rows().find(row => row.id === device.assignedBatchId);
+    return batch?.customSupplyId ?? '';
+  }
+
+  private prefillThresholds(): void {
+    const device = this.currentDevice();
+    if (!device?.assignedBatchId) return;
+
+    const threshold = device.supplyThresholdId
+      ? this.thresholdsStore.thresholds().find(item => item.id === device.supplyThresholdId)
+      : undefined;
+
+    if (threshold) {
+      this.thresholdsForm.patchValue({
+        minStock: threshold.minStock,
+        maxStock: threshold.maxStock,
+        anomalyThreshold: threshold.anomalyThreshold,
+        minTemperature: threshold.minTemperature,
+        maxTemperature: threshold.maxTemperature,
+        minHumidity: threshold.minHumidity,
+        maxHumidity: threshold.maxHumidity,
+      }, { emitEvent: false });
+      return;
+    }
+
+    const customSupplyId = this.selectedBatchCustomSupplyId(device);
+    if (!customSupplyId) return;
+
+    const customSupply = this.resourceStore.customSupplies().find(supply => supply.id === customSupplyId);
+    if (!customSupply) return;
+
+    this.thresholdsForm.patchValue({
+      minStock: customSupply.minStock,
+      maxStock: customSupply.maxStock,
+    }, { emitEvent: false });
+  }
+
+  private prefillCalibration(): void {
+    const device = this.currentDevice();
+    if (!device?.assignedBatchId) return;
+
+    if (device.unitStockWeight !== null || device.tareWeight !== null || device.weightUnitName) {
+      const unit = this.weightUnitOption(device.weightUnitName, device.weightUnitAbbreviation);
+      this.calibrationForm.patchValue({
+        unitStockWeight: device.unitStockWeight,
+        tareWeight: device.tareWeight ?? 0,
+        weightUnitName: unit.name,
+        weightUnitAbbreviation: unit.abbr,
+      }, { emitEvent: false });
+      return;
+    }
+
+    const customSupplyId = this.selectedBatchCustomSupplyId(device);
+    if (!customSupplyId) return;
+
+    const customSupply = this.resourceStore.customSupplies().find(supply => supply.id === customSupplyId);
+    if (!customSupply) return;
+
+    const unit = this.weightUnitOption(customSupply.unit.name, customSupply.unit.abbreviation);
+    this.calibrationForm.patchValue({
+      weightUnitName: unit.name,
+      weightUnitAbbreviation: unit.abbr,
+    }, { emitEvent: false });
+  }
+
+  private weightUnitOption(name?: string | null, abbreviation?: string | null): { name: string; abbr: string } {
+    const normalizedName = (name ?? '').toLowerCase().trim();
+    const normalizedAbbr = (abbreviation ?? '').toLowerCase().trim();
+
+    return this.weightUnits.find(unit => {
+      const unitName = unit.name.toLowerCase();
+      const unitAbbr = unit.abbr.toLowerCase();
+      return normalizedName === unitName
+        || normalizedName === `${unitName}s`
+        || normalizedAbbr === unitAbbr;
+    }) ?? this.weightUnits[0];
   }
 
   onWeightUnitChange(event: Event): void {
     const name = (event.target as HTMLSelectElement).value;
     const unit = this.weightUnits.find(u => u.name === name);
-    if (unit) this.assignBatchForm.patchValue({ weightUnitAbbreviation: unit.abbr });
+    if (unit) this.calibrationForm.patchValue({ weightUnitAbbreviation: unit.abbr });
   }
 
   openAssignBatchDialog(): void {
-    this.resourceStore.loadCustomSuppliesByAccount(this.accountId);
+    this.resourceStore.loadInventoryContext(this.accountId);
     this.showAssignBatchDialog.set(true);
   }
   closeAssignBatchDialog(): void { this.showAssignBatchDialog.set(false); }
@@ -179,29 +290,14 @@ export class DeviceOnboarding implements OnInit {
     if (this.assignBatchForm.invalid || !this.currentDevice()) return;
     this.loading.set(true);
     this.pageError.set(null);
-    const { batchId, netWeight, tareWeight, weightUnitName, weightUnitAbbreviation } = this.assignBatchForm.value;
+    const { batchId } = this.assignBatchForm.value;
     const device = this.currentDevice()!;
-    const grossWeight = (netWeight ?? 0) + (tareWeight ?? 0);
-    const calibrationDate = new Date().toISOString().split('T')[0];
 
-    this.devicesStore.assignBatch(device.id, batchId).pipe(
-      switchMap(updated => {
-        this.currentDevice.set(updated);
-        return this.devicesStore.updateMeasurement(updated.id, {
-          netWeight: netWeight ?? 0,
-          tareWeight: tareWeight ?? 0,
-          grossWeight,
-          calibrationDate,
-          weightUnitName,
-          weightUnitAbbreviation,
-        });
-      }),
-    ).subscribe({
+    this.devicesStore.assignBatch(device.id, batchId).subscribe({
       next: updated => {
         this.currentDevice.set(updated);
         this.loading.set(false);
         this.showAssignBatchDialog.set(false);
-        this.assignBatchForm.reset({ tareWeight: 0, weightUnitName: 'gram', weightUnitAbbreviation: 'g' });
       },
       error: err => { this.pageError.set(err?.message ?? 'Failed to assign batch'); this.loading.set(false); },
     });
@@ -213,22 +309,29 @@ export class DeviceOnboarding implements OnInit {
     this.pageError.set(null);
     const v = this.thresholdsForm.value;
     const device = this.currentDevice()!;
+    const customSupplyId = this.selectedBatchCustomSupplyId(device);
+    if (!customSupplyId) {
+      this.pageError.set('Selected batch is not available. Reload inventory context and try again.');
+      this.loading.set(false);
+      return;
+    }
 
-    this.thresholdsStore.createThreshold({
-      accountId: this.accountId,
-      customSupplyId: device.assignedBatchId ?? '',
-      minStock: v.minStock,
-      maxStock: v.maxStock,
-      anomalyThreshold: v.anomalyThreshold ?? 0,
-      minTemperature: v.minTemperature ?? undefined,
-      maxTemperature: v.maxTemperature ?? undefined,
-      minHumidity: v.minHumidity ?? undefined,
-      maxHumidity: v.maxHumidity ?? undefined,
-    }).pipe(
-      switchMap(threshold => this.devicesStore.assignThreshold(device.id, threshold.id)),
+    of(device).pipe(
       switchMap(updated => this.saveSpecificationsIfNeeded(updated)),
       switchMap(updated => this.assignBranchIfNeeded(updated)),
-      switchMap(updated => this.devicesStore.updateStatus(updated.id, 'CONFIGURED')),
+      switchMap(updated => this.thresholdsStore.createThreshold({
+        deviceId: updated.id,
+        accountId: this.accountId,
+        customSupplyId,
+        minStock: v.minStock,
+        maxStock: v.maxStock,
+        anomalyThreshold: v.anomalyThreshold ?? 0,
+        minTemperatureCelsius: v.minTemperature ?? undefined,
+        maxTemperatureCelsius: v.maxTemperature ?? undefined,
+        minHumidityPercentage: v.minHumidity ?? undefined,
+        maxHumidityPercentage: v.maxHumidity ?? undefined,
+      })),
+      switchMap(() => this.devicesStore.fetchDeviceById(device.id)),
     ).subscribe({
       next: updated => { this.currentDevice.set(updated); this.loading.set(false); },
       error: err => { this.pageError.set(err?.message ?? 'Failed to save thresholds'); this.loading.set(false); },
@@ -281,22 +384,29 @@ export class DeviceOnboarding implements OnInit {
     return this.devicesStore.assignBranch(device.id, this.branchForm.getRawValue().branchId);
   }
 
-  resetTare(): void {
-    if (!this.currentDevice()) return;
+  saveCalibration(): void {
+    if (this.calibrationForm.invalid || !this.currentDevice()) return;
     this.loading.set(true);
     this.pageError.set(null);
     const device = this.currentDevice()!;
+    const measurement = this.calibrationForm.getRawValue();
+    const grossWeight = (measurement.unitStockWeight ?? 0) + (measurement.tareWeight ?? 0);
+
     this.devicesStore.updateMeasurement(device.id, {
-      netWeight: device.netWeight ?? 0,
-      tareWeight: 0,
-      grossWeight: device.netWeight ?? 0,
+      unitStockWeight: measurement.unitStockWeight ?? 0,
+      tareWeight: measurement.tareWeight ?? 0,
+      grossWeight,
       calibrationDate: new Date().toISOString().split('T')[0],
-      weightUnitName: device.weightUnitName ?? 'gram',
-      weightUnitAbbreviation: device.weightUnitAbbreviation ?? 'g',
+      weightUnitName: measurement.weightUnitName,
+      weightUnitAbbreviation: measurement.weightUnitAbbreviation,
     }).subscribe({
       next: updated => { this.currentDevice.set(updated); this.loading.set(false); },
-      error: err => { this.pageError.set(err?.message ?? 'Failed to reset tare'); this.loading.set(false); },
+      error: err => { this.pageError.set(err?.message ?? 'Failed to calibrate device'); this.loading.set(false); },
     });
+  }
+
+  resetTare(): void {
+    this.calibrationForm.patchValue({ tareWeight: 0 });
   }
 
   openUnlinkConfirm(): void { this.showUnlinkDialog.set(true); }
