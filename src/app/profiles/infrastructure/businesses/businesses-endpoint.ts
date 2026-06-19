@@ -1,15 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError } from 'rxjs';
+import { Observable, catchError, map } from 'rxjs';
 import { BaseApiEndpoint } from '../../../shared/infrastructure/base-api-endpoint';
 import { Business } from '../../domain/model/business.entity';
 import { BusinessResource, BusinessesListResponse } from './businesses.response';
 import { BusinessesAssembler } from './businesses.assembler';
 import { profilesApiOrigin, profilesApiFallbackOrigin } from '../profiles/profiles-api-origin';
 
-/**
- * HTTP client for the `businesses` collection within the profiles bounded context.
- * Instantiated by {@link ProfilesApi}.
- */
 export class BusinessesApiEndpoint extends BaseApiEndpoint<
   Business,
   BusinessResource,
@@ -35,15 +31,37 @@ export class BusinessesApiEndpoint extends BaseApiEndpoint<
   }
 
   override create(entity: Business): Observable<Business> {
-    return super.create(entity).pipe(catchError(() => this.withFallback(() => super.create(entity))));
+    return this.createWithImage(entity);
   }
 
   override update(entity: Business, id: string): Observable<Business> {
-    return super.update(entity, id).pipe(catchError(() => this.withFallback(() => super.update(entity, id))));
+    return this.updateWithImage(entity, id);
   }
 
-  // Swaps endpointUrl to fallback before calling the operation (the URL is captured
-  // synchronously by http.get/post/put), then restores it immediately after.
+  createWithImage(entity: Business, imageFile?: File): Observable<Business> {
+    const fd = buildBusinessFormData(this.assembler.toResourceFromEntity(entity), imageFile);
+    const operation = () =>
+      this.http.post<BusinessResource>(this.endpointUrl, fd).pipe(
+        map((created) => this.assembler.toEntityFromResource(created)),
+      );
+    return operation().pipe(
+      catchError(() => this.withFallback(operation)),
+      catchError(this.handleError('Failed to create business')),
+    );
+  }
+
+  updateWithImage(entity: Business, id: string, imageFile?: File): Observable<Business> {
+    const fd = buildBusinessFormData(this.assembler.toResourceFromEntity(entity), imageFile);
+    const operation = () =>
+      this.http.patch<BusinessResource>(`${this.endpointUrl}/${encodeURIComponent(id)}`, fd).pipe(
+        map((updated) => this.assembler.toEntityFromResource(updated)),
+      );
+    return operation().pipe(
+      catchError(() => this.withFallback(operation)),
+      catchError(this.handleError('Failed to update business')),
+    );
+  }
+
   private withFallback<T>(operation: () => Observable<T>): Observable<T> {
     this.endpointUrl = this.fallbackUrl;
     const result$ = operation();
@@ -52,3 +70,12 @@ export class BusinessesApiEndpoint extends BaseApiEndpoint<
   }
 }
 
+function buildBusinessFormData(resource: BusinessResource, imageFile?: File): FormData {
+  const fd = new FormData();
+  if (resource.userId)       fd.append('userId', resource.userId);
+  if (resource.companyName)  fd.append('companyName', resource.companyName);
+  if (resource.ruc)          fd.append('ruc', resource.ruc);
+  if (resource.mainLocation) fd.append('mainLocation', resource.mainLocation);
+  if (imageFile)             fd.append('image', imageFile);
+  return fd;
+}

@@ -6,6 +6,7 @@ import { Profile } from '../domain/model/profile.entity';
 import { Business } from '../domain/model/business.entity';
 import { LoadProfilesStateCommand } from '../domain/model/load-profiles-state.command';
 import { UpdateProfileCommand } from '../domain/model/update-profile.command';
+import { UpdateBusinessCommand } from '../domain/model/update-business.command';
 
 const PROFILE_BRANCH_ID_KEY = 'restock.profile.currentBranchId';
 
@@ -84,8 +85,11 @@ export class ProfilesStore {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
-    this.profilesApi
-      .updateProfile(profile, command.profileId)
+    const request$ = command.profileId
+      ? this.profilesApi.updateProfile(profile, command.profileId, command.imageFile)
+      : this.profilesApi.createProfile(profile, command.imageFile);
+
+    request$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (updated) => {
@@ -100,6 +104,35 @@ export class ProfilesStore {
           }
         },
       });
+  }
+
+  saveBusiness(command: UpdateBusinessCommand): void {
+    const business = new Business({
+      businessId: command.businessId || '',
+      ownerId: command.userId,
+      companyName: command.companyName,
+      ruc: command.ruc,
+      pictureUrl: command.pictureUrl,
+      mainLocation: command.mainLocation,
+    });
+
+    this.loadingSignal.set(true);
+    this.errorSignal.set(null);
+
+    const request$ = command.businessId
+      ? this.profilesApi.updateBusiness(business, command.businessId, command.imageFile)
+      : this.profilesApi.createBusiness(business, command.imageFile);
+
+    request$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (updated) => {
+        this.businessSignal.set(updated);
+        this.loadingSignal.set(false);
+      },
+      error: (err: unknown) => {
+        this.errorSignal.set(this.formatError(err, 'Failed to save business.'));
+        this.loadingSignal.set(false);
+      },
+    });
   }
 
   setCurrentBranchId(branchId: string): void {
