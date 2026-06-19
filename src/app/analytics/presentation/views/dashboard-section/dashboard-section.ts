@@ -44,7 +44,7 @@ export class DashboardSectionComponent {
   constructor() {
     this.store.loadMetrics(this.selectedRange());
 
-    const supplyId = environment.analyticsApi.defaultStockDiscrepanciesSupplyId;
+    const supplyId = environment.analyticsDefaultStockDiscrepanciesSupplyId;
     if (supplyId) {
       this.store.loadStockDiscrepancies(supplyId);
     }

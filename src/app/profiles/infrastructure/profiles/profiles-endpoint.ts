@@ -1,15 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError } from 'rxjs';
+import { Observable, catchError, map } from 'rxjs';
 import { BaseApiEndpoint } from '../../../shared/infrastructure/base-api-endpoint';
 import { Profile } from '../../domain/model/profile.entity';
 import { ProfileResource, ProfilesListResponse } from './profiles.response';
 import { ProfilesAssembler } from './profiles.assembler';
 import { profilesApiOrigin, profilesApiFallbackOrigin } from './profiles-api-origin';
 
-/**
- * HTTP client for the `profiles` collection (mirrors `sales-endpoint` in the sales context).
- * Instantiated by {@link ProfilesApi}.
- */
 export class ProfilesApiEndpoint extends BaseApiEndpoint<
   Profile,
   ProfileResource,
@@ -35,19 +31,53 @@ export class ProfilesApiEndpoint extends BaseApiEndpoint<
   }
 
   override create(entity: Profile): Observable<Profile> {
-    return super.create(entity).pipe(catchError(() => this.withFallback(() => super.create(entity))));
+    return this.createWithImage(entity);
   }
 
   override update(entity: Profile, id: string): Observable<Profile> {
-    return super.update(entity, id).pipe(catchError(() => this.withFallback(() => super.update(entity, id))));
+    return this.updateWithImage(entity, id);
   }
 
-  // Swaps endpointUrl to fallback before calling the operation (the URL is captured
-  // synchronously by http.get/post/put), then restores it immediately after.
+  createWithImage(entity: Profile, imageFile?: File): Observable<Profile> {
+    const fd = buildProfileFormData(this.assembler.toResourceFromEntity(entity), imageFile);
+    const operation = () =>
+      this.http.post<ProfileResource>(this.endpointUrl, fd).pipe(
+        map((created) => this.assembler.toEntityFromResource(created)),
+      );
+    return operation().pipe(
+      catchError(() => this.withFallback(operation)),
+      catchError(this.handleError('Failed to create profile')),
+    );
+  }
+
+  updateWithImage(entity: Profile, id: string, imageFile?: File): Observable<Profile> {
+    const fd = buildProfileFormData(this.assembler.toResourceFromEntity(entity), imageFile);
+    const operation = () =>
+      this.http.patch<ProfileResource>(`${this.endpointUrl}/${encodeURIComponent(id)}`, fd).pipe(
+        map((updated) => this.assembler.toEntityFromResource(updated)),
+      );
+    return operation().pipe(
+      catchError(() => this.withFallback(operation)),
+      catchError(this.handleError('Failed to update profile')),
+    );
+  }
+
   private withFallback<T>(operation: () => Observable<T>): Observable<T> {
     this.endpointUrl = this.fallbackUrl;
     const result$ = operation();
     this.endpointUrl = this.primaryUrl;
     return result$;
   }
+}
+
+function buildProfileFormData(resource: ProfileResource, imageFile?: File): FormData {
+  const fd = new FormData();
+  if (resource.userId)      fd.append('userId', resource.userId);
+  if (resource.name)        fd.append('name', resource.name);
+  if (resource.lastName)    fd.append('lastName', resource.lastName);
+  if (resource.phoneNumber) fd.append('phoneNumber', resource.phoneNumber);
+  if (resource.gender)      fd.append('gender', resource.gender);
+  if (resource.birthDate)   fd.append('birthDate', resource.birthDate);
+  if (imageFile)            fd.append('image', imageFile);
+  return fd;
 }

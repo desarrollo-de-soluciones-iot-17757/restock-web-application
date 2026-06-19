@@ -1,6 +1,6 @@
 import { environment } from '../../../../environments/environment';
 
-const BASE = `${environment.platformProviderApiBaseUrl}/conciliation-tasks`;
+const BASE = `${environment.baseUrl}/conciliation-tasks`;
 
 export const CONCILIATION_TASK_ENDPOINT = BASE;
 export const CONCILIATION_TASK_HISTORY_URL = `${BASE}/history`;

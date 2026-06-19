@@ -1,7 +1,7 @@
 import { environment } from '../../../environments/environment';
 
-const DEVICES_BASE = `${environment.platformProviderApiBaseUrl}/devices`;
-const THRESHOLDS_BASE = `${environment.platformProviderApiBaseUrl}/device-thresholds`;
+const DEVICES_BASE = `${environment.baseUrl}/devices`;
+const THRESHOLDS_BASE = `${environment.baseUrl}/device-thresholds`;
 
 export const DEVICES_BY_ACCOUNT_URL = (accountId: string) =>
   `${DEVICES_BASE}?accountId=${accountId}`;

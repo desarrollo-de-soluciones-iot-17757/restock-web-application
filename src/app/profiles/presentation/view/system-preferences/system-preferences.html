@@ -174,20 +174,34 @@
         <div class="avatar-section">
           <div class="avatar-wrapper">
             <img
-              [src]="avatarUrl() || 'https://placehold.co/96x96'"
+              [src]="profileImagePreview() || avatarUrl() || 'https://placehold.co/96x96'"
               class="avatar-img"
               alt="Profile photo" />
-            <button class="avatar-edit-btn" type="button" aria-label="Edit photo">
+            <label class="avatar-edit-btn" for="profileImageInput" aria-label="Edit photo" style="cursor:pointer">
               <span class="material-icons">edit</span>
-            </button>
+            </label>
           </div>
           <div class="avatar-meta">
             <span class="avatar-meta__label">{{ 'settings.profile.photo.label' | translate }}</span>
             <span class="avatar-meta__hint">{{ 'settings.profile.photo.hint' | translate }}</span>
+            @if (profileImageFile()) {
+              <span class="avatar-selected-name">{{ profileImageFile()!.name }}</span>
+            }
             <div class="avatar-meta__actions">
-              <button class="btn-outline-sm" type="button">{{ 'settings.profile.photo.upload' | translate }}</button>
-              <button class="btn-danger-ghost-sm" type="button">{{ 'settings.profile.photo.remove' | translate }}</button>
+              <label class="btn-outline-sm" for="profileImageInput" style="cursor:pointer">
+                {{ 'settings.profile.photo.upload' | translate }}
+              </label>
+              <button class="btn-danger-ghost-sm" type="button"
+                (click)="profileImageFile.set(null); profileImagePreview.set(null)">
+                {{ 'settings.profile.photo.remove' | translate }}
+              </button>
             </div>
+            <input
+              id="profileImageInput"
+              type="file"
+              accept="image/*"
+              style="display:none"
+              (change)="onProfileImageSelected($event)" />
           </div>
         </div>
 
@@ -220,13 +234,16 @@
           <label class="field-label" for="gender">{{ 'settings.profile.fields.gender' | translate }}</label>
           <div class="field-with-icon">
             <span class="field-with-icon__icon material-icons">person_outline</span>
-            <input
+            <select
               id="gender"
-              class="field-input field-input--indented"
-              type="text"
+              class="field-select field-select--indented"
               [ngModel]="gender()"
-              (ngModelChange)="gender.set($event)"
-              [placeholder]="'settings.profile.placeholders.gender' | translate" />
+              (ngModelChange)="gender.set($event)">
+              <option value="">{{ 'settings.profile.gender.placeholder' | translate }}</option>
+              @for (opt of genderOptions; track opt.value) {
+                <option [value]="opt.value">{{ opt.labelKey | translate }}</option>
+              }
+            </select>
           </div>
         </div>
 
@@ -245,6 +262,20 @@
           </div>
         </div>
 
+        <!-- Birth Date -->
+        <div class="field-group">
+          <label class="field-label" for="birthDate">{{ 'settings.profile.fields.birthDate' | translate }}</label>
+          <div class="field-with-icon">
+            <span class="field-with-icon__icon material-icons">calendar_today</span>
+            <input
+              id="birthDate"
+              class="field-input field-input--indented"
+              type="date"
+              [ngModel]="birthDate()"
+              (ngModelChange)="birthDate.set($event)" />
+          </div>
+        </div>
+
         <!-- Action bar -->
         <div class="profile-action-bar">
           <button class="btn btn--secondary" type="button" (click)="discardProfileChanges()">
@@ -256,24 +287,93 @@
         </div>
       </div>
 
-      <!-- Business sidebar -->
+      <!-- Business form card -->
       <div class="side-column">
         <div class="card">
-          <p class="section-label">{{ 'settings.business.title' | translate }}</p>
+          <div class="card-header">
+            <span class="card-icon material-icons">business</span>
+            <h2 class="card-title">{{ 'settings.business.title' | translate }}</h2>
+          </div>
+
           @if (profileLoading()) {
             <p class="branch-empty">{{ 'settings.business.loading' | translate }}</p>
-          }
-          @if (business(); as b) {
-            <div class="branch-item">
-              <span class="material-icons branch-item__icon">business</span>
-              <div class="branch-item__info">
-                <span class="branch-item__name">{{ b.companyName }}</span>
-                <span class="branch-item__status">{{ b.mainLocation.getValue() }}</span>
+          } @else {
+
+            <div class="field-group">
+              <label class="field-label" for="bizName">{{ 'settings.business.fields.companyName' | translate }}</label>
+              <input
+                id="bizName"
+                class="field-input"
+                type="text"
+                [ngModel]="businessName()"
+                (ngModelChange)="businessName.set($event)"
+                [placeholder]="'settings.business.placeholders.companyName' | translate" />
+            </div>
+
+            <div class="field-group">
+              <label class="field-label" for="bizRuc">{{ 'settings.business.fields.ruc' | translate }}</label>
+              <input
+                id="bizRuc"
+                class="field-input"
+                type="text"
+                [ngModel]="businessRuc()"
+                (ngModelChange)="businessRuc.set($event)"
+                [placeholder]="'settings.business.placeholders.ruc' | translate" />
+            </div>
+
+            <div class="field-group">
+              <label class="field-label" for="bizLocation">{{ 'settings.business.fields.mainLocation' | translate }}</label>
+              <div class="field-with-icon">
+                <span class="field-with-icon__icon material-icons">location_on</span>
+                <input
+                  id="bizLocation"
+                  class="field-input field-input--indented"
+                  type="text"
+                  [ngModel]="businessLocation()"
+                  (ngModelChange)="businessLocation.set($event)"
+                  [placeholder]="'settings.business.placeholders.mainLocation' | translate" />
               </div>
             </div>
-          }
-          @if (!business() && !profileLoading()) {
-            <p class="branch-empty">{{ 'settings.business.empty' | translate }}</p>
+
+            <!-- Business image -->
+            <div class="field-group">
+              <label class="field-label">{{ 'settings.business.fields.picture' | translate }}</label>
+              <div class="avatar-section avatar-section--sm">
+                <div class="avatar-wrapper avatar-wrapper--sm">
+                  <img
+                    [src]="businessImagePreview() || businessPictureUrl() || 'https://placehold.co/64x64'"
+                    class="avatar-img avatar-img--sm"
+                    alt="Business logo" />
+                </div>
+                <div class="avatar-meta">
+                  @if (businessImageFile()) {
+                    <span class="avatar-selected-name">{{ businessImageFile()!.name }}</span>
+                  }
+                  <label class="btn-outline-sm" for="businessImageInput" style="cursor:pointer">
+                    {{ 'settings.business.actions.uploadPicture' | translate }}
+                  </label>
+                  <input
+                    id="businessImageInput"
+                    type="file"
+                    accept="image/*"
+                    style="display:none"
+                    (change)="onBusinessImageSelected($event)" />
+                </div>
+              </div>
+            </div>
+
+            @if (profileError(); as err) {
+              <div class="profile-error" role="alert">{{ err }}</div>
+            }
+
+            <div class="profile-action-bar">
+              <button class="btn btn--secondary" type="button" (click)="discardBusinessChanges()">
+                {{ 'settings.business.actions.discard' | translate }}
+              </button>
+              <button class="btn btn--primary" type="button" (click)="saveBusinessChanges()">
+                {{ 'settings.business.actions.save' | translate }}
+              </button>
+            </div>
           }
         </div>
       </div>
@@ -284,12 +384,216 @@
   <!-- ══════════════════ BRANCHES TAB ══════════════════ -->
   @if (activeTab() === 'branches') {
     <div class="preferences-body">
+
       <div class="main-column">
         <div class="card">
-          <h2 class="card-title">{{ 'settings.branches.title' | translate }}</h2>
-          <p class="page-subtitle">{{ 'settings.branches.comingSoon' | translate }}</p>
+          <!-- Card header with title + action -->
+          <div class="branches-card-header">
+            <div class="card-header">
+              <span class="card-icon material-icons">account_tree</span>
+              <h2 class="card-title">{{ 'settings.branches.title' | translate }}</h2>
+            </div>
+            @if (!showCreateForm()) {
+              <button class="btn-add-branch" type="button" (click)="openCreateForm()">
+                <span class="material-icons">add</span>
+                {{ 'settings.branches.new' | translate }}
+              </button>
+            }
+          </div>
+
+          <!-- Loading state -->
+          @if (branchesLoading()) {
+            <div class="branches-loading">
+              <span class="spinner-sm"></span>
+              {{ 'settings.branches.loading' | translate }}
+            </div>
+          }
+
+          <!-- Error state -->
+          @if (branchesError()) {
+            <div class="branches-error">
+              <span class="material-icons">warning_amber</span>
+              {{ branchesError() }}
+            </div>
+          }
+
+          <!-- Branch list -->
+          @if (!branchesLoading()) {
+            @if (allBranches().length === 0) {
+              <div class="branches-empty">
+                <span class="material-icons branches-empty__icon">storefront</span>
+                <p class="branches-empty__title">{{ 'settings.branches.empty' | translate }}</p>
+                <p class="branches-empty__hint">{{ 'settings.branches.emptyHint' | translate }}</p>
+              </div>
+            } @else {
+              <div class="branches-list">
+                @for (b of allBranches(); track b.id) {
+                  <div class="branch-row" [class.branch-row--active]="b.id === currentBranchId()">
+                    <div class="branch-row__left">
+                      <div class="branch-row__icon-wrap" [class.branch-row__icon-wrap--active]="b.id === currentBranchId()">
+                        <span class="material-icons">storefront</span>
+                      </div>
+                      <div class="branch-row__info">
+                        <span class="branch-row__name">{{ b.name }}</span>
+                        @if (b.status) {
+                          <span class="branch-row__status" [class.branch-row__status--active]="b.status === 'ACTIVE'">
+                            {{ b.status }}
+                          </span>
+                        }
+                      </div>
+                    </div>
+                    <div class="branch-row__right">
+                      @if (b.id === currentBranchId()) {
+                        <span class="branch-row__badge">
+                          <span class="material-icons">check_circle</span>
+                          {{ 'settings.branches.active' | translate }}
+                        </span>
+                      } @else {
+                        <button class="btn-switch" type="button" (click)="switchBranch(b.id)">
+                          {{ 'settings.branches.switch' | translate }}
+                        </button>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          }
+
+          <!-- Create branch form -->
+          @if (showCreateForm()) {
+            <div class="create-branch-form">
+              <div class="create-branch-form__header">
+                <span class="create-branch-form__title">{{ 'settings.branches.newTitle' | translate }}</span>
+              </div>
+
+              <form [formGroup]="newBranchForm" (ngSubmit)="submitCreateBranch()">
+                <div class="create-form-grid">
+                  <div class="field-group">
+                    <label class="field-label" for="newBranchName">{{ 'settings.branches.fields.name' | translate }}</label>
+                    <input
+                      id="newBranchName"
+                      class="field-input"
+                      [class.field-input--error]="newBranchForm.get('name')?.invalid && newBranchForm.get('name')?.touched"
+                      formControlName="name"
+                      [placeholder]="'settings.branches.fields.namePlaceholder' | translate"
+                    />
+                    @if (newBranchForm.get('name')?.invalid && newBranchForm.get('name')?.touched) {
+                      <span class="field-error-sm">{{ 'settings.branches.fields.nameRequired' | translate }}</span>
+                    }
+                  </div>
+
+                  <div class="field-group">
+                    <label class="field-label" for="newBranchAddress">{{ 'settings.branches.fields.address' | translate }}</label>
+                    <input
+                      id="newBranchAddress"
+                      class="field-input"
+                      [class.field-input--error]="newBranchForm.get('address')?.invalid && newBranchForm.get('address')?.touched"
+                      formControlName="address"
+                      [placeholder]="'settings.branches.fields.addressPlaceholder' | translate"
+                    />
+                    @if (newBranchForm.get('address')?.invalid && newBranchForm.get('address')?.touched) {
+                      <span class="field-error-sm">{{ 'settings.branches.fields.required' | translate }}</span>
+                    }
+                  </div>
+
+                  <div class="field-group">
+                    <label class="field-label" for="newBranchCity">{{ 'settings.branches.fields.city' | translate }}</label>
+                    <input
+                      id="newBranchCity"
+                      class="field-input"
+                      [class.field-input--error]="newBranchForm.get('city')?.invalid && newBranchForm.get('city')?.touched"
+                      formControlName="city"
+                      [placeholder]="'settings.branches.fields.cityPlaceholder' | translate"
+                    />
+                    @if (newBranchForm.get('city')?.invalid && newBranchForm.get('city')?.touched) {
+                      <span class="field-error-sm">{{ 'settings.branches.fields.required' | translate }}</span>
+                    }
+                  </div>
+
+                  <div class="field-group">
+                    <label class="field-label" for="newBranchCountry">{{ 'settings.branches.fields.country' | translate }}</label>
+                    <select id="newBranchCountry" class="field-select" formControlName="country">
+                      @for (c of countries; track c) {
+                        <option [value]="c">{{ c }}</option>
+                      }
+                    </select>
+                  </div>
+
+                  <div class="field-group">
+                    <label class="field-label" for="newBranchRegion">{{ 'settings.branches.fields.regionOrState' | translate }}</label>
+                    <input
+                      id="newBranchRegion"
+                      class="field-input"
+                      [class.field-input--error]="newBranchForm.get('regionOrState')?.invalid && newBranchForm.get('regionOrState')?.touched"
+                      formControlName="regionOrState"
+                      [placeholder]="'settings.branches.fields.regionOrStatePlaceholder' | translate"
+                    />
+                    @if (newBranchForm.get('regionOrState')?.invalid && newBranchForm.get('regionOrState')?.touched) {
+                      <span class="field-error-sm">{{ 'settings.branches.fields.required' | translate }}</span>
+                    }
+                  </div>
+                </div>
+
+                <!-- Branch image -->
+                <div class="field-group">
+                  <label class="field-label">{{ 'settings.branches.fields.image' | translate }}</label>
+                  <div class="branch-image-picker">
+                    @if (branchImagePreview()) {
+                      <img [src]="branchImagePreview()!" class="branch-image-preview" alt="Branch preview" />
+                    }
+                    <label class="btn-outline-sm" for="branchImageInput" style="cursor:pointer">
+                      <span class="material-icons" style="font-size:16px;vertical-align:middle">upload</span>
+                      {{ branchImageFile() ? branchImageFile()!.name : ('settings.branches.fields.imagePlaceholder' | translate) }}
+                    </label>
+                    <input
+                      id="branchImageInput"
+                      type="file"
+                      accept="image/*"
+                      style="display:none"
+                      (change)="onBranchImageSelected($event)" />
+                  </div>
+                </div>
+
+                @if (branchesCreateError()) {
+                  <div class="create-form-error">
+                    <span class="material-icons">warning_amber</span>
+                    {{ branchesCreateError()! | translate }}
+                  </div>
+                }
+
+                <div class="create-form-actions">
+                  <button type="button" class="btn btn--secondary" (click)="cancelCreateForm()">
+                    {{ 'settings.branches.cancel' | translate }}
+                  </button>
+                  <button type="submit" class="btn btn--primary" [disabled]="branchesCreateLoading()">
+                    @if (branchesCreateLoading()) {
+                      <span class="spinner-btn"></span>
+                    }
+                    {{ 'settings.branches.createBtn' | translate }}
+                  </button>
+                </div>
+              </form>
+            </div>
+          }
         </div>
       </div>
+
+      <!-- Side info card -->
+      <div class="side-column">
+        <div class="card card--info">
+          <div class="card-header">
+            <span class="material-icons status-icon">info</span>
+            <span class="status-title">{{ 'settings.branches.infoTitle' | translate }}</span>
+          </div>
+          <p class="status-description">{{ 'settings.branches.infoBody' | translate }}</p>
+          <div class="branches-stat">
+            <span class="branches-stat__value">{{ allBranches().length }}</span>
+            <span class="branches-stat__label">{{ 'settings.branches.statLabel' | translate }}</span>
+          </div>
+        </div>
+      </div>
+
     </div>
   }
 
