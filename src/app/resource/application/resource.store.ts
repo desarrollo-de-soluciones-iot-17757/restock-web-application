@@ -9,7 +9,6 @@ import {
   forkJoin,
   map,
   of,
-  switchMap,
   tap,
 } from 'rxjs';
 
@@ -79,9 +78,6 @@ export class ResourceStore {
         }),
       ),
       branches: this.resourceApi.getBranches(this.accountId()).pipe(
-        switchMap((branches) =>
-          branches.length > 0 ? of(branches) : this.resourceApi.getBranches(),
-        ),
         catchError(() => of([] as Branch[])),
       ),
     }).subscribe(({ customSupplies, branches }) => {
@@ -198,9 +194,6 @@ export class ResourceStore {
     this.resourceApi
       .getBranches(accountId)
       .pipe(
-        switchMap((branches) =>
-          branches.length > 0 ? of(branches) : this.resourceApi.getBranches(),
-        ),
         tap((branches) => this.applyBranches(branches)),
         catchError(() => of([] as Branch[])),
       )

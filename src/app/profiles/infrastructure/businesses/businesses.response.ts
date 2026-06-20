@@ -2,6 +2,7 @@ import { BaseResource, BaseResponse } from '../../../shared/infrastructure/base-
 
 
 export interface BusinessResource extends BaseResource {
+  accountId?: string;
   userId: string;
   ruc: string;
   pictureUrl: string;

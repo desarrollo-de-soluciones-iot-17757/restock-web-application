@@ -24,6 +24,7 @@ export class BusinessesAssembler implements BaseAssembler<
   toEntityFromResource(resource: BusinessResource): Business {
     return new Business({
       businessId: resource.id ?? '',
+      accountId: resource.accountId ?? '',
       ownerId: resource.userId ?? '',
       ruc: resource.ruc ?? '',
       pictureUrl: resource.pictureUrl ?? '',
@@ -34,6 +35,7 @@ export class BusinessesAssembler implements BaseAssembler<
 
   toResourceFromEntity(entity: Business): BusinessResource {
     return {
+      accountId: entity.accountId,
       userId: entity.ownerId.getValue(),
       ruc: entity.ruc,
       pictureUrl: entity.pictureUrl.getValue(),
