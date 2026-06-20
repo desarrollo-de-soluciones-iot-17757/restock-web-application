@@ -117,7 +117,7 @@
 </div>
 
 @if (showResolveDialog) {
-  <app-resolve-discrepancy-dialog (onClose)="closeResolveDialog()" (onResolve)="closeResolveDialog()" />
+  <app-resolve-discrepancy-dialog [conciliationTaskId]="params()?.get('id') ?? ''" (onClose)="closeResolveDialog()" (onResolve)="closeResolveDialog()" />
 }
 
 @if (showRecalibrateDialog) {
