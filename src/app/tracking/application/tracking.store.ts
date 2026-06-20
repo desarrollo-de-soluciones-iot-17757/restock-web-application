@@ -2,9 +2,9 @@ import { Injectable, inject, signal } from '@angular/core';
 import { EMPTY, catchError, finalize, tap } from 'rxjs';
 
 import { TrackingApi } from '../infrastructure/tracking-api';
-import { ConciliationTask } from '../domain/model/conciliation-task.entity';
+import type { ConciliationTaskRow } from '../infrastructure/conciliation-task/conciliation-task.assembler';
+import type { ResolveConciliationTaskRequest } from '../infrastructure/conciliation-task/conciliation-task.response';
 import { Discrepancy } from '../domain/model/discrepancy.entity';
-
 
 /**
  * View-model representation of a discrepancy row in the UI.
@@ -22,20 +22,6 @@ export interface DiscrepancyRow {
 }
 
 /**
- * View-model representation of a resolution history entry.
- */
-export interface ResolutionHistoryEntry {
-  id: string;
-  timestamp: string;
-  supply: string;
-  category: string;
-  stockBefore: number;
-  iotReading: number;
-  deviation: number;
-  reason: string;
-}
-
-/**
  * Store responsible for managing the Tracking bounded context state.
  */
 @Injectable({ providedIn: 'root' })
@@ -44,19 +30,18 @@ export class TrackingStore {
   readonly loadError = signal(false);
 
   readonly discrepancies = signal<DiscrepancyRow[]>([]);
-  readonly conciliationTasks = signal<ConciliationTask[]>([]);
+  readonly conciliationTasks = signal<ConciliationTaskRow[]>([]);
   readonly selectedDiscrepancy = signal<Discrepancy | null>(null);
-  readonly resolutionHistory = signal<ResolutionHistoryEntry[]>([]);
+  readonly selectedConciliationTask = signal<ConciliationTaskRow | null>(null);
 
   readonly pendingTasksCount = signal(0);
   readonly totalResolved = signal(0);
-  readonly criticalDeviations = signal(0);
+  readonly currentAccountId = signal('');
 
   private readonly trackingApi = inject(TrackingApi);
 
-  /**
-   * Loads the list of active discrepancies.
-   */
+  // ─── Discrepancies ────────────────────────────────────────────────────────
+
   loadDiscrepancies(): void {
     this.loading.set(true);
     this.loadError.set(false);
@@ -77,11 +62,6 @@ export class TrackingStore {
       .subscribe();
   }
 
-  /**
-   * Loads a single discrepancy by its identifier.
-   *
-   * @param id The discrepancy identifier.
-   */
   loadDiscrepancyById(id: string): void {
     this.loading.set(true);
     this.loadError.set(false);
@@ -99,27 +79,21 @@ export class TrackingStore {
       .subscribe();
   }
 
+
   /**
-   * Resolves a stock discrepancy with a given cause and justification.
-   *
-   * @param discrepancyId The discrepancy identifier.
-   * @param cause The selected cause of the discrepancy.
-   * @param justification The justification or evidence text.
+   * GET /api/v1/conciliation-tasks?accountId=&status=&...
    */
-  resolveDiscrepancy(discrepancyId: string, cause: string, justification: string): void {
+  loadConciliationTasks(accountId: string, status?: 'PENDING' | 'RESOLVED_MANUALLY' | 'RESOLVED_AUTOMATICALLY'): void {
     this.loading.set(true);
+    this.loadError.set(false);
 
     this.trackingApi
-      .createConciliationTask({
-        discrepancyId,
-        cause,
-        justification,
-        resolvedAt: new Date().toISOString(),
-      })
+      .getConciliationTasks({ accountId, status })
       .pipe(
-        tap(() => {
-          this.loadDiscrepancies();
-          this.loadResolutionHistory();
+        tap((tasks) => {
+          this.conciliationTasks.set(tasks);
+          this.pendingTasksCount.set(tasks.filter((t) => t.status === 'PENDING').length);
+          this.totalResolved.set(tasks.filter((t) => t.status !== 'PENDING').length);
         }),
         catchError(() => {
           this.loadError.set(true);
@@ -131,12 +105,49 @@ export class TrackingStore {
   }
 
   /**
-   * Sends a recalibration request for a device.
-   *
-   * @param deviceId The device identifier to recalibrate.
-   * @param action The calibration action (force tare or schedule maintenance).
-   * @param note Optional note for the recalibration.
+   * GET /api/v1/conciliation-tasks/{id}
    */
+  loadConciliationTaskById(conciliationTaskId: string): void {
+    this.loading.set(true);
+    this.loadError.set(false);
+
+    this.trackingApi
+      .getConciliationTaskById(conciliationTaskId)
+      .pipe(
+        tap((task) => this.selectedConciliationTask.set(task)),
+        catchError(() => {
+          this.loadError.set(true);
+          return EMPTY;
+        }),
+        finalize(() => this.loading.set(false)),
+      )
+      .subscribe();
+  }
+
+  resolveConciliationTask(
+    conciliationTaskId: string,
+    body: ResolveConciliationTaskRequest,
+  ): void {
+    this.loading.set(true);
+
+    this.trackingApi
+      .resolveConciliationTask(conciliationTaskId, body)
+      .pipe(
+        tap((resolved) => {
+          this.conciliationTasks.update((tasks) =>
+            tasks.map((t) => (t.id === conciliationTaskId ? resolved : t)),
+          );
+          this.selectedConciliationTask.set(resolved);
+        }),
+        catchError(() => {
+          this.loadError.set(true);
+          return EMPTY;
+        }),
+        finalize(() => this.loading.set(false)),
+      )
+      .subscribe();
+  }
+
   recalibrateScale(deviceId: string, action: string, note: string): void {
     this.loading.set(true);
 
@@ -144,32 +155,6 @@ export class TrackingStore {
       .recalibrateDevice(deviceId, action, note)
       .pipe(
         tap(() => this.loadDiscrepancies()),
-        catchError(() => {
-          this.loadError.set(true);
-          return EMPTY;
-        }),
-        finalize(() => this.loading.set(false)),
-      )
-      .subscribe();
-  }
-
-  /**
-   * Loads the resolution history entries.
-   */
-  loadResolutionHistory(): void {
-    this.loading.set(true);
-    this.loadError.set(false);
-
-    this.trackingApi
-      .getResolutionHistory()
-      .pipe(
-        tap((data) => {
-          this.resolutionHistory.set(data);
-          this.totalResolved.set(data.length);
-          this.criticalDeviations.set(
-            data.filter((entry) => entry.deviation > 50).length,
-          );
-        }),
         catchError(() => {
           this.loadError.set(true);
           return EMPTY;

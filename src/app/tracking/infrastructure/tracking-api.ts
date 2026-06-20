@@ -10,11 +10,17 @@ import type { DiscrepancyDetailResponse, DiscrepancyItemResponse } from './discr
 import { assembleDiscrepancy, assembleDiscrepancyRow } from './discrepancy/discrepancy.assembler';
 
 import {
-  CONCILIATION_TASK_ENDPOINT,
-  CONCILIATION_TASK_HISTORY_URL,
+  CONCILIATION_TASKS_URL,
+  CONCILIATION_TASK_BY_ID_URL,
+  RESOLVE_CONCILIATION_TASK_URL,
 } from './conciliation-task/conciliation-task.endpoint';
-import type { ResolutionHistoryItemResponse } from './conciliation-task/conciliation-task.response';
-import { assembleResolutionHistoryEntry } from './conciliation-task/conciliation-task.assembler';
+import type {
+  ConciliationTaskResponse,
+  ConciliationTaskListResponse,
+  ConciliationTaskQueryParams,
+  ResolveConciliationTaskRequest,
+} from './conciliation-task/conciliation-task.response';
+import { assembleConciliationTaskRow, type ConciliationTaskRow } from './conciliation-task/conciliation-task.assembler';
 
 import { TELEMETRY_ENDPOINT } from './telemetry/telemetry.endpoint';
 import { assembleTelemetryReading } from './telemetry/telemetry.assembler';
@@ -63,30 +69,33 @@ export class TrackingApi {
   }
 
   /**
-   * Creates a conciliation task to resolve a discrepancy.
-   *
-   * @param body The conciliation task request payload.
-   * @returns An observable that completes when the task is created.
+   * GET /api/v1/conciliation-tasks?accountId=&status=&...
    */
-  createConciliationTask(body: {
-    discrepancyId: string;
-    cause: string;
-    justification: string;
-    resolvedAt: string;
-  }): Observable<void> {
-    return this.http.post<void>(CONCILIATION_TASK_ENDPOINT, body);
+  getConciliationTasks(params: ConciliationTaskQueryParams): Observable<ConciliationTaskRow[]> {
+    let httpParams = new HttpParams().set('accountId', params.accountId);
+    if (params.status)         httpParams = httpParams.set('status', params.status);
+    if (params.customSupplyId) httpParams = httpParams.set('customSupplyId', params.customSupplyId);
+    if (params.branchId)       httpParams = httpParams.set('branchId', params.branchId);
+    if (params.deviceId)       httpParams = httpParams.set('deviceId', params.deviceId);
+
+    return this.http
+      .get<ConciliationTaskListResponse>(CONCILIATION_TASKS_URL, { params: httpParams })
+      .pipe(map((items) => items.map(assembleConciliationTaskRow)));
   }
 
-  /**
-   * Loads resolution history entries.
-   *
-   * @param params Optional query parameters.
-   * @returns An observable with assembled history entries.
-   */
-  getResolutionHistory(params?: HttpParams): Observable<ReturnType<typeof assembleResolutionHistoryEntry>[]> {
+  getConciliationTaskById(conciliationTaskId: string): Observable<ConciliationTaskRow> {
     return this.http
-      .get<ResolutionHistoryItemResponse[]>(CONCILIATION_TASK_HISTORY_URL, { params })
-      .pipe(map((items) => items.map(assembleResolutionHistoryEntry)));
+      .get<ConciliationTaskResponse>(CONCILIATION_TASK_BY_ID_URL(conciliationTaskId))
+      .pipe(map(assembleConciliationTaskRow));
+  }
+
+  resolveConciliationTask(
+    conciliationTaskId: string,
+    body: ResolveConciliationTaskRequest,
+  ): Observable<ConciliationTaskRow> {
+    return this.http
+      .post<ConciliationTaskResponse>(RESOLVE_CONCILIATION_TASK_URL(conciliationTaskId), body)
+      .pipe(map(assembleConciliationTaskRow));
   }
 
   /**

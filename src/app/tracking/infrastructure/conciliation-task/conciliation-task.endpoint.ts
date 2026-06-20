@@ -1,7 +1,9 @@
 import { environment } from '../../../../environments/environment';
 
-const BASE = `${environment.baseUrl}/conciliation-tasks`;
+const BASE = `${environment.baseUrl}/${environment.platformProviderConciliationTasksEndpointPath}`;
 
-export const CONCILIATION_TASK_ENDPOINT = BASE;
-export const CONCILIATION_TASK_HISTORY_URL = `${BASE}/history`;
-export const CREATE_CONCILIATION_TASK_URL = BASE;
+export const CONCILIATION_TASKS_URL = BASE;
+export const CONCILIATION_TASK_BY_ID_URL = (conciliationTaskId: string) =>
+  `${BASE}/${encodeURIComponent(conciliationTaskId)}`;
+export const RESOLVE_CONCILIATION_TASK_URL = (conciliationTaskId: string) =>
+  `${BASE}/${encodeURIComponent(conciliationTaskId)}/resolve`;

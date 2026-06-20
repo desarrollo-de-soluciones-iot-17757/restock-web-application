@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
@@ -7,12 +7,6 @@ import { TRACKING_PATHS } from '../../tracking-paths';
 
 type HistoryTab = 'resolved' | 'pending' | 'archived';
 
-/**
- * Resolution History view showing past conciliation task outcomes.
- *
- * Displays summary KPIs, tabbed history table with deviation and reason
- * badges, and a top resolution reasons chart placeholder.
- */
 @Component({
   selector: 'app-resolution-history-view',
   standalone: true,
@@ -26,38 +20,47 @@ export class ResolutionHistoryView implements OnInit {
 
   activeTab = signal<HistoryTab>('resolved');
 
+  readonly resolvedTasks = computed(() =>
+    this.store.conciliationTasks().filter(
+      (t) => t.status === 'RESOLVED_MANUALLY' || t.status === 'RESOLVED_AUTOMATICALLY',
+    ),
+  );
+
+  readonly criticalDeviations = computed(() =>
+    this.store.conciliationTasks().filter((t) => Math.abs(t.difference) > 50).length,
+  );
+
+  readonly totalResolved = this.store.totalResolved;
+
   ngOnInit(): void {
-    this.store.loadResolutionHistory();
+    this.store.loadConciliationTasks(
+      this.store.currentAccountId(),
+      undefined,
+    );
   }
 
   setTab(tab: HistoryTab): void {
     this.activeTab.set(tab);
   }
 
-  getDeviationClass(deviation: number): string {
-    if (deviation < 0) return 'deviation-negative';
-    if (deviation > 0) return 'deviation-positive';
+  getDeviationClass(difference: number): string {
+    if (difference < 0) return 'deviation-negative';
+    if (difference > 0) return 'deviation-positive';
     return 'deviation-sensor-fault';
   }
 
-  getReasonClass(reason: string): string {
+  getReasonClass(reason: string | null): string {
     switch (reason) {
-      case 'WASTE/SPOILAGE':
-        return 'reason-spoilage';
-      case 'THEFT/LOSS':
-        return 'reason-theft';
-      case 'UNREGISTERED USE':
-        return 'reason-unregistered';
-      case 'TRANSFER/DISPLAY':
-        return 'reason-transfer';
-      case 'SENSOR FAULT':
-        return 'reason-sensor';
-      default:
-        return 'reason-default';
+      case 'WASTE_OR_SPOILAGE':   return 'reason-spoilage';
+      case 'THEFT_OR_LOSS':       return 'reason-theft';
+      case 'UNREGISTERED_USE':    return 'reason-unregistered';
+      case 'TRANSFER_OR_DISPLAY': return 'reason-transfer';
+      case 'SENSOR_FAULT':        return 'reason-sensor';
+      default:                    return 'reason-default';
     }
   }
 
   get filteredHistory() {
-    return this.store.resolutionHistory();
+    return this.resolvedTasks();
   }
 }

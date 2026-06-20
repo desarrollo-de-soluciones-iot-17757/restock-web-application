@@ -44,4 +44,7 @@ export const environment = {
 
   // Sales
   platformProviderSalesEndpointsPath: 'sales',
+
+  // Tracking
+  platformProviderConciliationTasksEndpointPath: 'conciliation-tasks',
 };
