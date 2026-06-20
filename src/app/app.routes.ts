@@ -12,6 +12,7 @@ const salesRoute = () =>import('./sales/presentation/sales.routes').then((m) => 
 const profilesRoute = () =>import('./profiles/presentation/profiles.routes').then((m) => m.profilesRoutes);
 const recipesRoute = () =>import('./planning/recipes/presentation/recipes.routes').then((m) => m.recipesRoutes);
 const kitsRoute = () =>import('./planning/kits/presentation/kits.routes').then((m) => m.kitsRoutes);
+const analyticsRoute = () =>import('./analytics/presentation/analytics.routes').then((m) => m.analyticsRoutes);
 const homePage = () =>import('./shared/presentation/views/home/home-page').then((m) => m.HomePage);
 const pageNotFound = () =>import('./shared/presentation/views/page-not-found/page-not-found').then((m) => m.PageNotFound,);
 const placeholder = () =>import('./shared/presentation/views/placeholder-page/placeholder-page').then((m) => m.PlaceholderPage,);
@@ -38,6 +39,7 @@ export const appRoutes: Routes = [
       { path: 'recipes', loadChildren: recipesRoute, title: `${baseTitle} · Recipes` },
       { path: 'kits', loadChildren: kitsRoute, title: `${baseTitle} · Kits` },
       { path: 'sales', loadChildren: salesRoute, title: `${baseTitle} · Sales` },
+      { path: 'analytics', loadChildren: analyticsRoute, title: `${baseTitle} · Analytics` },
 
       {
         path: 'settings',

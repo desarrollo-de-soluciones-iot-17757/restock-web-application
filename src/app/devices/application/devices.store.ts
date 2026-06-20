@@ -30,6 +30,12 @@ export class DevicesStore {
     return this.devices().find(d => d.id === id);
   }
 
+  fetchDeviceById(id: string): Observable<Device> {
+    return this.devicesApi.getDeviceById(id).pipe(
+      tap(updated => this._replaceDevice(updated)),
+    );
+  }
+
   createDevice(body: { accountId: string; macAddress: string; description: string }): Observable<Device> {
     return this.devicesApi.createDevice(body).pipe(
       tap(device => this.devices.update(list => [...list, device])),
@@ -66,7 +72,7 @@ export class DevicesStore {
     );
   }
 
-  updateStatus(deviceId: string, status: 'CONFIGURED' | 'INACTIVE'): Observable<Device> {
+  updateStatus(deviceId: string, status: 'CALIBRATED' | 'INACTIVE'): Observable<Device> {
     return this.devicesApi.updateStatus(deviceId, status).pipe(
       tap(updated => this._replaceDevice(updated)),
     );

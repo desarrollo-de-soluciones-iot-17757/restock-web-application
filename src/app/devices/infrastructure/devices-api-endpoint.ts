@@ -24,7 +24,7 @@ export interface AddSpecificationsRequest {
 }
 
 export interface UpdateMeasurementRequest {
-  netWeight: number;
+  unitStockWeight: number;
   tareWeight: number;
   grossWeight: number;
   calibrationDate: string;
@@ -95,7 +95,7 @@ export class DevicesApiEndpoint extends ErrorHandlingEnabledBaseType {
     );
   }
 
-  updateStatus(deviceId: string, status: 'CONFIGURED' | 'INACTIVE'): Observable<Device> {
+  updateStatus(deviceId: string, status: 'CALIBRATED' | 'INACTIVE'): Observable<Device> {
     return this.http.patch<DeviceResource>(UPDATE_DEVICE_STATUS_URL(deviceId), { status }).pipe(
       map(r => this.assembler.toEntityFromResource(r)),
       catchError(this.handleError('Failed to update device status')),

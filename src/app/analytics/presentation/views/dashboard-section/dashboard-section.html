@@ -1,1 +1,217 @@
-<p>dashboard-section works!</p>
+<div class="page-shell">
+  <div class="page-topbar">
+    <nav class="breadcrumb" aria-label="breadcrumb">
+      <span class="bc-root">South Branch</span>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">Overview</span>
+    </nav>
+    <div class="range-group" role="group" aria-label="Date range">
+      <button
+        type="button"
+        (click)="onRangeChange('7d')"
+        [class.range-active]="selectedRange() === '7d'"
+      >
+        Last 7 days
+      </button>
+      <button
+        type="button"
+        (click)="onRangeChange('30d')"
+        [class.range-active]="selectedRange() === '30d'"
+      >
+        Last 30 days
+      </button>
+      <button
+        type="button"
+        (click)="onRangeChange('90d')"
+        [class.range-active]="selectedRange() === '90d'"
+      >
+        Last 90 days
+      </button>
+    </div>
+  </div>
+  <div class="top-cards-row">
+    <div class="top-card">
+      <div class="top-card-header">
+        <span class="top-card-label">ACTIVE METRICS</span>
+        <i class="ti ti-chart-bar top-card-icon" aria-hidden="true"></i>
+      </div>
+      <div class="top-card-headline">{{ (stockDiscrepancies().length + criticalProducts().length + recentSales().length) }}/3</div>
+      <div class="top-card-sub">All data sources reporting</div>
+      <div class="activity-bars" aria-hidden="true">
+        <span class="bar bar-full"></span>
+        <span class="bar bar-full"></span>
+        <span class="bar bar-full"></span>
+        <span class="bar bar-full"></span>
+        <span class="bar bar-full"></span>
+        <span class="bar bar-full"></span>
+        <span class="bar bar-mid"></span>
+      </div>
+    </div>
+    <div class="top-card top-card-secondary">
+      <div class="top-card-header">
+        <span class="top-card-label">SYSTEM STATUS</span>
+        <i class="ti ti-wifi top-card-icon" aria-hidden="true"></i>
+      </div>
+      <div class="status-pill">
+        <span class="status-dot" aria-hidden="true"></span>
+        STABLE
+      </div>
+      <div class="top-card-sub top-card-sub--spaced">All endpoints responsive</div>
+      <div class="activity-bars activity-bars-sm" aria-hidden="true">
+        <span class="bar bar-dim bar-short"></span>
+        <span class="bar bar-mid bar-short"></span>
+        <span class="bar bar-mid bar-short"></span>
+        <span class="bar bar-full bar-short"></span>
+        <span class="bar bar-full bar-short"></span>
+      </div>
+    </div>
+  </div>
+  <div class="summary-row">
+    <div class="summary-card">
+      <div class="summary-card-label">Stock Discrepancies</div>
+      <div class="summary-card-value" [class.value-danger]="highRiskDiscrepancies().length > 0">
+        {{ stockDiscrepancies().length }}
+      </div>
+      <div class="summary-card-sub">{{ highRiskDiscrepancies().length }} high risk</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-card-label">Critical Products</div>
+      <div class="summary-card-value" [class.value-danger]="criticalProducts().length > 0">
+        {{ criticalProducts().length }}
+      </div>
+      <div class="summary-card-sub">Deficit: {{ totalStockDeficit() | number: '1.1-1' }}</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-card-label">Recent Sales</div>
+      <div class="summary-card-value">{{ recentSales().length }}</div>
+      <div class="summary-card-sub">Total: ${{ totalSalesAmount() | number: '1.2-2' }}</div>
+    </div>
+  </div>
+  <div class="analytics-section" *ngIf="stockDiscrepancies().length > 0">
+    <div class="section-header">
+      <h2 class="section-title">Stock Discrepancies</h2>
+      <span class="section-badge">{{ stockDiscrepancies().length }} Items</span>
+    </div>
+    <div class="table-card">
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>DISCREPANCY ID</th>
+              <th>PHYSICAL STOCK</th>
+              <th>SYSTEM STOCK</th>
+              <th class="col-right">DIFFERENCE</th>
+              <th>RISK LEVEL</th>
+              <th>RECONCILED</th>
+              <th>STATUS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let disc of stockDiscrepancies()">
+              <td class="cell-mono">{{ disc.discrepancyId }}</td>
+              <td>{{ disc.physicalStock | number: '1.2-2' }}</td>
+              <td>{{ disc.systemStock | number: '1.2-2' }}</td>
+              <td class="col-right cell-bold" [class.value-danger]="disc.difference > 5">
+                {{ disc.difference | number: '1.2-2' }}
+              </td>
+              <td>
+                <span [class]="'badge badge-' + disc.riskLevel.toLowerCase()">
+                  {{ disc.riskLevel }}
+                </span>
+              </td>
+              <td>
+                <span [class]="disc.isConciliated ? 'status-resolved' : 'status-pending'">{{ disc.isConciliated ? 'Yes' : 'No' }}</span>
+              </td>
+              <td><span [class]="disc.status === 'RESOLVED' ? 'status-resolved' : 'status-pending'">{{ disc.status }}</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="analytics-section" *ngIf="criticalProducts().length > 0">
+    <div class="section-header">
+      <h2 class="section-title">Critical Products (Low Stock)</h2>
+      <span class="section-badge">{{ criticalProducts().length }} Products</span>
+    </div>
+    <div class="table-card">
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>PRODUCT NAME</th>
+              <th>SUPPLY ID</th>
+              <th>BRANCH</th>
+              <th class="col-right">TOTAL STOCK</th>
+              <th class="col-right">MIN STOCK</th>
+              <th class="col-right">DEFICIT</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let product of criticalProducts()">
+              <td class="cell-bold">{{ product.productName }}</td>
+              <td class="cell-mono">{{ product.supplyId }}</td>
+              <td>{{ product.branchName }}</td>
+              <td class="col-right">{{ product.totalStock | number: '1.2-2' }}</td>
+              <td class="col-right">{{ product.minStock | number: '1.2-2' }}</td>
+              <td class="col-right cell-bold value-danger">{{ product.stockDeficit | number: '1.2-2' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="analytics-section" *ngIf="recentSales().length > 0 || recentSalesLoading()">
+    <div class="section-header">
+      <h2 class="section-title">Recent Sales</h2>
+      <span class="section-badge">{{ recentSales().length }} Sales</span>
+    </div>
+    <div class="date-filter-bar">
+      <label class="date-filter-label" for="startDate">From</label>
+      <input
+        id="startDate"
+        type="date"
+        class="date-input"
+        [value]="salesStartDate()"
+        (change)="onStartDateChange($event)"
+      />
+      <label class="date-filter-label" for="endDate">To</label>
+      <input
+        id="endDate"
+        type="date"
+        class="date-input"
+        [value]="salesEndDate()"
+        (change)="onEndDateChange($event)"
+      />
+      <button type="button" class="btn-filter-apply" (click)="applyDateFilter()">Apply</button>
+      <button type="button" class="btn-filter-clear" (click)="clearDateFilter()">Clear</button>
+    </div>
+    <div class="table-card">
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>SALE ID</th>
+              <th>BRANCH</th>
+              <th class="col-right">AMOUNT</th>
+              <th>DATE</th>
+              <th>STATUS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let sale of recentSales()">
+              <td class="cell-mono">{{ sale.saleId }}</td>
+              <td>{{ sale.branchId ?? '-' }}</td>
+              <td class="col-right">{{ sale.totalAmount ? ('$' + (sale.totalAmount | number: '1.2-2')) : '-' }}</td>
+              <td>{{ sale.saleDate | date: 'MMM d, yyyy' }}</td>
+              <td><span class="status-resolved">{{ sale.status ?? 'COMPLETED' }}</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="empty-state" *ngIf="stockDiscrepancies().length === 0 && criticalProducts().length === 0 && recentSales().length === 0 && !recentSalesLoading()">
+    <p>No analytics data found.</p>
+  </div>
+</div>

@@ -22,6 +22,7 @@
         <span class="status-badge"
           [class.badge-pending]="device.status === 'REGISTERED'"
           [class.badge-configured]="device.status === 'CONFIGURED'"
+          [class.badge-active]="device.status === 'CALIBRATED'"
           [class.badge-active]="device.status === 'ACTIVE'"
           [class.badge-inactive]="device.status === 'INACTIVE'">
           {{ statusLabel(device.status) }}
@@ -53,10 +54,15 @@
           <span class="step-dot">3</span>
           <span>Branch</span>
         </div>
-        <div class="progress-line" [class.complete]="device.status === 'CONFIGURED' || device.status === 'ACTIVE'"></div>
-        <div class="progress-step" [class.complete]="device.status === 'CONFIGURED' || device.status === 'ACTIVE'" [class.active]="!!device.assignedBatchId && hasSpecifications(device) && !!device.branchId">
+        <div class="progress-line" [class.complete]="device.status === 'CONFIGURED' || device.status === 'CALIBRATED' || device.status === 'ACTIVE'"></div>
+        <div class="progress-step" [class.complete]="device.status === 'CONFIGURED' || device.status === 'CALIBRATED' || device.status === 'ACTIVE'" [class.active]="!!device.assignedBatchId && hasSpecifications(device) && !!device.branchId">
           <span class="step-dot">4</span>
           <span>Alerts</span>
+        </div>
+        <div class="progress-line" [class.complete]="device.status === 'CALIBRATED' || device.status === 'ACTIVE'"></div>
+        <div class="progress-step" [class.complete]="device.status === 'CALIBRATED' || device.status === 'ACTIVE'" [class.active]="device.status === 'CONFIGURED'">
+          <span class="step-dot">5</span>
+          <span>Calibration</span>
         </div>
       </div>
     </section>
@@ -166,8 +172,20 @@
 
           <form [formGroup]="branchForm" class="section-form">
             <div class="field-group">
-              <label class="field-label-caps">Branch ID</label>
-              <input formControlName="branchId" placeholder="branch_01" class="form-input" [disabled]="!device.assignedBatchId" />
+              <label class="field-label-caps">Branch</label>
+              @if (resourceStore.branches().length === 0) {
+                <div class="empty-batches-notice">
+                  <mat-icon>storefront</mat-icon>
+                  <span>No branches available.</span>
+                </div>
+              } @else {
+                <select formControlName="branchId" class="form-select" [disabled]="!device.assignedBatchId">
+                  <option value="" disabled>Select a branch...</option>
+                  @for (branch of resourceStore.branches(); track branch.id) {
+                    <option [value]="branch.id">{{ branch.name }}</option>
+                  }
+                </select>
+              }
             </div>
 
             <div class="section-actions">
@@ -271,7 +289,83 @@
                   @if (loading()) {
                     <mat-spinner diameter="16"></mat-spinner>
                   } @else {
-                    Complete setup
+                    Save configuration
+                  }
+                </button>
+              </div>
+            </form>
+          }
+        </section>
+
+        <section class="panel-card setup-card" [class.is-locked]="device.status !== 'CONFIGURED' && device.status !== 'CALIBRATED' && device.status !== 'ACTIVE'">
+          <div class="panel-header">
+            <div class="step-heading">
+              <span class="step-number">5</span>
+              <div>
+                <h3 class="panel-title">Weight calibration</h3>
+                <p class="panel-subtitle">Define how sensor weight converts into stock units.</p>
+              </div>
+            </div>
+            @if (device.status !== 'CONFIGURED' && device.status !== 'CALIBRATED' && device.status !== 'ACTIVE') {
+              <span class="lock-pill"><mat-icon>lock</mat-icon> Locked</span>
+            }
+          </div>
+
+          @if (device.status !== 'CONFIGURED' && device.status !== 'CALIBRATED' && device.status !== 'ACTIVE') {
+            <div class="locked-empty">
+              <mat-icon>lock</mat-icon>
+              <span>Save batch, branch, hardware, and alert thresholds before calibrating the scale.</span>
+            </div>
+          } @else {
+            <form [formGroup]="calibrationForm" class="section-form">
+              <div class="modal-grid">
+                <div class="field-group">
+                  <label class="field-label-caps">Weight unit</label>
+                  <select class="form-select" formControlName="weightUnitName" (change)="onWeightUnitChange($event)">
+                    @for (u of weightUnits; track u.name) {
+                      <option [value]="u.name">{{ u.name }} ({{ u.abbr }})</option>
+                    }
+                  </select>
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label-caps">Unit weight</label>
+                  <div class="input-with-unit">
+                    <input type="number" formControlName="unitStockWeight" class="form-input" />
+                    <span class="unit-tag">{{ calibrationForm.get('weightUnitAbbreviation')?.value }}</span>
+                  </div>
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label-caps">Tare weight</label>
+                  <div class="input-with-unit">
+                    <input type="number" formControlName="tareWeight" class="form-input" />
+                    <span class="unit-tag">{{ calibrationForm.get('weightUnitAbbreviation')?.value }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <button class="btn-outline-full" type="button" (click)="resetTare()">
+                <mat-icon>refresh</mat-icon>
+                Reset scale to zero
+              </button>
+
+              <div class="warning-box">
+                <mat-icon class="warning-icon">warning_amber</mat-icon>
+                <span>Empty the physical scale before applying tare. The current weight becomes the zero reference point.</span>
+              </div>
+
+              <div class="section-actions">
+                <button class="btn-primary" type="button"
+                  [disabled]="calibrationForm.invalid || loading()"
+                  (click)="saveCalibration()">
+                  <mat-icon>scale</mat-icon>
+                  @if (loading()) {
+                    <mat-spinner diameter="16"></mat-spinner>
+                  } @else if (hasCalibration(device)) {
+                    Update calibration
+                  } @else {
+                    Calibrate device
                   }
                 </button>
               </div>
@@ -294,7 +388,7 @@
             </div>
             <div class="summary-item">
               <span class="summary-label">Branch</span>
-              <span class="summary-value">{{ device.branchId || 'Not assigned' }}</span>
+              <span class="summary-value">{{ device.branchId ? branchName(device.branchId) : 'Not assigned' }}</span>
             </div>
             <div class="summary-item">
               <span class="summary-label">Firmware</span>
@@ -313,7 +407,7 @@
             <h3 class="panel-title">Scale actions</h3>
           </div>
 
-          <button class="btn-outline-full" type="button" [disabled]="!device.assignedBatchId || loading()" (click)="resetTare()">
+          <button class="btn-outline-full" type="button" [disabled]="(device.status !== 'CONFIGURED' && device.status !== 'CALIBRATED' && device.status !== 'ACTIVE') || loading()" (click)="resetTare()">
             <mat-icon>refresh</mat-icon>
             Reset tare
           </button>
@@ -340,63 +434,32 @@
       <div class="modal-card" (click)="$event.stopPropagation()">
         <div class="modal-header">
           <h3 class="modal-title">Assign batch</h3>
-          <p class="modal-subtitle">Set inventory and scale reference values for {{ device.description || device.macAddress }}.</p>
+          <p class="modal-subtitle">Select the inventory batch monitored by {{ device.description || device.macAddress }}.</p>
         </div>
 
         <form [formGroup]="assignBatchForm" class="modal-body">
           <div class="field-group">
             <label class="field-label-caps">Select batch</label>
-            @if (resourceStore.customSupplies().length === 0) {
+            @if (resourceStore.loading()) {
+              <div class="empty-batches-notice">
+                <mat-icon>hourglass_empty</mat-icon>
+                <span>Loading batches...</span>
+              </div>
+            } @else if (resourceStore.rows().length === 0) {
               <div class="empty-batches-notice">
                 <mat-icon>inventory_2</mat-icon>
-                <span>No batches available. Add items in Inventory first.</span>
+                <span>No batches available. Add stock in Inventory first.</span>
               </div>
             } @else {
               <select formControlName="batchId" class="form-select">
                 <option value="" disabled selected>Select a batch...</option>
-                @for (batch of resourceStore.customSupplies(); track batch.id) {
-                  <option [value]="batch.id">{{ batch.name }}</option>
+                @for (batch of resourceStore.rows(); track batch.id) {
+                  <option [value]="batch.id">{{ batch.code }} · {{ batch.supplyName }}</option>
                 }
               </select>
             }
           </div>
 
-          <div class="modal-grid mt-16">
-            <div class="field-group">
-              <label class="field-label-caps">Weight unit</label>
-              <select class="form-select" formControlName="weightUnitName" (change)="onWeightUnitChange($event)">
-                @for (u of weightUnits; track u.name) {
-                  <option [value]="u.name">{{ u.name }} ({{ u.abbr }})</option>
-                }
-              </select>
-            </div>
-
-            <div class="field-group">
-              <label class="field-label-caps">Unit weight</label>
-              <div class="input-with-unit">
-                <input type="number" formControlName="netWeight" class="form-input" />
-                <span class="unit-tag">{{ assignBatchForm.get('weightUnitAbbreviation')?.value }}</span>
-              </div>
-            </div>
-
-            <div class="field-group">
-              <label class="field-label-caps">Tare weight</label>
-              <div class="input-with-unit">
-                <input type="number" formControlName="tareWeight" class="form-input" />
-                <span class="unit-tag">{{ assignBatchForm.get('weightUnitAbbreviation')?.value }}</span>
-              </div>
-            </div>
-          </div>
-
-          <button class="btn-outline-full mt-16" type="button" (click)="resetTare()">
-            <mat-icon>refresh</mat-icon>
-            Reset scale to zero
-          </button>
-
-          <div class="warning-box mt-12">
-            <mat-icon class="warning-icon">warning_amber</mat-icon>
-            <span>Empty the physical scale before applying tare. The current weight becomes the zero reference point.</span>
-          </div>
         </form>
 
         <div class="modal-footer">

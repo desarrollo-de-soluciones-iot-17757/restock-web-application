@@ -12,6 +12,7 @@
     "recipes": "Recetas",
     "kits": "Kits",
     "sales": "Ventas",
+    "analytics": "Análisis",
     "alerts": "Alertas",
     "devices": "Dispositivos",
     "settings": "Ajustes"
@@ -167,12 +168,17 @@
         "firstName": "NOMBRE",
         "lastName": "APELLIDO",
         "gender": "GÉNERO",
-        "phone": "NÚMERO DE TELÉFONO"
+        "phone": "NÚMERO DE TELÉFONO",
+        "birthDate": "FECHA DE NACIMIENTO"
+      },
+      "gender": {
+        "placeholder": "Seleccionar género",
+        "male": "Masculino",
+        "female": "Femenino"
       },
       "placeholders": {
         "firstName": "Nombre",
         "lastName": "Apellido",
-        "gender": "Género",
         "phone": "Número de teléfono"
       },
       "actions": {
@@ -183,11 +189,59 @@
     "business": {
       "title": "NEGOCIO",
       "loading": "Cargando…",
-      "empty": "No se encontró negocio."
+      "empty": "No se encontró negocio.",
+      "fields": {
+        "companyName": "NOMBRE DE EMPRESA",
+        "ruc": "RUC / ID FISCAL",
+        "mainLocation": "UBICACIÓN PRINCIPAL"
+      },
+      "placeholders": {
+        "companyName": "ej. Nexus Logistics",
+        "ruc": "ej. 20123456789",
+        "mainLocation": "ej. Lima, Perú"
+      },
+      "actions": {
+        "discard": "DESCARTAR",
+        "save": "GUARDAR NEGOCIO",
+        "uploadPicture": "SUBIR LOGO"
+      },
+      "fields": {
+        "companyName": "NOMBRE DE EMPRESA",
+        "ruc": "RUC / ID FISCAL",
+        "mainLocation": "UBICACIÓN PRINCIPAL",
+        "picture": "LOGO DEL NEGOCIO"
+      }
     },
     "branches": {
-      "title": "Sucursales",
-      "comingSoon": "Gestión de sucursales próximamente."
+      "title": "Gestión de Sucursales",
+      "new": "NUEVA SUCURSAL",
+      "newTitle": "NUEVA SUCURSAL",
+      "loading": "Cargando sucursales…",
+      "empty": "Aún no hay sucursales",
+      "emptyHint": "Crea tu primera sucursal para empezar a gestionar el inventario.",
+      "active": "ACTIVA",
+      "switch": "Usar esta",
+      "cancel": "Cancelar",
+      "createBtn": "Crear Sucursal",
+      "createError": "No se pudo crear la sucursal. Inténtalo de nuevo.",
+      "infoTitle": "Sobre las Sucursales",
+      "infoBody": "Cada sucursal representa una ubicación física o lógica. Asigna dispositivos e inventario a una sucursal para mantener los datos organizados.",
+      "statLabel": "SUCURSALES REGISTRADAS",
+      "fields": {
+        "name": "NOMBRE DE SUCURSAL",
+        "namePlaceholder": "p.ej. Almacén Principal",
+        "nameRequired": "El nombre de la sucursal es obligatorio.",
+        "required": "Este campo es obligatorio.",
+        "address": "DIRECCIÓN",
+        "addressPlaceholder": "123 Avenida Industrial",
+        "city": "CIUDAD",
+        "cityPlaceholder": "Ciudad de México",
+        "country": "PAÍS",
+        "regionOrState": "ESTADO / REGIÓN",
+        "regionOrStatePlaceholder": "p.ej. Jalisco",
+        "image": "IMAGEN DE SUCURSAL",
+        "imagePlaceholder": "Elegir imagen…"
+      }
     }
   },
   "iam": {
@@ -298,6 +352,33 @@
       "scaleReadyBody": "Diseñado para conectar múltiples nodos de inventario",
       "privacyPolicy": "Política de Privacidad",
       "termsOfService": "Términos de Servicio"
+    },
+    "registrationBranchSetup": {
+      "title": "Configura tu Primera Sucursal",
+      "subtitle": "Una sucursal es la ubicación física o lógica donde vive tu inventario. Puedes agregar más después.",
+      "steps": {
+        "account": "Cuenta",
+        "business": "Negocio",
+        "branch": "Sucursal"
+      },
+      "nameLabel": "NOMBRE DE SUCURSAL",
+      "namePlaceholder": "p.ej. Almacén Principal",
+      "nameRequired": "El nombre de la sucursal es obligatorio.",
+      "addressLabel": "DIRECCIÓN",
+      "addressPlaceholder": "123 Avenida Industrial",
+      "cityLabel": "CIUDAD",
+      "cityPlaceholder": "Ciudad de México",
+      "regionOrStateLabel": "ESTADO / REGIÓN",
+      "regionOrStatePlaceholder": "p.ej. Jalisco",
+      "countryLabel": "PAÍS",
+      "fieldRequired": "Este campo es obligatorio.",
+      "createError": "No se pudo crear la sucursal. Inténtalo de nuevo.",
+      "skip": "Omitir por ahora",
+      "create": "Crear Sucursal",
+      "creating": "Creando…",
+      "infoNote": "Puedes crear sucursales adicionales y cambiar entre ellas en cualquier momento desde Ajustes › Sucursales.",
+      "privacyPolicy": "Política de Privacidad",
+      "termsOfService": "Términos de Servicio"
     }
   },
   "kits": {
@@ -316,7 +397,11 @@
       "loadingProducts": "Cargando insumos desde Beeceptor...",
       "emptyProducts": "Aún no se han añadido productos a este kit."
     },
-    "actions": { "retry": "Reintentar Conexión", "cancel": "Cancelar", "save": "Guardar Kit" },
+    "actions": {
+      "retry": "Reintentar Conexión",
+      "cancel": "Cancelar",
+      "save": "Guardar Kit"
+    },
     "form": {
       "image": "IMAGEN DEL KIT",
       "uploadImage": "Subir Imagen",

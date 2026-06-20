@@ -12,6 +12,7 @@
     "recipes": "Recipes",
     "kits": "Kits",
     "sales": "Sales",
+    "analytics": "Analytics",
     "alerts": "Alerts",
     "devices": "Devices",
     "settings": "Settings"
@@ -167,12 +168,17 @@
         "firstName": "FIRST NAME",
         "lastName": "LAST NAME",
         "gender": "GENDER",
-        "phone": "PHONE NUMBER"
+        "phone": "PHONE NUMBER",
+        "birthDate": "DATE OF BIRTH"
+      },
+      "gender": {
+        "placeholder": "Select gender",
+        "male": "Male",
+        "female": "Female"
       },
       "placeholders": {
         "firstName": "First name",
         "lastName": "Last name",
-        "gender": "Gender",
         "phone": "Phone number"
       },
       "actions": {
@@ -183,11 +189,59 @@
     "business": {
       "title": "BUSINESS",
       "loading": "Loading…",
-      "empty": "No business found."
+      "empty": "No business found.",
+      "fields": {
+        "companyName": "COMPANY NAME",
+        "ruc": "TAX ID / RUC",
+        "mainLocation": "MAIN LOCATION"
+      },
+      "placeholders": {
+        "companyName": "e.g. Nexus Logistics",
+        "ruc": "e.g. 20123456789",
+        "mainLocation": "e.g. Lima, Peru"
+      },
+      "actions": {
+        "discard": "DISCARD",
+        "save": "SAVE BUSINESS",
+        "uploadPicture": "UPLOAD LOGO"
+      },
+      "fields": {
+        "companyName": "COMPANY NAME",
+        "ruc": "TAX ID / RUC",
+        "mainLocation": "MAIN LOCATION",
+        "picture": "BUSINESS LOGO"
+      }
     },
     "branches": {
-      "title": "Branches",
-      "comingSoon": "Branch management coming soon."
+      "title": "Branch Management",
+      "new": "NEW BRANCH",
+      "newTitle": "NEW BRANCH",
+      "loading": "Loading branches…",
+      "empty": "No branches yet",
+      "emptyHint": "Create your first branch to start managing inventory.",
+      "active": "ACTIVE",
+      "switch": "Use this",
+      "cancel": "Cancel",
+      "createBtn": "Create Branch",
+      "createError": "Branch could not be created. Please try again.",
+      "infoTitle": "About Branches",
+      "infoBody": "Each branch represents a physical or logical location. Assign devices and inventory to a branch to keep data organized.",
+      "statLabel": "REGISTERED BRANCHES",
+      "fields": {
+        "name": "BRANCH NAME",
+        "namePlaceholder": "e.g. Main Warehouse",
+        "nameRequired": "Branch name is required.",
+        "required": "This field is required.",
+        "address": "ADDRESS",
+        "addressPlaceholder": "123 Industrial Ave",
+        "city": "CITY",
+        "cityPlaceholder": "San Francisco",
+        "country": "COUNTRY",
+        "regionOrState": "STATE / REGION",
+        "regionOrStatePlaceholder": "e.g. California",
+        "image": "BRANCH IMAGE",
+        "imagePlaceholder": "Choose image…"
+      }
     }
   },
   "iam": {
@@ -298,6 +352,33 @@
       "scaleReadyBody": "Designed to connect multiple inventory nodes",
       "privacyPolicy": "Privacy Policy",
       "termsOfService": "Terms of Service"
+    },
+    "registrationBranchSetup": {
+      "title": "Set Up Your First Branch",
+      "subtitle": "A branch is the physical or logical location where your inventory lives. You can add more later.",
+      "steps": {
+        "account": "Account",
+        "business": "Business",
+        "branch": "Branch"
+      },
+      "nameLabel": "BRANCH NAME",
+      "namePlaceholder": "e.g. Main Warehouse",
+      "nameRequired": "Branch name is required.",
+      "addressLabel": "ADDRESS",
+      "addressPlaceholder": "123 Industrial Ave",
+      "cityLabel": "CITY",
+      "cityPlaceholder": "San Francisco",
+      "regionOrStateLabel": "STATE / REGION",
+      "regionOrStatePlaceholder": "e.g. California",
+      "countryLabel": "COUNTRY",
+      "fieldRequired": "This field is required.",
+      "createError": "Branch could not be created. Please try again.",
+      "skip": "Skip for now",
+      "create": "Create Branch",
+      "creating": "Creating…",
+      "infoNote": "You can create additional branches and switch between them at any time from Settings › Branches.",
+      "privacyPolicy": "Privacy Policy",
+      "termsOfService": "Terms of Service"
     }
   },
   "kits": {
@@ -316,7 +397,11 @@
       "loadingProducts": "Loading supplies from Beeceptor...",
       "emptyProducts": "No products added to this kit yet."
     },
-    "actions": { "retry": "Retry Connection", "cancel": "Cancel", "save": "Save Kit" },
+    "actions": {
+      "retry": "Retry Connection",
+      "cancel": "Cancel",
+      "save": "Save Kit"
+    },
     "form": {
       "image": "KIT IMAGE",
       "uploadImage": "Upload Image",
