@@ -35,21 +35,21 @@ export class ProfilesApiEndpoint extends BaseApiEndpoint<
     const primaryUrl = `${this.primaryUrl}?accountId=${encodedAccountId}`;
     const fallbackUrl = `${this.fallbackUrl}?accountId=${encodedAccountId}`;
 
-    const parseFirst = (response: unknown): Profile => {
+    const parseLast = (response: unknown): Profile => {
       const list: ProfileResource[] = Array.isArray(response)
         ? response
         : (response as any)?.profiles ?? [];
-      const resource = list[0];
+      const resource = list[list.length - 1];
       if (!resource) throw new HttpErrorResponse({ status: 404, statusText: 'Not Found' });
       return this.assembler.toEntityFromResource(resource);
     };
 
     return this.http.get<unknown>(primaryUrl).pipe(
-      map(parseFirst),
+      map(parseLast),
       catchError(() =>
-        this.http.get<unknown>(fallbackUrl).pipe(map(parseFirst)),
+        this.http.get<unknown>(fallbackUrl).pipe(map(parseLast)),
       ),
-    );
+    ) as Observable<Profile>;
   }
 
   override getById(id: string): Observable<Profile> {

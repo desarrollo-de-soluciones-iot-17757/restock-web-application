@@ -130,6 +130,8 @@ export class SystemPreferences {
   private savedProfileFields: ProfileFieldSnapshot | null = null;
 
   constructor() {
+    this.store.loadProfilesState();
+
     if (this.resourceStore.branches().length === 0) {
       this.resourceStore.loadBranches();
     }

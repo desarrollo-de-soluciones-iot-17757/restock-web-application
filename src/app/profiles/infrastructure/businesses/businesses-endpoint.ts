@@ -49,7 +49,7 @@ export class BusinessesApiEndpoint extends BaseApiEndpoint<
       catchError(() =>
         this.http.get<unknown>(fallbackUrl).pipe(map(parseFirst)),
       ),
-    );
+    ) as Observable<Business>;
   }
 
   override getById(id: string): Observable<Business> {

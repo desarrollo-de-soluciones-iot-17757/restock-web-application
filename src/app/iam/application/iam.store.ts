@@ -110,6 +110,18 @@ export class IamStore {
           tap((user) => this.setCurrentUser(user)),
 
           switchMap(() => {
+            const profile = new Profile({
+              profileId: '',
+              userId: userId ?? '',
+              accountId,
+              name: pendingProfile?.firstName ?? '',
+              lastName: pendingProfile?.lastName ?? '',
+              phoneNumber: pendingProfile?.phoneNumber ?? '',
+              avatarUrl: pendingProfile?.avatarUrl ?? '',
+              gender: '',
+              birthDate: '',
+            });
+
             const business = new Business({
               businessId: '',
               accountId,
@@ -120,41 +132,20 @@ export class IamStore {
               mainLocation: params.country ?? '',
             });
 
-            // The backend auto-creates a profile on sign-up (name = email placeholder).
-            // Fetch it to get the real ID, then PATCH with the data from the form.
-            return this.profilesApi.getProfileByAccountId(accountId).pipe(
-              switchMap((existing) => {
-                const patched = new Profile({
-                  profileId: existing.id,
-                  userId: userId ?? '',
-                  accountId,
-                  name: pendingProfile?.firstName ?? '',
-                  lastName: pendingProfile?.lastName ?? '',
-                  phoneNumber: pendingProfile?.phoneNumber ?? '',
-                  avatarUrl: pendingProfile?.avatarUrl ?? '',
-                  gender: '',
-                  birthDate: '',
-                });
-                return forkJoin({
-                  profile: this.profilesApi.updateProfile(patched, existing.id).pipe(
-                    catchError((err) => {
-                      console.warn('[IamStore] Profile patch incomplete:', err);
-                      return of(null);
-                    }),
-                  ),
-                  business: this.profilesApi.createBusiness(business).pipe(
-                    catchError((err) => {
-                      console.warn('[IamStore] Business setup incomplete:', err);
-                      return of(null);
-                    }),
-                  ),
-                });
-              }),
-              catchError(() =>
-                // Auto-created profile not found yet — still create the business.
-                this.profilesApi.createBusiness(business).pipe(catchError(() => of(null))),
+            return forkJoin({
+              profile: this.profilesApi.createProfile(profile).pipe(
+                catchError((err) => {
+                  console.warn('[IamStore] Profile setup incomplete:', err);
+                  return of(null);
+                }),
               ),
-            );
+              business: this.profilesApi.createBusiness(business).pipe(
+                catchError((err) => {
+                  console.warn('[IamStore] Business setup incomplete:', err);
+                  return of(null);
+                }),
+              ),
+            });
           }),
 
           catchError((err) => {
