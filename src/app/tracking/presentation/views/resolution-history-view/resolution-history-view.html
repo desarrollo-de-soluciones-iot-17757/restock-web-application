@@ -27,7 +27,7 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         </span>
       </div>
-      <span class="kpi-value">{{ store.criticalDeviations() }}</span>
+      <span class="kpi-value">{{ criticalDeviations() }}</span>
     </div>
   </div>
 
@@ -42,38 +42,36 @@
       <table class="data-table">
         <thead>
           <tr>
-            <th>Timestamp</th>
+            <th>Resolved At</th>
             <th>Supply</th>
-            <th>Category</th>
-            <th>Stock Before</th>
-            <th>IoT Reading</th>
-            <th>Deviation</th>
+            <th>Digital Stock</th>
+            <th>Physical Stock</th>
+            <th>Difference</th>
             <th>Reason</th>
           </tr>
         </thead>
         <tbody>
           @if (filteredHistory.length === 0) {
             <tr class="empty-row">
-              <td colspan="7">
+              <td colspan="6">
                 <span class="empty-text">No resolution history found.</span>
               </td>
             </tr>
           }
           @for (entry of filteredHistory; track entry.id) {
             <tr>
-              <td>{{ entry.timestamp | date:'medium' }}</td>
-              <td class="col-supply">{{ entry.supply }}</td>
-              <td>{{ entry.category }}</td>
-              <td>{{ entry.stockBefore | number }}</td>
-              <td>{{ entry.iotReading | number }}</td>
+              <td>{{ entry.resolvedAt ? (entry.resolvedAt | date:'medium') : '—' }}</td>
+              <td class="col-supply">{{ entry.customSupplyName }}</td>
+              <td>{{ entry.digitalStock | number }}</td>
+              <td>{{ entry.devicePhysicalStock | number }}</td>
               <td>
-                <span class="deviation-value" [ngClass]="getDeviationClass(entry.deviation)">
-                  {{ entry.deviation > 0 ? '+' : '' }}{{ entry.deviation | number }}
+                <span class="deviation-value" [ngClass]="getDeviationClass(entry.difference)">
+                  {{ entry.difference > 0 ? '+' : '' }}{{ entry.difference | number }}
                 </span>
               </td>
               <td>
-                <span class="reason-badge" [ngClass]="getReasonClass(entry.reason)">
-                  {{ entry.reason }}
+                <span class="reason-badge" [ngClass]="getReasonClass(entry.resolutionReason)">
+                  {{ entry.resolutionReason ?? '—' }}
                 </span>
               </td>
             </tr>

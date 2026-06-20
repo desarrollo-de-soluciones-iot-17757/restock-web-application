@@ -1,51 +1,46 @@
-import type { ConciliationTaskResponse, ResolutionHistoryItemResponse } from './conciliation-task.response';
-import { ConciliationTask } from '../../domain/model/conciliation-task.entity';
-import { Discrepancy } from '../../domain/model/discrepancy.entity';
+import type { ConciliationTaskResponse } from './conciliation-task.response';
 
 /**
- * Assembles a conciliation task response into a domain entity.
- *
- * @param dto Conciliation task received from the API.
- * @returns A ConciliationTask domain aggregate.
+ * UI-friendly row assembled from a ConciliationTaskResponse.
+ * Used in the store and presentation layer.
  */
-export function assembleConciliationTask(dto: ConciliationTaskResponse): ConciliationTask {
-  const task = ConciliationTask.create(
-    dto.id,
-    dto.deviceId,
-    Discrepancy.empty(),
-  );
-
-  if (dto.status === 'COMPLETED') {
-    task.complete();
-  }
-
-  return task;
+export interface ConciliationTaskRow {
+  id: string;
+  customSupplyId: string;
+  customSupplyName: string;
+  deviceId: string;
+  branchId: string;
+  batchId: string;
+  digitalStock: number;
+  devicePhysicalStock: number;
+  difference: number;
+  alertLevel: string;
+  status: string;
+  resolutionAction: string | null;
+  resolutionReason: string | null;
+  resolutionJustification: string | null;
+  resolvedAt: string | null;
 }
 
 /**
- * Assembles a resolution history item into a UI-friendly entry.
- *
- * @param dto Resolution history item received from the API.
- * @returns A flat resolution history entry object.
+ * Assembles a ConciliationTaskResponse into a UI row.
  */
-export function assembleResolutionHistoryEntry(dto: ResolutionHistoryItemResponse): {
-  id: string;
-  timestamp: string;
-  supply: string;
-  category: string;
-  stockBefore: number;
-  iotReading: number;
-  deviation: number;
-  reason: string;
-} {
+export function assembleConciliationTaskRow(dto: ConciliationTaskResponse): ConciliationTaskRow {
   return {
     id: dto.id,
-    timestamp: dto.timestamp,
-    supply: dto.supply,
-    category: dto.category,
-    stockBefore: dto.stockBefore,
-    iotReading: dto.iotReading,
-    deviation: dto.deviation,
-    reason: dto.reason,
+    customSupplyId: dto.customSupplyId,
+    customSupplyName: dto.customSupplyName,
+    deviceId: dto.deviceId,
+    branchId: dto.branchId,
+    batchId: dto.batchId,
+    digitalStock: dto.digitalStock,
+    devicePhysicalStock: dto.devicePhysicalStock,
+    difference: dto.difference,
+    alertLevel: dto.alertLevel,
+    status: dto.status,
+    resolutionAction: dto.resolutionAction,
+    resolutionReason: dto.resolutionReason,
+    resolutionJustification: dto.resolutionJustification,
+    resolvedAt: dto.resolvedAt,
   };
 }

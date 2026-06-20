@@ -3,8 +3,8 @@ export const environment = {
 
   // Se tiene que cambiar por la url de Render
   // baseUrl: 'https://restock-web-services-iot.onrender.com/api/v1',
-  // baseUrl: 'http://localhost:8080/api/v1',
-  baseUrl: 'https://restock-api-17757.azurewebsites.net/api/v1/',
+  //baseUrl: 'http://localhost:8080/api/v1',
+  baseUrl: 'https://restock-api-17757.azurewebsites.net/api/v1',
 
   // Authentication
   platformProviderSignUpEndpointPath: 'auth/sign-up',
@@ -47,4 +47,7 @@ export const environment = {
 
   // Sales
   platformProviderSalesEndpointsPath: 'sales',
+
+  // Tracking
+  platformProviderConciliationTasksEndpointPath: 'conciliation-tasks',
 };
