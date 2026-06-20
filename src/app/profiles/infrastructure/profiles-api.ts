@@ -23,10 +23,10 @@ export class ProfilesApi extends BaseApi {
   }
 
   /**
-   * @returns Observable of all profiles exposed by the platform (first match often used as “current”).
+   * @param accountId - Filters profiles to the given account scope.
    */
-  getProfiles(): Observable<Profile[]> {
-    return this.profilesEndpoint.getAll();
+  getProfiles(accountId: string): Observable<Profile[]> {
+    return this.profilesEndpoint.getAllByAccountId(accountId);
   }
 
   /**

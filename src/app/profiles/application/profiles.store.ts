@@ -7,6 +7,7 @@ import { Business } from '../domain/model/business.entity';
 import { LoadProfilesStateCommand } from '../domain/model/load-profiles-state.command';
 import { UpdateProfileCommand } from '../domain/model/update-profile.command';
 import { UpdateBusinessCommand } from '../domain/model/update-business.command';
+import { IamStore } from '../../iam/application/iam.store';
 
 const PROFILE_BRANCH_ID_KEY = 'restock.profile.currentBranchId';
 
@@ -16,6 +17,7 @@ const PROFILE_BRANCH_ID_KEY = 'restock.profile.currentBranchId';
 @Injectable({ providedIn: 'root' })
 export class ProfilesStore {
   private readonly destroyRef = inject(DestroyRef);
+  private readonly iamStore = inject(IamStore);
 
   private readonly profileSignal = signal<Profile | null>(null);
   private readonly businessSignal = signal<Business | null>(null);
@@ -46,8 +48,10 @@ export class ProfilesStore {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
+    const accountId = this.iamStore.currentUser()?.accountId ?? '';
+
     forkJoin({
-      profiles: this.profilesApi.getProfiles(),
+      profiles: this.profilesApi.getProfiles(accountId),
       businesses: this.profilesApi.getBusinesses(),
     })
       .pipe(takeUntilDestroyed(this.destroyRef))

@@ -92,10 +92,12 @@ export class IamStore {
     this.iamApi.signUp(signUpCommand).subscribe({
       next: (response) => {
         const userId = response.id;
+        const accountId = response.accountId ?? '';
 
         const profile = new Profile({
           profileId: '',
           userId: userId ?? '',
+          accountId,
           name: pendingProfile?.firstName ?? '',
           lastName: pendingProfile?.lastName ?? '',
           phoneNumber: pendingProfile?.phoneNumber ?? '',
@@ -112,22 +114,21 @@ export class IamStore {
           mainLocation: params.country ?? '',
           ownerId: userId,
         });
-        forkJoin({
-          profile: this.profilesApi.createProfile(profile),
-          business: this.profilesApi.createBusiness(business),
-        }).subscribe({
-          error: (err) => console.warn('[IamStore] Profile/business setup incomplete:', err),
-        });
 
         this.registeredUsers.register(email, password);
-        this.pendingAccountIdSignal.set(response.accountId);
+        this.pendingAccountIdSignal.set(accountId);
 
-        // Auto sign-in to acquire a JWT for the branch-setup step.
-        // The interceptor will attach it so /api/v1/branches returns 200, not 401.
+        // Auto sign-in first to acquire the Bearer token, then create profile/business.
         const signInCmd = new SignInCommand({ email, password });
         this.iamApi.signIn(signInCmd).subscribe({
           next: (user) => {
             this.setCurrentUser(user);
+            forkJoin({
+              profile: this.profilesApi.createProfile(profile),
+              business: this.profilesApi.createBusiness(business),
+            }).subscribe({
+              error: (err) => console.warn('[IamStore] Profile/business setup incomplete:', err),
+            });
             this.loadingSignal.set(false);
             void this.router.navigate(['/profiles/register/branch'], { replaceUrl: true });
           },

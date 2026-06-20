@@ -26,6 +26,20 @@ export class ProfilesApiEndpoint extends BaseApiEndpoint<
     return super.getAll().pipe(catchError(() => this.withFallback(() => super.getAll())));
   }
 
+  getAllByAccountId(accountId: string): Observable<Profile[]> {
+    const url = `${this.endpointUrl}?accountId=${encodeURIComponent(accountId)}`;
+    const operation = () =>
+      this.http.get<ProfilesListResponse>(url).pipe(
+        map((res) => this.assembler.toEntitiesFromResponse(res)),
+      );
+    return operation().pipe(catchError(() => {
+      const fallbackUrl = `${this.fallbackUrl}?accountId=${encodeURIComponent(accountId)}`;
+      return this.http.get<ProfilesListResponse>(fallbackUrl).pipe(
+        map((res) => this.assembler.toEntitiesFromResponse(res)),
+      );
+    }));
+  }
+
   override getById(id: string): Observable<Profile> {
     return super.getById(id).pipe(catchError(() => this.withFallback(() => super.getById(id))));
   }
@@ -72,6 +86,7 @@ export class ProfilesApiEndpoint extends BaseApiEndpoint<
 
 function buildProfileFormData(resource: ProfileResource, imageFile?: File): FormData {
   const fd = new FormData();
+  if (resource.accountId)   fd.append('accountId', resource.accountId);
   if (resource.userId)      fd.append('userId', resource.userId);
   if (resource.name)        fd.append('name', resource.name);
   if (resource.lastName)    fd.append('lastName', resource.lastName);
