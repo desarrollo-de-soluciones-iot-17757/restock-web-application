@@ -5,6 +5,7 @@ import { filter, map, startWith } from 'rxjs';
 import { IamStore } from '../../../../iam/application/iam.store';
 import { ProfilesStore } from '../../../../profiles/application/profiles.store';
 import { LoadProfilesStateCommand } from '../../../../profiles/domain/model/load-profiles-state.command';
+import { ResourceStore } from '../../../../resource/application/resource.store';
 import type { NavItem } from '../navigator/nav-item.model';
 import { Navigator } from '../navigator/navigator';
 import { TopBar } from '../top-bar/top-bar';
@@ -20,6 +21,7 @@ export class Layout {
   private readonly router = inject(Router);
   private readonly iamStore = inject(IamStore);
   private readonly profilesStore = inject(ProfilesStore);
+  private readonly resourceStore = inject(ResourceStore);
 
   private readonly currentUrl = toSignal(
     this.router.events.pipe(
@@ -95,7 +97,10 @@ export class Layout {
   userAvatarUrl = computed(() => this.profilesStore.profile()?.avatarUrl.getValue() ?? null);
 
   constructor() {
-    /** Bootstrap aggregates for the shell (avatar, name) and any child views consuming {@link ProfilesStore}. */
     this.profilesStore.loadProfilesState(new LoadProfilesStateCommand());
+    const accountId = this.iamStore.currentUser()?.accountId ?? '';
+    if (accountId) {
+      this.resourceStore.setAccountId(accountId);
+    }
   }
 }
