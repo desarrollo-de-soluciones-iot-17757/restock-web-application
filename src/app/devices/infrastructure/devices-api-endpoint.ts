@@ -61,35 +61,35 @@ export class DevicesApiEndpoint extends ErrorHandlingEnabledBaseType {
   }
 
   addSpecifications(deviceId: string, body: AddSpecificationsRequest): Observable<Device> {
-    return this.http.put<DeviceResource>(ADD_SPECIFICATIONS_URL(deviceId), body).pipe(
+    return this.http.patch<DeviceResource>(ADD_SPECIFICATIONS_URL(deviceId), body).pipe(
       map(r => this.assembler.toEntityFromResource(r)),
       catchError(this.handleError('Failed to add specifications')),
     );
   }
 
   assignBranch(deviceId: string, branchId: string): Observable<Device> {
-    return this.http.put<DeviceResource>(ASSIGN_BRANCH_URL(deviceId), { branchId }).pipe(
+    return this.http.patch<DeviceResource>(ASSIGN_BRANCH_URL(deviceId), { branchId }).pipe(
       map(r => this.assembler.toEntityFromResource(r)),
       catchError(this.handleError('Failed to assign branch')),
     );
   }
 
   assignBatch(deviceId: string, batchId: string): Observable<Device> {
-    return this.http.put<DeviceResource>(ASSIGN_BATCH_URL(deviceId), { batchId }).pipe(
+    return this.http.patch<DeviceResource>(ASSIGN_BATCH_URL(deviceId), { batchId }).pipe(
       map(r => this.assembler.toEntityFromResource(r)),
       catchError(this.handleError('Failed to assign batch')),
     );
   }
 
   assignThreshold(deviceId: string, supplyThresholdId: string): Observable<Device> {
-    return this.http.put<DeviceResource>(ASSIGN_THRESHOLD_URL(deviceId), { supplyThresholdId }).pipe(
+    return this.http.patch<DeviceResource>(ASSIGN_THRESHOLD_URL(deviceId), { supplyThresholdId }).pipe(
       map(r => this.assembler.toEntityFromResource(r)),
       catchError(this.handleError('Failed to assign threshold')),
     );
   }
 
   updateMeasurement(deviceId: string, body: UpdateMeasurementRequest): Observable<Device> {
-    return this.http.put<DeviceResource>(UPDATE_MEASUREMENT_URL(deviceId), body).pipe(
+    return this.http.patch<DeviceResource>(UPDATE_MEASUREMENT_URL(deviceId), body).pipe(
       map(r => this.assembler.toEntityFromResource(r)),
       catchError(this.handleError('Failed to update measurement')),
     );
