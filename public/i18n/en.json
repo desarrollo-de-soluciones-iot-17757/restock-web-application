@@ -124,7 +124,8 @@
       "root": "SETTINGS",
       "general": "GENERAL",
       "profile": "PROFILE",
-      "branches": "BRANCHES"
+      "branches": "BRANCHES",
+      "subscriptions": "SUBSCRIPTIONS"
     },
     "title": "Account Settings",
     "subtitle": "Manage your personal credentials and business organizational details.",
@@ -242,6 +243,48 @@
         "image": "BRANCH IMAGE",
         "imagePlaceholder": "Choose image…"
       }
+    },
+    "subscriptions": {
+      "loading": "Loading subscription details...",
+      "noActiveTitle": "No Active Subscription",
+      "noActiveDesc": "Subscribe to one of our premium tiers to increase your recipe, kit, and device limits.",
+      "viewPlansBtn": "View Pricing Tiers",
+      "renewalText": "Renews automatically on {{date}}",
+      "limitsTitle": "Tier Usage Limits",
+      "limitRecipes": "Recipes count limit",
+      "limitKits": "Kits count limit",
+      "limitDevices": "Devices count limit",
+      "manageBtn": "Manage Plan"
+    }
+  },
+  "subscriptions": {
+    "plans": {
+      "backToSettings": "Back to Settings",
+      "title": "Pricing & Tiers",
+      "subtitle": "Choose the right plan for your business needs. Upgrade or cancel anytime.",
+      "loading": "Retrieving plan details...",
+      "popular": "Recommended",
+      "month": "mo",
+      "year": "yr",
+      "limitRecipes": "Up to {{count}} Recipes",
+      "limitKits": "Up to {{count}} Kits",
+      "limitDevices": "Up to {{count}} Devices",
+      "realtimeAnalytics": "Real-time Scale Analytics",
+      "alertNotifications": "Push & Email Notifications",
+      "choosePlan": "Subscribe",
+      "currentPlan": "Your Current Plan"
+    },
+    "success": {
+      "title": "Payment Successful!",
+      "message": "Thank you for subscribing. Your account tier limits have been upgraded immediately.",
+      "redirectNotice": "You will be redirected back to settings shortly...",
+      "continueButton": "Return to Settings"
+    },
+    "cancel": {
+      "title": "Payment Canceled",
+      "message": "The checkout process was canceled. No charges were made to your card.",
+      "tryAgainButton": "View Plans & Try Again",
+      "backButton": "Cancel & Return to Settings"
     }
   },
   "iam": {

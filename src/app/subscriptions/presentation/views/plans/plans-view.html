@@ -1,0 +1,85 @@
+<div class="pricing-container">
+  <!-- Back Header -->
+  <div class="pricing-header">
+    <button class="back-btn" (click)="goBack()">
+      <span class="material-icons">arrow_back</span>
+      <span>{{ 'subscriptions.plans.backToSettings' | translate }}</span>
+    </button>
+    <h1 class="pricing-title">{{ 'subscriptions.plans.title' | translate }}</h1>
+    <p class="pricing-subtitle">{{ 'subscriptions.plans.subtitle' | translate }}</p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="store.loading()" class="loading-state">
+    <div class="spinner"></div>
+    <p>{{ 'subscriptions.plans.loading' | translate }}</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="store.error()" class="error-state">
+    <span class="material-icons error-icon">error_outline</span>
+    <p>{{ store.error() }}</p>
+  </div>
+
+  <!-- Pricing Cards Grid -->
+  <div *ngIf="!store.loading() && !store.error()" class="pricing-grid">
+    <div
+      *ngFor="let plan of store.plans()"
+      class="pricing-card"
+      [class.pricing-card--pro]="plan.name === 'Pro'"
+    >
+      <div *ngIf="plan.name === 'Pro'" class="featured-badge">
+        {{ 'subscriptions.plans.popular' | translate }}
+      </div>
+
+      <div class="card-header">
+        <h2 class="plan-name">{{ plan.name }}</h2>
+        <p class="plan-desc">{{ plan.description }}</p>
+      </div>
+
+      <div class="plan-price-block">
+        <span class="price-symbol">$</span>
+        <span class="plan-price">{{ plan.price }}</span>
+        <span class="plan-interval">/{{ 'subscriptions.plans.' + plan.billingInterval | translate }}</span>
+      </div>
+
+      <ul class="plan-features">
+        <li>
+          <span class="material-icons feature-check">check</span>
+          <span>{{ 'subscriptions.plans.limitRecipes' | translate: { count: plan.maxRecipes === -1 ? 'Unlimited' : plan.maxRecipes } }}</span>
+        </li>
+        <li>
+          <span class="material-icons feature-check">check</span>
+          <span>{{ 'subscriptions.plans.limitKits' | translate: { count: plan.maxKits === -1 ? 'Unlimited' : plan.maxKits } }}</span>
+        </li>
+        <li>
+          <span class="material-icons feature-check">check</span>
+          <span>{{ 'subscriptions.plans.limitDevices' | translate: { count: plan.maxDevices === -1 ? 'Unlimited' : plan.maxDevices } }}</span>
+        </li>
+        <li>
+          <span class="material-icons feature-check">check</span>
+          <span>{{ 'subscriptions.plans.realtimeAnalytics' | translate }}</span>
+        </li>
+        <li>
+          <span class="material-icons feature-check">check</span>
+          <span>{{ 'subscriptions.plans.alertNotifications' | translate }}</span>
+        </li>
+      </ul>
+
+      <div class="card-action">
+        <button
+          class="btn-subscribe"
+          [disabled]="store.saving() || store.activeSubscription()?.planId === plan.id"
+          (click)="selectPlan(plan.id)"
+        >
+          <span *ngIf="store.activeSubscription()?.planId === plan.id">
+            {{ 'subscriptions.plans.currentPlan' | translate }}
+          </span>
+          <span *ngIf="store.activeSubscription()?.planId !== plan.id">
+            {{ 'subscriptions.plans.choosePlan' | translate }}
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

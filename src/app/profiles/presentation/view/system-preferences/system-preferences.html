@@ -29,6 +29,12 @@
         (click)="setTab('branches')">
         {{ 'settings.breadcrumb.branches' | translate }}
       </button>
+      <button
+        class="tab"
+        [class.tab--active]="activeTab() === 'subscriptions'"
+        (click)="setTab('subscriptions')">
+        {{ 'settings.breadcrumb.subscriptions' | translate }}
+      </button>
     </div>
   </div>
 
@@ -594,6 +600,93 @@
         </div>
       </div>
 
+    </div>
+  }
+
+  <!-- ══════════════════ SUBSCRIPTIONS TAB ══════════════════ -->
+  @if (activeTab() === 'subscriptions') {
+    <div class="preferences-body">
+      <div class="main-column">
+        <!-- Loading -->
+        <div *ngIf="subscriptionLoading()" class="sub-loading">
+          <div class="spinner"></div>
+          <p>{{ 'settings.subscriptions.loading' | translate }}</p>
+        </div>
+
+        <!-- No Active Subscription State -->
+        <div *ngIf="!subscriptionLoading() && !subscription()" class="no-sub-card">
+          <span class="material-icons no-sub-icon">card_membership</span>
+          <h3>{{ 'settings.subscriptions.noActiveTitle' | translate }}</h3>
+          <p>{{ 'settings.subscriptions.noActiveDesc' | translate }}</p>
+          <button class="upgrade-btn" (click)="viewPricingPlans()">
+            {{ 'settings.subscriptions.viewPlansBtn' | translate }}
+          </button>
+        </div>
+
+        <!-- Active Subscription State -->
+        <div *ngIf="!subscriptionLoading() && subscription()" class="sub-details-card">
+          <div class="sub-card-header">
+            <div>
+              <span class="plan-badge">{{ subscription()?.planName }}</span>
+              <span class="status-badge status-badge--active">{{ subscription()?.status }}</span>
+            </div>
+            <div class="plan-pricing">
+              <span class="price-val">${{ subscription()?.planPrice }}</span>
+              <span class="price-freq">/mo</span>
+            </div>
+          </div>
+
+          <div class="sub-card-body">
+            <div class="renewal-info">
+              <span class="material-icons clock-icon">update</span>
+              <span>{{ 'settings.subscriptions.renewalText' | translate: { date: subscription()?.currentPeriodEnd | date:'mediumDate' } }}</span>
+            </div>
+
+            <div class="limits-section">
+              <h4 class="limits-title">{{ 'settings.subscriptions.limitsTitle' | translate }}</h4>
+              
+              <!-- Recipe Limits -->
+              <div class="limit-row">
+                <div class="limit-labels">
+                  <span>{{ 'settings.subscriptions.limitRecipes' | translate }}</span>
+                  <span>{{ subscription()?.maxRecipes === -1 ? 'Unlimited' : subscription()?.maxRecipes }}</span>
+                </div>
+                <div class="limit-bar-bg">
+                  <div class="limit-bar-fill" [style.width.%]="subscription()?.maxRecipes === -1 ? 100 : 30"></div>
+                </div>
+              </div>
+
+              <!-- Kits Limits -->
+              <div class="limit-row">
+                <div class="limit-labels">
+                  <span>{{ 'settings.subscriptions.limitKits' | translate }}</span>
+                  <span>{{ subscription()?.maxKits === -1 ? 'Unlimited' : subscription()?.maxKits }}</span>
+                </div>
+                <div class="limit-bar-bg">
+                  <div class="limit-bar-fill" [style.width.%]="subscription()?.maxKits === -1 ? 100 : 15"></div>
+                </div>
+              </div>
+
+              <!-- Devices Limits -->
+              <div class="limit-row">
+                <div class="limit-labels">
+                  <span>{{ 'settings.subscriptions.limitDevices' | translate }}</span>
+                  <span>{{ subscription()?.maxDevices === -1 ? 'Unlimited' : subscription()?.maxDevices }}</span>
+                </div>
+                <div class="limit-bar-bg">
+                  <div class="limit-bar-fill" [style.width.%]="subscription()?.maxDevices === -1 ? 100 : 50"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sub-card-footer">
+            <button class="upgrade-btn-sec" (click)="viewPricingPlans()">
+              {{ 'settings.subscriptions.manageBtn' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   }
 

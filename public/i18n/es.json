@@ -124,7 +124,8 @@
       "root": "AJUSTES",
       "general": "GENERAL",
       "profile": "PERFIL",
-      "branches": "SUCURSALES"
+      "branches": "SUCURSALES",
+      "subscriptions": "SUSCRIPCIONES"
     },
     "title": "Configuración de Cuenta",
     "subtitle": "Gestiona tus credenciales personales y detalles organizacionales del negocio.",
@@ -242,6 +243,48 @@
         "image": "IMAGEN DE SUCURSAL",
         "imagePlaceholder": "Elegir imagen…"
       }
+    },
+    "subscriptions": {
+      "loading": "Cargando detalles de la suscripción...",
+      "noActiveTitle": "Sin Suscripción Activa",
+      "noActiveDesc": "Suscríbete a uno de nuestros planes premium para aumentar tus límites de recetas, kits y dispositivos.",
+      "viewPlansBtn": "Ver Planes de Precios",
+      "renewalText": "Se renueva automáticamente el {{date}}",
+      "limitsTitle": "Límites de Uso del Plan",
+      "limitRecipes": "Límite de recetas",
+      "limitKits": "Límite de kits",
+      "limitDevices": "Límite de dispositivos",
+      "manageBtn": "Gestionar Plan"
+    }
+  },
+  "subscriptions": {
+    "plans": {
+      "backToSettings": "Volver a Ajustes",
+      "title": "Precios y Planes",
+      "subtitle": "Elige el plan adecuado para las necesidades de tu negocio. Sube de categoría o cancela en cualquier momento.",
+      "loading": "Recuperando detalles del plan...",
+      "popular": "Recomendado",
+      "month": "mes",
+      "year": "año",
+      "limitRecipes": "Hasta {{count}} Recetas",
+      "limitKits": "Hasta {{count}} Kits",
+      "limitDevices": "Hasta {{count}} Dispositivos",
+      "realtimeAnalytics": "Análisis de Balanzas en Tiempo Real",
+      "alertNotifications": "Notificaciones Push y por Correo",
+      "choosePlan": "Suscribirse",
+      "currentPlan": "Tu Plan Actual"
+    },
+    "success": {
+      "title": "¡Pago Exitoso!",
+      "message": "Gracias por suscribirte. Los límites de tu cuenta se han actualizado de inmediato.",
+      "redirectNotice": "Serás redirigido de vuelta a los ajustes en breve...",
+      "continueButton": "Volver a Ajustes"
+    },
+    "cancel": {
+      "title": "Pago Cancelado",
+      "message": "El proceso de pago fue cancelado. No se realizaron cargos en tu tarjeta.",
+      "tryAgainButton": "Ver Planes e Intentar de Nuevo",
+      "backButton": "Cancelar y Volver a Ajustes"
     }
   },
   "iam": {

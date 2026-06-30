@@ -1,4 +1,4 @@
-import { UpperCasePipe } from '@angular/common';
+import { CommonModule, UpperCasePipe } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -9,6 +9,8 @@ import { UpdateProfileCommand } from '../../../domain/model/update-profile.comma
 import { UpdateBusinessCommand } from '../../../domain/model/update-business.command';
 import { ResourceStore } from '../../../../resource/application/resource.store';
 import { IamStore } from '../../../../iam/application/iam.store';
+import { Router } from '@angular/router';
+import { SubscriptionsStore } from '../../../../subscriptions/application/subscriptions.store';
 
 /** Local snapshot for "discard changes" on the profile tab (primitives only). */
 interface ProfileFieldSnapshot {
@@ -25,7 +27,7 @@ interface ProfileFieldSnapshot {
 @Component({
   selector: 'app-system-preferences',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, UpperCasePipe, TranslateModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, UpperCasePipe, TranslateModule],
   templateUrl: './system-preferences.html',
   styleUrl: './system-preferences.css',
 })
@@ -34,8 +36,10 @@ export class SystemPreferences {
   private readonly translate = inject(TranslateService);
   private readonly resourceStore = inject(ResourceStore);
   private readonly iamStore = inject(IamStore);
+  private readonly subStore = inject(SubscriptionsStore);
+  private readonly router = inject(Router);
 
-  activeTab = signal<'general' | 'profile' | 'branches'>('general');
+  activeTab = signal<'general' | 'profile' | 'branches' | 'subscriptions'>('general');
 
   // ── General tab ──
   timezone = signal('UTC -05:00 Eastern Time (US & Canada)');
@@ -126,6 +130,8 @@ export class SystemPreferences {
   readonly profileLoading = computed(() => this.store.loading());
   readonly business = computed(() => this.store.business());
   readonly profileError = computed(() => this.store.error());
+  readonly subscription = computed(() => this.subStore.activeSubscription());
+  readonly subscriptionLoading = computed(() => this.subStore.loading());
 
   private savedProfileFields: ProfileFieldSnapshot | null = null;
 
@@ -186,7 +192,7 @@ export class SystemPreferences {
     };
   }
 
-  setTab(tab: 'general' | 'profile' | 'branches'): void {
+  setTab(tab: 'general' | 'profile' | 'branches' | 'subscriptions'): void {
     this.activeTab.set(tab);
     if (tab === 'branches' && this.resourceStore.branches().length === 0) {
       this.branchesLoading.set(true);
@@ -195,6 +201,16 @@ export class SystemPreferences {
       // Use a short timeout as fallback since loadBranches is fire-and-forget.
       setTimeout(() => this.branchesLoading.set(false), 3000);
     }
+    if (tab === 'subscriptions') {
+      const currentUser = this.iamStore.currentUser();
+      if (currentUser) {
+        this.subStore.loadSubscriptionStatus(currentUser.accountId);
+      }
+    }
+  }
+
+  viewPricingPlans(): void {
+    void this.router.navigate(['/subscriptions/plans']);
   }
 
   // ── General tab actions ────────────────────────────────────────────────────
