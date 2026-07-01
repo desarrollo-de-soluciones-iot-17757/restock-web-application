@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { IamStore } from '../../../../iam/application/iam.store';
 
 @Component({
   selector: 'app-checkout-success-view',
@@ -11,6 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class CheckoutSuccessView implements OnInit {
   private readonly router = inject(Router);
+  private readonly iamStore = inject(IamStore);
 
   ngOnInit(): void {
     // Automatically redirect back to settings after 5 seconds if the user does not click the button
@@ -20,6 +22,11 @@ export class CheckoutSuccessView implements OnInit {
   }
 
   continueToApp(): void {
-    void this.router.navigate(['/settings']);
+    const pendingAccountId = this.iamStore.pendingAccountId();
+    if (pendingAccountId) {
+      void this.router.navigate(['/profiles/register/branch']);
+    } else {
+      void this.router.navigate(['/settings']);
+    }
   }
 }
