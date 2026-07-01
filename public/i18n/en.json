@@ -247,8 +247,15 @@
     "subscriptions": {
       "loading": "Loading subscription details...",
       "noActiveTitle": "No Active Subscription",
-      "noActiveDesc": "Subscribe to one of our premium tiers to increase your recipe, kit, and device limits.",
+      "noActiveDesc": "Subscribe to one of our premium tiers to unlock your full recipe, kit, and device capabilities.",
       "viewPlansBtn": "View Pricing Tiers",
+      "noCommitment": "Cancel anytime. No long-term commitment.",
+      "feature1Title": "Inventory & Recipes",
+      "feature1Desc": "Manage unlimited recipes and production kits for all your branches.",
+      "feature2Title": "Real-time Analytics",
+      "feature2Desc": "Get detailed sales insights, consumption trends, and performance reports.",
+      "feature3Title": "IoT Device Integration",
+      "feature3Desc": "Connect and monitor sensors across your operation in real time.",
       "renewalText": "Renews automatically on {{date}}",
       "limitsTitle": "Tier Usage Limits",
       "limitRecipes": "Recipes count limit",
@@ -272,7 +279,9 @@
       "realtimeAnalytics": "Real-time Scale Analytics",
       "alertNotifications": "Push & Email Notifications",
       "choosePlan": "Subscribe",
-      "currentPlan": "Your Current Plan"
+      "currentPlan": "Your Current Plan",
+      "redirecting": "Redirecting to Checkout...",
+      "retry": "Try Again"
     },
     "success": {
       "title": "Payment Successful!",

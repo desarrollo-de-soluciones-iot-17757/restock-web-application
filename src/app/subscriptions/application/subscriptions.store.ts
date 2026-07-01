@@ -9,20 +9,33 @@ export class SubscriptionsStore {
 
   readonly plans = signal<PlanEntity[]>([]);
   readonly activeSubscription = signal<SubscriptionEntity | null>(null);
+
+  // Separate loading/error signals for plans vs subscription status
+  readonly plansLoading = signal(false);
+  readonly plansError = signal<string | null>(null);
+
+  readonly subscriptionLoading = signal(false);
+
+  // Keep a generic loading signal for backwards compatibility (used by plans-view)
   readonly loading = signal(false);
   readonly saving = signal(false);
   readonly error = signal<string | null>(null);
 
   loadPlans(): void {
+    this.plansLoading.set(true);
     this.loading.set(true);
+    this.plansError.set(null);
     this.error.set(null);
     this.api.getPlans().subscribe({
       next: (plans) => {
         this.plans.set(plans);
+        this.plansLoading.set(false);
         this.loading.set(false);
       },
       error: (err) => {
+        this.plansError.set(err.message ?? 'Failed to load plans');
         this.error.set(err.message ?? 'Failed to load plans');
+        this.plansLoading.set(false);
         this.loading.set(false);
       }
     });
@@ -30,17 +43,16 @@ export class SubscriptionsStore {
 
   loadSubscriptionStatus(accountId: string): void {
     if (!accountId) return;
-    this.loading.set(true);
-    this.error.set(null);
+    this.subscriptionLoading.set(true);
     this.api.getSubscriptionStatus(accountId).subscribe({
       next: (sub) => {
         this.activeSubscription.set(sub);
-        this.loading.set(false);
+        this.subscriptionLoading.set(false);
       },
       error: () => {
-        // subscription might not exist yet for new accounts
+        // Subscription might not exist yet for new accounts — not an error
         this.activeSubscription.set(null);
-        this.loading.set(false);
+        this.subscriptionLoading.set(false);
       }
     });
   }

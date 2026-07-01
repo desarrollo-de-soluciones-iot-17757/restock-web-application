@@ -940,22 +940,101 @@
   color: #94a3b8;
 }
 
-.no-sub-card {
+/* No subscription wrapper */
+.no-sub-wrapper {
   background: #0f172a;
   border: 1px solid #1e293b;
-  border-radius: 12px;
-  padding: 48px;
-  text-align: center;
-  color: #f8fafc;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.no-sub-hero {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.07) 0%, rgba(16, 185, 129, 0.04) 100%);
+  border-bottom: 1px solid #1e293b;
+  padding: 32px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 20px;
+}
+
+.no-sub-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .no-sub-icon {
-  font-size: 3.5rem;
+  font-size: 1.75rem;
+  color: #06b6d4;
+}
+
+.no-sub-text h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0 0 6px 0;
+}
+
+.no-sub-text p {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 400px;
+}
+
+.no-sub-features {
+  padding: 24px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border-bottom: 1px solid #1e293b;
+}
+
+.no-sub-feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.no-sub-feature-icon {
+  font-size: 1.4rem;
+  color: #10b981;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.no-sub-feature-title {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin-bottom: 2px;
+}
+
+.no-sub-feature-desc {
+  display: block;
+  font-size: 0.82rem;
   color: #64748b;
+}
+
+.no-sub-cta {
+  padding: 24px 32px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.no-sub-disclaimer {
+  font-size: 0.8rem;
+  color: #475569;
+  margin: 0;
 }
 
 .no-sub-card h3 {
@@ -973,6 +1052,9 @@
 }
 
 .upgrade-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: #06b6d4;
   color: #0f172a;
   border: none;

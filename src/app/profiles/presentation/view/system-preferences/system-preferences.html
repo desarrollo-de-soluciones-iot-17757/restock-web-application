@@ -614,13 +614,48 @@
         </div>
 
         <!-- No Active Subscription State -->
-        <div *ngIf="!subscriptionLoading() && !subscription()" class="no-sub-card">
-          <span class="material-icons no-sub-icon">card_membership</span>
-          <h3>{{ 'settings.subscriptions.noActiveTitle' | translate }}</h3>
-          <p>{{ 'settings.subscriptions.noActiveDesc' | translate }}</p>
-          <button class="upgrade-btn" (click)="viewPricingPlans()">
-            {{ 'settings.subscriptions.viewPlansBtn' | translate }}
-          </button>
+        <div *ngIf="!subscriptionLoading() && !subscription()" class="no-sub-wrapper">
+          <div class="no-sub-hero">
+            <div class="no-sub-icon-wrap">
+              <span class="material-icons no-sub-icon">rocket_launch</span>
+            </div>
+            <div class="no-sub-text">
+              <h3>{{ 'settings.subscriptions.noActiveTitle' | translate }}</h3>
+              <p>{{ 'settings.subscriptions.noActiveDesc' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="no-sub-features">
+            <div class="no-sub-feature-item">
+              <span class="material-icons no-sub-feature-icon">inventory_2</span>
+              <div>
+                <span class="no-sub-feature-title">{{ 'settings.subscriptions.feature1Title' | translate }}</span>
+                <span class="no-sub-feature-desc">{{ 'settings.subscriptions.feature1Desc' | translate }}</span>
+              </div>
+            </div>
+            <div class="no-sub-feature-item">
+              <span class="material-icons no-sub-feature-icon">insights</span>
+              <div>
+                <span class="no-sub-feature-title">{{ 'settings.subscriptions.feature2Title' | translate }}</span>
+                <span class="no-sub-feature-desc">{{ 'settings.subscriptions.feature2Desc' | translate }}</span>
+              </div>
+            </div>
+            <div class="no-sub-feature-item">
+              <span class="material-icons no-sub-feature-icon">devices</span>
+              <div>
+                <span class="no-sub-feature-title">{{ 'settings.subscriptions.feature3Title' | translate }}</span>
+                <span class="no-sub-feature-desc">{{ 'settings.subscriptions.feature3Desc' | translate }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="no-sub-cta">
+            <button class="upgrade-btn" (click)="viewPricingPlans()">
+              <span class="material-icons" style="font-size: 1.1rem;">bolt</span>
+              {{ 'settings.subscriptions.viewPlansBtn' | translate }}
+            </button>
+            <p class="no-sub-disclaimer">{{ 'settings.subscriptions.noCommitment' | translate }}</p>
+          </div>
         </div>
 
         <!-- Active Subscription State -->

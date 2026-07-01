@@ -9,20 +9,23 @@
     <p class="pricing-subtitle">{{ 'subscriptions.plans.subtitle' | translate }}</p>
   </div>
 
-  <!-- Loading State -->
-  <div *ngIf="store.loading()" class="loading-state">
+  <!-- Loading State: only show when plans are still loading -->
+  <div *ngIf="store.plansLoading()" class="loading-state">
     <div class="spinner"></div>
     <p>{{ 'subscriptions.plans.loading' | translate }}</p>
   </div>
 
-  <!-- Error State -->
-  <div *ngIf="store.error()" class="error-state">
+  <!-- Error State: only show when the plans request itself failed -->
+  <div *ngIf="!store.plansLoading() && store.plansError()" class="error-state">
     <span class="material-icons error-icon">error_outline</span>
-    <p>{{ store.error() }}</p>
+    <p>{{ store.plansError() }}</p>
+    <button class="retry-btn" (click)="store.loadPlans()">
+      {{ 'subscriptions.plans.retry' | translate }}
+    </button>
   </div>
 
   <!-- Pricing Cards Grid -->
-  <div *ngIf="!store.loading() && !store.error()" class="pricing-grid">
+  <div *ngIf="!store.plansLoading() && !store.plansError()" class="pricing-grid">
     <div
       *ngFor="let plan of store.plans()"
       class="pricing-card"
@@ -72,13 +75,19 @@
           [disabled]="store.saving() || store.activeSubscription()?.planId === plan.id"
           (click)="selectPlan(plan.id)"
         >
+          <span *ngIf="store.saving() && store.activeSubscription()?.planId !== plan.id" class="btn-spinner"></span>
           <span *ngIf="store.activeSubscription()?.planId === plan.id">
             {{ 'subscriptions.plans.currentPlan' | translate }}
           </span>
-          <span *ngIf="store.activeSubscription()?.planId !== plan.id">
+          <span *ngIf="store.activeSubscription()?.planId !== plan.id && !store.saving()">
             {{ 'subscriptions.plans.choosePlan' | translate }}
           </span>
+          <span *ngIf="store.activeSubscription()?.planId !== plan.id && store.saving()">
+            {{ 'subscriptions.plans.redirecting' | translate }}
+          </span>
         </button>
+        <!-- Show checkout error beneath the button that triggered it -->
+        <p *ngIf="store.error()" class="checkout-error">{{ store.error() }}</p>
       </div>
     </div>
   </div>

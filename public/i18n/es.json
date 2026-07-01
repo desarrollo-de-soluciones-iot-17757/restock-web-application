@@ -247,8 +247,15 @@
     "subscriptions": {
       "loading": "Cargando detalles de la suscripción...",
       "noActiveTitle": "Sin Suscripción Activa",
-      "noActiveDesc": "Suscríbete a uno de nuestros planes premium para aumentar tus límites de recetas, kits y dispositivos.",
+      "noActiveDesc": "Suscríbete a uno de nuestros planes premium para desbloquear todas tus capacidades de recetas, kits y dispositivos.",
       "viewPlansBtn": "Ver Planes de Precios",
+      "noCommitment": "Cancela cuando quieras. Sin compromiso a largo plazo.",
+      "feature1Title": "Inventario y Recetas",
+      "feature1Desc": "Gestiona recetas y kits de producción ilimitados para todas tus sucursales.",
+      "feature2Title": "Analíticas en Tiempo Real",
+      "feature2Desc": "Obtén reportes detallados de ventas, tendencias de consumo y rendimiento.",
+      "feature3Title": "Integración de Dispositivos IoT",
+      "feature3Desc": "Conecta y monitorea sensores en toda tu operación en tiempo real.",
       "renewalText": "Se renueva automáticamente el {{date}}",
       "limitsTitle": "Límites de Uso del Plan",
       "limitRecipes": "Límite de recetas",
@@ -272,7 +279,9 @@
       "realtimeAnalytics": "Análisis de Balanzas en Tiempo Real",
       "alertNotifications": "Notificaciones Push y por Correo",
       "choosePlan": "Suscribirse",
-      "currentPlan": "Tu Plan Actual"
+      "currentPlan": "Tu Plan Actual",
+      "redirecting": "Redirigiendo al Pago...",
+      "retry": "Intentar de Nuevo"
     },
     "success": {
       "title": "¡Pago Exitoso!",

@@ -131,7 +131,7 @@ export class SystemPreferences {
   readonly business = computed(() => this.store.business());
   readonly profileError = computed(() => this.store.error());
   readonly subscription = computed(() => this.subStore.activeSubscription());
-  readonly subscriptionLoading = computed(() => this.subStore.loading());
+  readonly subscriptionLoading = computed(() => this.subStore.subscriptionLoading());
 
   private savedProfileFields: ProfileFieldSnapshot | null = null;
 
