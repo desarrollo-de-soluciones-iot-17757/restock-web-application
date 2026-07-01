@@ -35,4 +35,9 @@ export class SubscriptionsApiEndpoint {
       map(res => res.sessionUrl)
     );
   }
+
+  getInvoices(accountId: string): Observable<any[]> {
+    const params = new HttpParams().set('accountId', accountId);
+    return this.http.get<any[]>(`${this.baseUrl}/subscriptions/invoices`, { params });
+  }
 }

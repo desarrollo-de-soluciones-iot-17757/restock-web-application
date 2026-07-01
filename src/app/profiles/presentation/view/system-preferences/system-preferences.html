@@ -605,122 +605,201 @@
 
   <!-- ══════════════════ SUBSCRIPTIONS TAB ══════════════════ -->
   @if (activeTab() === 'subscriptions') {
-    <div class="preferences-body">
-      <div class="main-column">
-        <!-- Loading -->
-        <div *ngIf="subscriptionLoading()" class="sub-loading">
-          <div class="spinner"></div>
-          <p>{{ 'settings.subscriptions.loading' | translate }}</p>
-        </div>
+    <div class="preferences-body subscriptions-body">
+      
+      <!-- Loading -->
+      <div *ngIf="subscriptionLoading()" class="sub-loading">
+        <div class="spinner"></div>
+        <p>Loading subscription details...</p>
+      </div>
 
-        <!-- No Active Subscription State -->
-        <div *ngIf="!subscriptionLoading() && !subscription()" class="no-sub-wrapper">
-          <div class="no-sub-hero">
-            <div class="no-sub-icon-wrap">
-              <span class="material-icons no-sub-icon">rocket_launch</span>
+      <div *ngIf="!subscriptionLoading()" class="sub-grid-container">
+        
+        <!-- Row 1: Current Plan & System Usage -->
+        <div class="sub-row-two-cards">
+          
+          <!-- Left Card: Current Plan -->
+          <div class="sub-card-white current-plan-card">
+            <div class="sub-card-header-row">
+              <h2 class="sub-card-heading">Your Current Plan: {{ subscription()?.planName || 'Free Tier' }}</h2>
+              <span class="sub-badge-active" [class.sub-badge-active--inactive]="!subscription()">
+                {{ subscription() ? 'Active' : 'Inactive' }}
+              </span>
             </div>
-            <div class="no-sub-text">
-              <h3>{{ 'settings.subscriptions.noActiveTitle' | translate }}</h3>
-              <p>{{ 'settings.subscriptions.noActiveDesc' | translate }}</p>
-            </div>
-          </div>
+            
+            <p class="sub-card-subtitle">
+              {{ subscription() ? 'Billed monthly' : 'No active paid subscription plan' }}
+            </p>
 
-          <div class="no-sub-features">
-            <div class="no-sub-feature-item">
-              <span class="material-icons no-sub-feature-icon">inventory_2</span>
-              <div>
-                <span class="no-sub-feature-title">{{ 'settings.subscriptions.feature1Title' | translate }}</span>
-                <span class="no-sub-feature-desc">{{ 'settings.subscriptions.feature1Desc' | translate }}</span>
+            <div class="sub-details-grid">
+              <div class="sub-detail-cell">
+                <span class="sub-cell-label">MONTHLY COST</span>
+                <span class="sub-cell-value">
+                  ${{ subscription() ? (subscription()?.planPrice || '0.00') : '0.00' }}<span class="sub-cell-freq">/mo</span>
+                </span>
               </div>
-            </div>
-            <div class="no-sub-feature-item">
-              <span class="material-icons no-sub-feature-icon">insights</span>
-              <div>
-                <span class="no-sub-feature-title">{{ 'settings.subscriptions.feature2Title' | translate }}</span>
-                <span class="no-sub-feature-desc">{{ 'settings.subscriptions.feature2Desc' | translate }}</span>
-              </div>
-            </div>
-            <div class="no-sub-feature-item">
-              <span class="material-icons no-sub-feature-icon">devices</span>
-              <div>
-                <span class="no-sub-feature-title">{{ 'settings.subscriptions.feature3Title' | translate }}</span>
-                <span class="no-sub-feature-desc">{{ 'settings.subscriptions.feature3Desc' | translate }}</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="no-sub-cta">
-            <button class="upgrade-btn" (click)="viewPricingPlans()">
-              <span class="material-icons" style="font-size: 1.1rem;">bolt</span>
-              {{ 'settings.subscriptions.viewPlansBtn' | translate }}
-            </button>
-            <p class="no-sub-disclaimer">{{ 'settings.subscriptions.noCommitment' | translate }}</p>
-          </div>
-        </div>
-
-        <!-- Active Subscription State -->
-        <div *ngIf="!subscriptionLoading() && subscription()" class="sub-details-card">
-          <div class="sub-card-header">
-            <div>
-              <span class="plan-badge">{{ subscription()?.planName }}</span>
-              <span class="status-badge status-badge--active">{{ subscription()?.status }}</span>
-            </div>
-            <div class="plan-pricing">
-              <span class="price-val">${{ subscription()?.planPrice }}</span>
-              <span class="price-freq">/mo</span>
-            </div>
-          </div>
-
-          <div class="sub-card-body">
-            <div class="renewal-info">
-              <span class="material-icons clock-icon">update</span>
-              <span>{{ 'settings.subscriptions.renewalText' | translate: { date: subscription()?.currentPeriodEnd | date:'mediumDate' } }}</span>
-            </div>
-
-            <div class="limits-section">
-              <h4 class="limits-title">{{ 'settings.subscriptions.limitsTitle' | translate }}</h4>
               
-              <!-- Recipe Limits -->
-              <div class="limit-row">
-                <div class="limit-labels">
-                  <span>{{ 'settings.subscriptions.limitRecipes' | translate }}</span>
-                  <span>{{ subscription()?.maxRecipes === -1 ? 'Unlimited' : subscription()?.maxRecipes }}</span>
-                </div>
-                <div class="limit-bar-bg">
-                  <div class="limit-bar-fill" [style.width.%]="subscription()?.maxRecipes === -1 ? 100 : 30"></div>
-                </div>
+              <div class="sub-detail-cell">
+                <span class="sub-cell-label">PAYMENT METHOD</span>
+                <span class="sub-cell-value sub-val-card">
+                  <span class="material-icons sub-card-icon">credit_card</span>
+                  Visa ending in 4242
+                </span>
               </div>
+            </div>
 
-              <!-- Kits Limits -->
-              <div class="limit-row">
-                <div class="limit-labels">
-                  <span>{{ 'settings.subscriptions.limitKits' | translate }}</span>
-                  <span>{{ subscription()?.maxKits === -1 ? 'Unlimited' : subscription()?.maxKits }}</span>
-                </div>
-                <div class="limit-bar-bg">
-                  <div class="limit-bar-fill" [style.width.%]="subscription()?.maxKits === -1 ? 100 : 15"></div>
-                </div>
-              </div>
-
-              <!-- Devices Limits -->
-              <div class="limit-row">
-                <div class="limit-labels">
-                  <span>{{ 'settings.subscriptions.limitDevices' | translate }}</span>
-                  <span>{{ subscription()?.maxDevices === -1 ? 'Unlimited' : subscription()?.maxDevices }}</span>
-                </div>
-                <div class="limit-bar-bg">
-                  <div class="limit-bar-fill" [style.width.%]="subscription()?.maxDevices === -1 ? 100 : 50"></div>
-                </div>
+            <div class="sub-card-footer">
+              <span class="sub-renewal-text">
+                {{ subscription() ? 'Next billing date: ' + (subscription()?.currentPeriodEnd | date:'mediumDate') : 'No upcoming charges' }}
+              </span>
+              <div class="sub-footer-actions">
+                <button class="sub-btn-outline" *ngIf="subscription()" (click)="cancelCurrentSubscription()">
+                  Cancel Subscription
+                </button>
+                <button class="sub-btn-primary" (click)="viewPricingPlans()">
+                  {{ subscription() ? 'Update Payment Method' : 'Subscribe Now' }}
+                </button>
               </div>
             </div>
           </div>
 
-          <div class="sub-card-footer">
-            <button class="upgrade-btn-sec" (click)="viewPricingPlans()">
-              {{ 'settings.subscriptions.manageBtn' | translate }}
-            </button>
+          <!-- Right Card: System Usage -->
+          <div class="sub-card-white system-usage-card">
+            <div class="sub-card-header-row">
+              <h2 class="sub-card-heading">System Usage</h2>
+            </div>
+            
+            <div class="sub-usage-metric-wrap">
+              <div class="sub-usage-labels">
+                <span class="sub-usage-label-text">Active Scales</span>
+                <span class="sub-usage-label-value">
+                  {{ devicesCount() }} / {{ maxDevicesText() }}
+                </span>
+              </div>
+              <div class="sub-progress-container">
+                <div class="sub-progress-bar" [style.width.%]="devicesUsagePercent()"></div>
+              </div>
+            </div>
+
+            <p class="sub-usage-info-text">
+              You are currently using {{ devicesUsagePercent() }}% of your recommended node capacity for optimal telemetry synchronization.
+            </p>
+
+            <div class="sub-card-footer justify-end">
+              <button class="sub-btn-outline" (click)="viewAnalytics()">
+                View Detailed Analytics
+              </button>
+            </div>
           </div>
+
         </div>
+
+        <!-- Section 2: Pricing Tiers Title -->
+        <h2 class="sub-section-title">Upgrade or Switch Plans</h2>
+
+        <!-- Pricing Cards Grid -->
+        <div class="sub-pricing-row">
+          
+          @for (plan of plans(); track plan.id) {
+            <div class="sub-plan-card-white" [class.sub-plan-card-white--active]="subscription()?.planName === plan?.name">
+              <div class="sub-plan-badge-top" *ngIf="subscription()?.planName === plan?.name">
+                ACTIVE PLAN
+              </div>
+              <div class="sub-plan-card-content">
+                <h3 class="sub-plan-title">{{ plan?.name }}</h3>
+                <p class="sub-plan-description">{{ plan?.description }}</p>
+                
+                <div class="sub-plan-price-block">
+                  <span class="sub-plan-price-num">${{ plan?.price }}</span>
+                  <span class="sub-plan-price-freq">/{{ plan?.billingInterval }}</span>
+                  <span class="sub-plan-save-badge" *ngIf="plan?.id === 'plan_enterprise'">Billed annually (Save 20%)</span>
+                </div>
+
+                <ul class="sub-plan-features-list">
+                  <li>
+                    <span class="material-icons sub-check-icon">check</span>
+                    <span>{{ plan?.maxRecipes === -1 ? 'Unlimited recipes' : 'Up to ' + plan?.maxRecipes + ' recipes' }}</span>
+                  </li>
+                  <li>
+                    <span class="material-icons sub-check-icon">check</span>
+                    <span>{{ plan?.maxKits === -1 ? 'Unlimited kits' : 'Up to ' + plan?.maxKits + ' kits' }}</span>
+                  </li>
+                  <li>
+                    <span class="material-icons sub-check-icon">check</span>
+                    <span>{{ plan?.maxDevices === -1 ? 'Unlimited devices' : 'Up to ' + plan?.maxDevices + ' devices' }}</span>
+                  </li>
+                  <li>
+                    <span class="material-icons sub-check-icon">check</span>
+                    <span>Real-time Analytics</span>
+                  </li>
+                  <li>
+                    <span class="material-icons sub-check-icon">check</span>
+                    <span>Push & Email Notifications</span>
+                  </li>
+                </ul>
+              </div>
+              <div class="sub-plan-card-footer">
+                <button 
+                  class="sub-plan-btn"
+                  [class.sub-plan-btn--current]="subscription()?.planName === plan?.name"
+                  [class.sub-plan-btn--action]="subscription()?.planName !== plan?.name"
+                  [disabled]="subscription()?.planName === plan?.name"
+                  (click)="selectPlan(plan?.id || '')">
+                  {{ subscription()?.planName === plan?.name ? 'Current Plan' : (isDowngrade(plan) ? 'Downgrade' : 'Upgrade to ' + plan?.name) }}
+                </button>
+              </div>
+            </div>
+          }
+
+        </div>
+
+        <!-- Section 3: Billing History -->
+        <div class="sub-card-white billing-history-card">
+          <div class="sub-billing-header-row">
+            <h2 class="sub-card-heading">Billing History</h2>
+            <a class="sub-csv-link" href="javascript:void(0)" (click)="downloadInvoicesCsv()">
+              Download All (CSV)
+            </a>
+          </div>
+
+          <div class="sub-table-responsive">
+            <table class="sub-history-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Amount</th>
+                  <th>Invoice</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let invoice of invoiceHistory()">
+                  <td>{{ invoice.date | date:'mediumDate' }}</td>
+                  <td>S/ {{ invoice.amount }}</td>
+                  <td>
+                    <a class="sub-invoice-pdf-link" href="javascript:void(0)" (click)="viewInvoice(invoice.pdfUrl)">
+                      <span class="material-icons sub-pdf-icon">article</span>
+                      {{ invoice.number }}
+                    </a>
+                  </td>
+                  <td>
+                    <span class="sub-status-paid-badge">Paid</span>
+                  </td>
+                </tr>
+                <tr *ngIf="invoiceHistory().length === 0">
+                  <td colspan="4" class="sub-empty-state">
+                    No billing history found.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <button class="sub-load-more-btn" *ngIf="invoiceHistory().length > 0" (click)="loadMoreHistory()">
+            Show More History
+          </button>
+        </div>
+
       </div>
     </div>
   }

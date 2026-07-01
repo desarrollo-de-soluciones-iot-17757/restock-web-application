@@ -72,4 +72,22 @@ export class SubscriptionsStore {
       }
     });
   }
+
+  readonly invoices = signal<any[]>([]);
+  readonly invoicesLoading = signal(false);
+
+  loadInvoices(accountId: string): void {
+    if (!accountId) return;
+    this.invoicesLoading.set(true);
+    this.api.getInvoices(accountId).subscribe({
+      next: (invoices) => {
+        this.invoices.set(invoices);
+        this.invoicesLoading.set(false);
+      },
+      error: () => {
+        this.invoices.set([]);
+        this.invoicesLoading.set(false);
+      }
+    });
+  }
 }

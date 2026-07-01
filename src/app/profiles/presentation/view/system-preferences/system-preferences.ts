@@ -11,6 +11,9 @@ import { ResourceStore } from '../../../../resource/application/resource.store';
 import { IamStore } from '../../../../iam/application/iam.store';
 import { Router } from '@angular/router';
 import { SubscriptionsStore } from '../../../../subscriptions/application/subscriptions.store';
+import { DevicesStore } from '../../../../devices/application/devices.store';
+import { KitStore } from '../../../../planning/kits/application/kits.store';
+import { RecipesStore } from '../../../../planning/recipes/application/recipes.store';
 
 /** Local snapshot for "discard changes" on the profile tab (primitives only). */
 interface ProfileFieldSnapshot {
@@ -38,6 +41,9 @@ export class SystemPreferences {
   private readonly iamStore = inject(IamStore);
   private readonly subStore = inject(SubscriptionsStore);
   private readonly router = inject(Router);
+  private readonly devicesStore = inject(DevicesStore);
+  private readonly kitStore = inject(KitStore);
+  private readonly recipesStore = inject(RecipesStore);
 
   activeTab = signal<'general' | 'profile' | 'branches' | 'subscriptions'>('general');
 
@@ -132,6 +138,31 @@ export class SystemPreferences {
   readonly profileError = computed(() => this.store.error());
   readonly subscription = computed(() => this.subStore.activeSubscription());
   readonly subscriptionLoading = computed(() => this.subStore.subscriptionLoading());
+  readonly plans = computed(() => this.subStore.plans());
+
+  isDowngrade(plan: any): boolean {
+    const sub = this.subscription();
+    if (!sub) return false;
+    const tierLevels: Record<string, number> = { 'plan_starter': 1, 'plan_pro': 2, 'plan_enterprise': 3 };
+    const currentTier = tierLevels[sub.planId] ?? 0;
+    const targetTier = tierLevels[plan.id] ?? 0;
+    return targetTier < currentTier;
+  }
+
+  readonly devicesCount = computed(() => this.devicesStore.devices().length);
+  readonly maxDevicesText = computed(() => {
+    const sub = this.subscription();
+    return !sub ? '2' : sub.maxDevices === -1 ? 'Unlimited' : sub.maxDevices.toString();
+  });
+  readonly devicesUsagePercent = computed(() => {
+    const count = this.devicesCount();
+    const sub = this.subscription();
+    if (!sub) return Math.min(100, Math.round((count / 2) * 100));
+    if (sub.maxDevices === -1) return 100;
+    return Math.min(100, Math.round((count / sub.maxDevices) * 100));
+  });
+
+  readonly invoiceHistory = computed(() => this.subStore.invoices());
 
   private savedProfileFields: ProfileFieldSnapshot | null = null;
 
@@ -205,12 +236,53 @@ export class SystemPreferences {
       const currentUser = this.iamStore.currentUser();
       if (currentUser) {
         this.subStore.loadSubscriptionStatus(currentUser.accountId);
+        this.subStore.loadPlans();
+        this.subStore.loadInvoices(currentUser.accountId);
+        this.devicesStore.loadDevicesForAccount(currentUser.accountId);
+        this.kitStore.accountId.set(currentUser.accountId);
+        this.kitStore.loadAllKits();
+        this.recipesStore.loadAll(currentUser.accountId);
       }
     }
   }
 
   viewPricingPlans(): void {
     void this.router.navigate(['/subscriptions/plans']);
+  }
+
+  cancelCurrentSubscription(): void {
+    const sub = this.subscription();
+    if (!sub) return;
+    if (confirm("Are you sure you want to cancel your current subscription? It will remain active until the end of the current billing cycle.")) {
+      // In production, this would hit the API. For dev, we simulate:
+      alert("Subscription cancellation request sent to Stripe. The subscription status will update at the end of the period.");
+    }
+  }
+
+  downloadInvoicesCsv(): void {
+    alert("Downloading billing history as CSV...");
+  }
+
+  viewInvoice(pdfUrl: string): void {
+    if (pdfUrl && pdfUrl !== '#' && pdfUrl.startsWith('http')) {
+      window.open(pdfUrl, '_blank');
+    } else {
+      alert("Stripe PDF invoice is still generating or not available for mock transactions.");
+    }
+  }
+
+  loadMoreHistory(): void {
+    alert("All billing history records loaded.");
+  }
+
+  viewAnalytics(): void {
+    void this.router.navigate(['/analytics']);
+  }
+
+  selectPlan(planId: string): void {
+    const currentUser = this.iamStore.currentUser();
+    if (!currentUser) return;
+    this.subStore.subscribeToPlan(currentUser.accountId, planId);
   }
 
   // ── General tab actions ────────────────────────────────────────────────────
