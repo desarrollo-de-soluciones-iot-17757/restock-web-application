@@ -29,6 +29,9 @@ export class DiscrepancyDetailView implements OnInit {
   showResolveDialog = false;
   showRecalibrateDialog = false;
 
+  /** Holds the conciliation task ID to resolve — set when dialog opens */
+  resolveTaskId = '';
+
   ngOnInit(): void {
     const id = this.params()?.get('id') ?? '';
     if (id) {
@@ -37,11 +40,13 @@ export class DiscrepancyDetailView implements OnInit {
   }
 
   openResolveDialog(): void {
+    this.resolveTaskId = this.params()?.get('id') ?? '';
     this.showResolveDialog = true;
   }
 
   closeResolveDialog(): void {
     this.showResolveDialog = false;
+    this.resolveTaskId = '';
   }
 
   openRecalibrateDialog(): void {

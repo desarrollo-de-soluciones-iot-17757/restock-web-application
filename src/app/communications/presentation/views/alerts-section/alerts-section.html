@@ -1,0 +1,130 @@
+<div class="alerts-page">
+  <div class="page-header">
+    <div>
+      <nav class="breadcrumb">
+        <span class="breadcrumb-item">DASHBOARD</span>
+        <span class="breadcrumb-separator">›</span>
+        <span class="breadcrumb-current">ALERTS</span>
+      </nav>
+      <h1 class="page-title">Alerts & Notifications</h1>
+      <p class="page-subtitle">Manage system-wide critical updates and IoT sensor telemetry warnings.</p>
+    </div>
+    <button class="btn-mark-all" (click)="reload()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+      Mark all as read
+    </button>
+  </div>
+  <div class="filter-tabs" role="tablist">
+    <button
+      type="button"
+      role="tab"
+      class="filter-pill"
+      [class.active]="activeFilter() === 'ALL'"
+      (click)="onFilterChange('ALL')"
+    >
+      All
+    </button>
+    <button
+      type="button"
+      role="tab"
+      class="filter-pill"
+      [class.active]="activeFilter() === 'STOCK_WARNINGS'"
+      (click)="onFilterChange('STOCK_WARNINGS')"
+    >
+      Stock Warnings
+    </button>
+    <button
+      type="button"
+      role="tab"
+      class="filter-pill"
+      [class.active]="activeFilter() === 'CONNECTION_LOST'"
+      (click)="onFilterChange('CONNECTION_LOST')"
+    >
+      Devices
+    </button>
+    <button
+      type="button"
+      role="tab"
+      class="filter-pill"
+      [class.active]="activeFilter() === 'INCONSISTENT_READING'"
+      (click)="onFilterChange('INCONSISTENT_READING')"
+    >
+      Discrepancies
+    </button>
+    <button
+      type="button"
+      role="tab"
+      class="filter-pill"
+      [class.active]="activeFilter() === 'CRITICAL'"
+      (click)="onFilterChange('CRITICAL')"
+    >
+      Critical
+    </button>
+  </div>
+  <div *ngIf="isLoading()" class="skeleton-loader" aria-busy="true">
+    <div class="skeleton-item"></div>
+    <div class="skeleton-item"></div>
+    <div class="skeleton-item"></div>
+  </div>
+  <div *ngIf="error() && !isLoading()" class="error-banner" role="alert">
+    <span>⚠ {{ error() }}</span>
+    <button type="button" class="btn-error-retry" (click)="reload()">Retry</button>
+  </div>
+  <div
+    *ngIf="autoDismissedCount() > 0 && !isLoading()"
+    class="success-banner"
+    role="status"
+    aria-live="polite"
+  >
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <div>
+      <strong>{{ autoDismissedCount() }} {{ autoDismissedCount() === 1 ? 'alert' : 'alerts' }} auto-resolved</strong>
+      <p>Stock levels have returned to normal and the corresponding low-stock alerts were automatically dismissed.</p>
+    </div>
+  </div>
+  <div *ngIf="!isLoading() && !error()" class="alerts-container">
+    <div *ngIf="!hasAlerts()" class="empty-state">
+      <p class="empty-title">No alerts found</p>
+      <p class="empty-message">All devices are operating within normal parameters.</p>
+    </div>
+
+    <div *ngIf="hasAlerts()" class="alerts-list" role="list">
+      <app-alert-card
+        *ngFor="let alert of alerts()"
+        [alert]="alert"
+        (viewDetail)="openDetail($event)"
+        (acknowledge)="acknowledge($event)"
+        (resolve)="resolve($event)"
+      ></app-alert-card>
+    </div>
+  </div>
+  <div *ngIf="hasAlerts() && !isLoading()" class="load-more-section">
+    <button type="button" class="btn-load-more" (click)="reload()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+      </svg>
+      Load previous alerts
+    </button>
+  </div>
+  <app-alert-detail-modal
+    *ngIf="selectedAlert() as alert"
+    [alert]="alert"
+    (close)="closeDetail()"
+    (acknowledge)="acknowledge($event)"
+    (resolve)="resolve($event)"
+  ></app-alert-detail-modal>
+  <footer class="status-footer">
+    <div class="status-left">
+      <span class="status-dot online"></span>
+      <span class="status-text">Network: Online</span>
+      <span class="status-dot online"></span>
+      <span class="status-text">Cloud Sync: 0.2ms Latency</span>
+    </div>
+    <span class="status-build">System Build v4.2.0-stable | Node: US-EAST-1</span>
+  </footer>
+</div>
+
