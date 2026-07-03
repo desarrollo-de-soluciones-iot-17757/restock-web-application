@@ -1,11 +1,12 @@
 import { Component, input, output } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { DeviceAlert } from '../../../domain/model/notification.entity';
 
 @Component({
   selector: 'app-alert-card',
   standalone: true,
-  imports: [CommonModule, DatePipe],
+  imports: [CommonModule, DatePipe, TranslatePipe],
   templateUrl: './alert-card.html',
   styleUrl: './alert-card.css',
 })
@@ -19,13 +20,15 @@ export class AlertCardComponent {
   /** Emits the alert ID to mark as resolved */
   resolve = output<string>();
 
-  alertTypeLabel(type: string): string {
-    if (type === 'CONNECTION_LOST')      return 'HARDWARE OFFLINE';
-    if (type === 'DEVICE_REGISTERED')    return 'DEVICE REGISTRATION';
-    if (type === 'INCONSISTENT_READING') return 'DATA MISMATCH';
-    if (type === 'MANUAL_TRANSFER')      return 'MANUAL STOCK TRANSFER';
-    if (type === 'STOCK_WARNING')        return 'STOCK WARNING';
-    return type;
+  alertTypeKey(type: string): string {
+    const map: Record<string, string> = {
+      'CONNECTION_LOST': 'hardwareOffline',
+      'DEVICE_REGISTERED': 'deviceRegistration',
+      'INCONSISTENT_READING': 'dataMismatch',
+      'MANUAL_TRANSFER': 'manualTransfer',
+      'STOCK_WARNING': 'stockWarning',
+    };
+    return 'communications.alertType.' + (map[type] ?? 'stockWarning');
   }
 
   alertTypeCls(type: string): string {

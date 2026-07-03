@@ -8,14 +8,14 @@
 
   <div class="alert-body">
     <div class="alert-header">
-      <span class="alert-label alert-type--mismatch">{{ alertTypeLabel(alert().alertType) }}</span>
+      <span class="alert-label alert-type--mismatch">{{ alertTypeKey(alert().alertType) | translate }}</span>
       <span class="alert-timestamp">{{ timeAgo(alert().detectedAt) }}</span>
     </div>
-    <h2 class="alert-title">{{ alert().title || 'Discrepancy' }}</h2>
+    <h2 class="alert-title">{{ alert().title || ('communications.card.discrepancyTitle' | translate) }}</h2>
     <p class="alert-description">{{ alert().message }}</p>
     <div class="alert-actions" (click)="stopPropagation($event)">
-      <button class="btn btn-primary" (click)="viewDetail.emit(alert()); stopPropagation($event)">Investigate</button>
-      <button class="btn btn-ghost" (click)="resolve.emit(alert().id); stopPropagation($event)">Mark Resolved</button>
+      <button class="btn btn-primary" (click)="viewDetail.emit(alert()); stopPropagation($event)">{{ 'communications.card.investigate' | translate }}</button>
+      <button class="btn btn-ghost" (click)="resolve.emit(alert().id); stopPropagation($event)">{{ 'communications.card.markResolved' | translate }}</button>
     </div>
   </div>
 </article>
@@ -30,14 +30,14 @@
   </div>
   <div class="alert-body">
     <div class="alert-header">
-      <span class="alert-label alert-type--offline">{{ alertTypeLabel(alert().alertType) }}</span>
+      <span class="alert-label alert-type--offline">{{ alertTypeKey(alert().alertType) | translate }}</span>
       <span class="alert-timestamp">{{ timeAgo(alert().detectedAt) }}</span>
     </div>
-    <h2 class="alert-title">{{ alert().title || 'Connection Timed Out' }}</h2>
+    <h2 class="alert-title">{{ alert().title || ('communications.card.offlineTitle' | translate) }}</h2>
     <p class="alert-description">{{ alert().message }}</p>
     <div class="alert-actions" (click)="stopPropagation($event)">
-      <button class="btn btn-secondary" (click)="viewDetail.emit(alert()); stopPropagation($event)">Run Diagnostics</button>
-      <button class="btn btn-ghost" (click)="acknowledge.emit(alert().id); stopPropagation($event)">Acknowledge</button>
+      <button class="btn btn-secondary" (click)="viewDetail.emit(alert()); stopPropagation($event)">{{ 'communications.card.runDiagnostics' | translate }}</button>
+      <button class="btn btn-ghost" (click)="acknowledge.emit(alert().id); stopPropagation($event)">{{ 'communications.card.acknowledge' | translate }}</button>
     </div>
   </div>
 </article>
@@ -49,14 +49,14 @@
   </div>
   <div class="alert-body">
     <div class="alert-header">
-      <span class="alert-label alert-type--transfer">{{ alertTypeLabel(alert().alertType) }}</span>
+      <span class="alert-label alert-type--transfer">{{ alertTypeKey(alert().alertType) | translate }}</span>
       <span class="alert-timestamp">{{ timeAgo(alert().detectedAt) }}</span>
     </div>
-    <h2 class="alert-title">{{ alert().title || 'Pending Confirmation' }}</h2>
+    <h2 class="alert-title">{{ alert().title || ('communications.card.transferTitle' | translate) }}</h2>
     <p class="alert-description">{{ alert().message }}</p>
     <div class="alert-actions" (click)="stopPropagation($event)">
-      <button class="btn btn-transfer" (click)="viewDetail.emit(alert()); stopPropagation($event)">Review &amp; Confirm</button>
-      <button class="btn btn-ghost" (click)="acknowledge.emit(alert().id); stopPropagation($event)">Dismiss</button>
+      <button class="btn btn-transfer" (click)="viewDetail.emit(alert()); stopPropagation($event)">{{ 'communications.card.reviewConfirm' | translate }}</button>
+      <button class="btn btn-ghost" (click)="acknowledge.emit(alert().id); stopPropagation($event)">{{ 'communications.card.dismiss' | translate }}</button>
     </div>
   </div>
 </article>
@@ -73,14 +73,14 @@
   </div>
   <div class="alert-body">
     <div class="alert-header">
-      <span class="alert-label alert-type--mismatch">{{ alertTypeLabel(alert().alertType) }}</span>
+      <span class="alert-label alert-type--mismatch">{{ alertTypeKey(alert().alertType) | translate }}</span>
       <span class="alert-timestamp">{{ timeAgo(alert().detectedAt) }}</span>
     </div>
-    <h2 class="alert-title">{{ alert().title || 'Low Stock' }}</h2>
+    <h2 class="alert-title">{{ alert().title || ('communications.card.stockWarningTitle' | translate) }}</h2>
     <p class="alert-description">{{ alert().message }}</p>
     <div class="alert-actions" (click)="stopPropagation($event)">
-      <button class="btn btn-primary" (click)="viewDetail.emit(alert()); stopPropagation($event)">Investigate</button>
-      <button class="btn btn-ghost" (click)="resolve.emit(alert().id); stopPropagation($event)">Mark Resolved</button>
+      <button class="btn btn-primary" (click)="viewDetail.emit(alert()); stopPropagation($event)">{{ 'communications.card.investigate' | translate }}</button>
+      <button class="btn btn-ghost" (click)="resolve.emit(alert().id); stopPropagation($event)">{{ 'communications.card.markResolved' | translate }}</button>
     </div>
   </div>
 </article>

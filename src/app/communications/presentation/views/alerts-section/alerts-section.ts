@@ -6,6 +6,7 @@ import {
   inject,
 } from '@angular/core';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { CommunicationsStore, FilterType } from '../../../application/communications.store';
 import { IamStore } from '../../../../iam/application/iam.store';
 import { DeviceAlert, AlertType } from '../../../domain/model/notification.entity';
@@ -15,7 +16,7 @@ import { AlertDetailModalComponent } from '../../components/alert-detail-modal/a
 @Component({
   selector: 'app-alerts-section',
   standalone: true,
-  imports: [CommonModule, NgFor, NgIf, AlertCardComponent, AlertDetailModalComponent],
+  imports: [CommonModule, NgFor, NgIf, TranslatePipe, AlertCardComponent, AlertDetailModalComponent],
   templateUrl: './alerts-section.html',
   styleUrl:    './alerts-section.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -150,13 +151,15 @@ export class AlertsSectionComponent {
     this.store.openDetail(testAlert);
   }
 
-  alertTypeLabel(type: string): string {
-    if (type === 'CONNECTION_LOST')     return 'HARDWARE OFFLINE';
-    if (type === 'DEVICE_REGISTERED')   return 'DEVICE REGISTRATION';
-    if (type === 'INCONSISTENT_READING') return 'DATA MISMATCH';
-    if (type === 'MANUAL_TRANSFER')     return 'MANUAL STOCK TRANSFER';
-    if (type === 'STOCK_WARNING')       return 'LOW STOCK ALERT';
-    return type;
+  alertTypeKey(type: string): string {
+    const map: Record<string, string> = {
+      'CONNECTION_LOST': 'hardwareOffline',
+      'DEVICE_REGISTERED': 'deviceRegistration',
+      'INCONSISTENT_READING': 'dataMismatch',
+      'MANUAL_TRANSFER': 'manualTransfer',
+      'STOCK_WARNING': 'stockWarning',
+    };
+    return 'communications.alertType.' + (map[type] ?? 'stockWarning');
   }
 
   alertTypeCls(type: string): string {

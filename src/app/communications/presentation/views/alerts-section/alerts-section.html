@@ -2,18 +2,18 @@
   <div class="page-header">
     <div>
       <nav class="breadcrumb">
-        <span class="breadcrumb-item">DASHBOARD</span>
+        <span class="breadcrumb-item">{{ 'communications.page.breadcrumb.dashboard' | translate }}</span>
         <span class="breadcrumb-separator">›</span>
-        <span class="breadcrumb-current">ALERTS</span>
+        <span class="breadcrumb-current">{{ 'communications.page.breadcrumb.alerts' | translate }}</span>
       </nav>
-      <h1 class="page-title">Alerts & Notifications</h1>
-      <p class="page-subtitle">Manage system-wide critical updates and IoT sensor telemetry warnings.</p>
+      <h1 class="page-title">{{ 'communications.page.title' | translate }}</h1>
+      <p class="page-subtitle">{{ 'communications.page.subtitle' | translate }}</p>
     </div>
     <button class="btn-mark-all" (click)="reload()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="20 6 9 17 4 12"></polyline>
       </svg>
-      Mark all as read
+      {{ 'communications.page.markAllRead' | translate }}
     </button>
   </div>
   <div class="filter-tabs" role="tablist">
@@ -24,43 +24,43 @@
       [class.active]="activeFilter() === 'ALL'"
       (click)="onFilterChange('ALL')"
     >
-      All
+      {{ 'communications.filter.all' | translate }}
     </button>
-    <button
-      type="button"
-      role="tab"
-      class="filter-pill"
+    <button 
+      type="button" 
+      role="tab" 
+      class="filter-pill" 
       [class.active]="activeFilter() === 'STOCK_WARNINGS'"
       (click)="onFilterChange('STOCK_WARNINGS')"
     >
-      Stock Warnings
+      {{ 'communications.filter.stockWarnings' | translate }}
     </button>
-    <button
-      type="button"
-      role="tab"
-      class="filter-pill"
+    <button 
+      type="button" 
+      role="tab" 
+      class="filter-pill" 
       [class.active]="activeFilter() === 'CONNECTION_LOST'"
       (click)="onFilterChange('CONNECTION_LOST')"
     >
-      Devices
+      {{ 'communications.filter.devices' | translate }}
     </button>
-    <button
-      type="button"
-      role="tab"
-      class="filter-pill"
+    <button 
+      type="button" 
+      role="tab" 
+      class="filter-pill" 
       [class.active]="activeFilter() === 'INCONSISTENT_READING'"
       (click)="onFilterChange('INCONSISTENT_READING')"
     >
-      Discrepancies
+      {{ 'communications.filter.discrepancies' | translate }}
     </button>
-    <button
-      type="button"
-      role="tab"
-      class="filter-pill"
+    <button 
+      type="button" 
+      role="tab" 
+      class="filter-pill" 
       [class.active]="activeFilter() === 'CRITICAL'"
       (click)="onFilterChange('CRITICAL')"
     >
-      Critical
+      {{ 'communications.filter.critical' | translate }}
     </button>
   </div>
   <div *ngIf="isLoading()" class="skeleton-loader" aria-busy="true">
@@ -82,14 +82,14 @@
       <polyline points="20 6 9 17 4 12"></polyline>
     </svg>
     <div>
-      <strong>{{ autoDismissedCount() }} {{ autoDismissedCount() === 1 ? 'alert' : 'alerts' }} auto-resolved</strong>
-      <p>Stock levels have returned to normal and the corresponding low-stock alerts were automatically dismissed.</p>
+      <strong>{{ autoDismissedCount() === 1 ? ('communications.autoResolved.single' | translate) : ('communications.autoResolved.multiple' | translate: { count: autoDismissedCount() }) }}</strong>
+      <p>{{ 'communications.autoResolved.description' | translate }}</p>
     </div>
   </div>
   <div *ngIf="!isLoading() && !error()" class="alerts-container">
     <div *ngIf="!hasAlerts()" class="empty-state">
-      <p class="empty-title">No alerts found</p>
-      <p class="empty-message">All devices are operating within normal parameters.</p>
+      <p class="empty-title">{{ 'communications.empty.title' | translate }}</p>
+      <p class="empty-message">{{ 'communications.empty.message' | translate }}</p>
     </div>
 
     <div *ngIf="hasAlerts()" class="alerts-list" role="list">
@@ -107,7 +107,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
       </svg>
-      Load previous alerts
+      {{ 'communications.loadMore' | translate }}
     </button>
   </div>
   <app-alert-detail-modal
@@ -120,11 +120,11 @@
   <footer class="status-footer">
     <div class="status-left">
       <span class="status-dot online"></span>
-      <span class="status-text">Network: Online</span>
+      <span class="status-text">{{ 'communications.footer.network' | translate }}</span>
       <span class="status-dot online"></span>
-      <span class="status-text">Cloud Sync: 0.2ms Latency</span>
+      <span class="status-text">{{ 'communications.footer.cloudSync' | translate }}</span>
     </div>
-    <span class="status-build">System Build v4.2.0-stable | Node: US-EAST-1</span>
+    <span class="status-build">{{ 'communications.footer.build' | translate }}</span>
   </footer>
 </div>
 

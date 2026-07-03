@@ -1,12 +1,13 @@
 import { Component, computed, inject, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { DeviceAlert } from '../../../domain/model/notification.entity';
 import { ResourceStore } from '../../../../resource/application/resource.store';
 
 @Component({
   selector: 'app-alert-detail-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './alert-detail-modal.html',
   styleUrl: './alert-detail-modal.css',
 })

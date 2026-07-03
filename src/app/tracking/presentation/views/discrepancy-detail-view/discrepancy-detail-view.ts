@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { TrackingStore } from '../../../application/tracking.store';
@@ -16,7 +17,7 @@ import { RecalibrateScaleDialog } from '../../components/recalibrate-scale-dialo
 @Component({
   selector: 'app-discrepancy-detail-view',
   standalone: true,
-  imports: [CommonModule, RouterLink, ResolveDiscrepancyDialog, RecalibrateScaleDialog],
+  imports: [CommonModule, RouterLink, TranslatePipe, ResolveDiscrepancyDialog, RecalibrateScaleDialog],
   templateUrl: './discrepancy-detail-view.html',
   styleUrl: './discrepancy-detail-view.css',
 })
