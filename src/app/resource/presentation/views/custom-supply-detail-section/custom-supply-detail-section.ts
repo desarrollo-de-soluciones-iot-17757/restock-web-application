@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError, EMPTY } from 'rxjs';
+import { TranslatePipe } from '@ngx-translate/core';
 import { environment } from '../../../../../environments/environment';
 import { ResourceStore } from '../../../application/resource.store';
 
@@ -23,7 +24,7 @@ interface BatchRow {
 @Component({
   selector: 'app-custom-supply-detail-section',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslatePipe],
   templateUrl: './custom-supply-detail-section.html',
   styleUrl: './custom-supply-detail-section.css',
 })
@@ -84,8 +85,8 @@ export class CustomSupplyDetailSectionComponent {
     return 'critical';
   }
 
-  getBatchHealthLabel(expirationDate: string | null): string {
-    const labels = { fresh: 'Fresh', expiring: 'Expiring Soon', critical: 'Critical Care' };
+  getBatchHealthKey(expirationDate: string | null): string {
+    const labels = { fresh: 'resource.customSupplies.detail.healthFresh', expiring: 'resource.customSupplies.detail.healthExpiring', critical: 'resource.customSupplies.detail.healthCritical' };
     return labels[this.getBatchHealth(expirationDate)];
   }
 }

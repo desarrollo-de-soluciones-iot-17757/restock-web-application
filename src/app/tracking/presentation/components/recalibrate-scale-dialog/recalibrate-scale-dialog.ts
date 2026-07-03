@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { TrackingStore } from '../../../application/tracking.store';
 
@@ -15,7 +16,7 @@ type CalibrationAction = 'force_tare' | 'schedule_maintenance';
 @Component({
   selector: 'app-recalibrate-scale-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslatePipe],
   templateUrl: './recalibrate-scale-dialog.html',
   styleUrl: './recalibrate-scale-dialog.css',
 })

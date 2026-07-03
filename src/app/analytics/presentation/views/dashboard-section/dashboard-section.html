@@ -1,42 +1,42 @@
 <div class="page-shell">
   <div class="page-topbar">
     <nav class="breadcrumb" aria-label="breadcrumb">
-      <span class="bc-root">South Branch</span>
+      <span class="bc-root">{{ 'analytics.breadcrumb.root' | translate }}</span>
       <span class="bc-sep">›</span>
-      <span class="bc-current">Overview</span>
+      <span class="bc-current">{{ 'analytics.breadcrumb.overview' | translate }}</span>
     </nav>
-    <div class="range-group" role="group" aria-label="Date range">
+    <div class="range-group" role="group" [attr.aria-label]="'analytics.dateRange.aria' | translate">
       <button
         type="button"
         (click)="onRangeChange('7d')"
         [class.range-active]="selectedRange() === '7d'"
       >
-        Last 7 days
+        {{ 'analytics.dateRange.last7' | translate }}
       </button>
       <button
         type="button"
         (click)="onRangeChange('30d')"
         [class.range-active]="selectedRange() === '30d'"
       >
-        Last 30 days
+        {{ 'analytics.dateRange.last30' | translate }}
       </button>
       <button
         type="button"
         (click)="onRangeChange('90d')"
         [class.range-active]="selectedRange() === '90d'"
       >
-        Last 90 days
+        {{ 'analytics.dateRange.last90' | translate }}
       </button>
     </div>
   </div>
   <div class="top-cards-row">
     <div class="top-card">
       <div class="top-card-header">
-        <span class="top-card-label">ACTIVE METRICS</span>
+        <span class="top-card-label">{{ 'analytics.activeMetrics.title' | translate }}</span>
         <i class="ti ti-chart-bar top-card-icon" aria-hidden="true"></i>
       </div>
       <div class="top-card-headline">{{ (stockDiscrepancies().length + criticalProducts().length + recentSales().length) }}/3</div>
-      <div class="top-card-sub">All data sources reporting</div>
+      <div class="top-card-sub">{{ 'analytics.activeMetrics.subtitle' | translate }}</div>
       <div class="activity-bars" aria-hidden="true">
         <span class="bar bar-full"></span>
         <span class="bar bar-full"></span>
@@ -49,14 +49,14 @@
     </div>
     <div class="top-card top-card-secondary">
       <div class="top-card-header">
-        <span class="top-card-label">SYSTEM STATUS</span>
+        <span class="top-card-label">{{ 'analytics.systemStatus.title' | translate }}</span>
         <i class="ti ti-wifi top-card-icon" aria-hidden="true"></i>
       </div>
       <div class="status-pill">
         <span class="status-dot" aria-hidden="true"></span>
-        STABLE
+        {{ 'analytics.systemStatus.stable' | translate }}
       </div>
-      <div class="top-card-sub top-card-sub--spaced">All endpoints responsive</div>
+      <div class="top-card-sub top-card-sub--spaced">{{ 'analytics.systemStatus.subtitle' | translate }}</div>
       <div class="activity-bars activity-bars-sm" aria-hidden="true">
         <span class="bar bar-dim bar-short"></span>
         <span class="bar bar-mid bar-short"></span>
@@ -68,42 +68,42 @@
   </div>
   <div class="summary-row">
     <div class="summary-card">
-      <div class="summary-card-label">Stock Discrepancies</div>
+      <div class="summary-card-label">{{ 'analytics.summary.stockDiscrepancies' | translate }}</div>
       <div class="summary-card-value" [class.value-danger]="highRiskDiscrepancies().length > 0">
         {{ stockDiscrepancies().length }}
       </div>
-      <div class="summary-card-sub">{{ highRiskDiscrepancies().length }} high risk</div>
+      <div class="summary-card-sub">{{ highRiskDiscrepancies().length }} {{ 'analytics.summary.highRisk' | translate }}</div>
     </div>
     <div class="summary-card">
-      <div class="summary-card-label">Critical Products</div>
+      <div class="summary-card-label">{{ 'analytics.summary.criticalProducts' | translate }}</div>
       <div class="summary-card-value" [class.value-danger]="criticalProducts().length > 0">
         {{ criticalProducts().length }}
       </div>
-      <div class="summary-card-sub">Deficit: {{ totalStockDeficit() | number: '1.1-1' }}</div>
+      <div class="summary-card-sub">{{ 'analytics.summary.deficit' | translate }} {{ totalStockDeficit() | number: '1.1-1' }}</div>
     </div>
     <div class="summary-card">
-      <div class="summary-card-label">Recent Sales</div>
+      <div class="summary-card-label">{{ 'analytics.summary.recentSales' | translate }}</div>
       <div class="summary-card-value">{{ recentSales().length }}</div>
-      <div class="summary-card-sub">Total: ${{ totalSalesAmount() | number: '1.2-2' }}</div>
+      <div class="summary-card-sub">{{ 'analytics.summary.total' | translate }} ${{ totalSalesAmount() | number: '1.2-2' }}</div>
     </div>
   </div>
   <div class="analytics-section" *ngIf="stockDiscrepancies().length > 0">
     <div class="section-header">
-      <h2 class="section-title">Stock Discrepancies</h2>
-      <span class="section-badge">{{ stockDiscrepancies().length }} Items</span>
+      <h2 class="section-title">{{ 'analytics.section.stockDiscrepancies' | translate }}</h2>
+      <span class="section-badge">{{ stockDiscrepancies().length }} {{ 'analytics.section.itemsBadge' | translate }}</span>
     </div>
     <div class="table-card">
       <div class="table-responsive">
         <table class="data-table">
           <thead>
             <tr>
-              <th>DISCREPANCY ID</th>
-              <th>PHYSICAL STOCK</th>
-              <th>SYSTEM STOCK</th>
-              <th class="col-right">DIFFERENCE</th>
-              <th>RISK LEVEL</th>
-              <th>RECONCILED</th>
-              <th>STATUS</th>
+              <th>{{ 'analytics.table.discrepancyId' | translate }}</th>
+              <th>{{ 'analytics.table.physicalStock' | translate }}</th>
+              <th>{{ 'analytics.table.systemStock' | translate }}</th>
+              <th class="col-right">{{ 'analytics.table.difference' | translate }}</th>
+              <th>{{ 'analytics.table.riskLevel' | translate }}</th>
+              <th>{{ 'analytics.table.reconciled' | translate }}</th>
+              <th>{{ 'analytics.table.status' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -120,7 +120,7 @@
                 </span>
               </td>
               <td>
-                <span [class]="disc.isConciliated ? 'status-resolved' : 'status-pending'">{{ disc.isConciliated ? 'Yes' : 'No' }}</span>
+                <span [class]="disc.isConciliated ? 'status-resolved' : 'status-pending'">{{ disc.isConciliated ? ('analytics.table.yes' | translate) : ('analytics.table.no' | translate) }}</span>
               </td>
               <td><span [class]="disc.status === 'RESOLVED' ? 'status-resolved' : 'status-pending'">{{ disc.status }}</span></td>
             </tr>
@@ -131,20 +131,20 @@
   </div>
   <div class="analytics-section" *ngIf="criticalProducts().length > 0">
     <div class="section-header">
-      <h2 class="section-title">Critical Products (Low Stock)</h2>
-      <span class="section-badge">{{ criticalProducts().length }} Products</span>
+      <h2 class="section-title">{{ 'analytics.section.criticalProducts' | translate }}</h2>
+      <span class="section-badge">{{ criticalProducts().length }} {{ 'analytics.section.productsBadge' | translate }}</span>
     </div>
     <div class="table-card">
       <div class="table-responsive">
         <table class="data-table">
           <thead>
             <tr>
-              <th>PRODUCT NAME</th>
-              <th>SUPPLY ID</th>
-              <th>BRANCH</th>
-              <th class="col-right">TOTAL STOCK</th>
-              <th class="col-right">MIN STOCK</th>
-              <th class="col-right">DEFICIT</th>
+              <th>{{ 'analytics.table.productName' | translate }}</th>
+              <th>{{ 'analytics.table.supplyId' | translate }}</th>
+              <th>{{ 'analytics.table.branch' | translate }}</th>
+              <th class="col-right">{{ 'analytics.table.totalStock' | translate }}</th>
+              <th class="col-right">{{ 'analytics.table.minStock' | translate }}</th>
+              <th class="col-right">{{ 'analytics.table.deficit' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -163,11 +163,11 @@
   </div>
   <div class="analytics-section" *ngIf="recentSales().length > 0 || recentSalesLoading()">
     <div class="section-header">
-      <h2 class="section-title">Recent Sales</h2>
-      <span class="section-badge">{{ recentSales().length }} Sales</span>
+      <h2 class="section-title">{{ 'analytics.section.recentSales' | translate }}</h2>
+      <span class="section-badge">{{ recentSales().length }} {{ 'analytics.section.salesBadge' | translate }}</span>
     </div>
     <div class="date-filter-bar">
-      <label class="date-filter-label" for="startDate">From</label>
+      <label class="date-filter-label" for="startDate">{{ 'analytics.dateFilter.from' | translate }}</label>
       <input
         id="startDate"
         type="date"
@@ -175,7 +175,7 @@
         [value]="salesStartDate()"
         (change)="onStartDateChange($event)"
       />
-      <label class="date-filter-label" for="endDate">To</label>
+      <label class="date-filter-label" for="endDate">{{ 'analytics.dateFilter.to' | translate }}</label>
       <input
         id="endDate"
         type="date"
@@ -183,19 +183,19 @@
         [value]="salesEndDate()"
         (change)="onEndDateChange($event)"
       />
-      <button type="button" class="btn-filter-apply" (click)="applyDateFilter()">Apply</button>
-      <button type="button" class="btn-filter-clear" (click)="clearDateFilter()">Clear</button>
+      <button type="button" class="btn-filter-apply" (click)="applyDateFilter()">{{ 'analytics.dateFilter.apply' | translate }}</button>
+      <button type="button" class="btn-filter-clear" (click)="clearDateFilter()">{{ 'analytics.dateFilter.clear' | translate }}</button>
     </div>
     <div class="table-card">
       <div class="table-responsive">
         <table class="data-table">
           <thead>
             <tr>
-              <th>SALE ID</th>
-              <th>BRANCH</th>
-              <th class="col-right">AMOUNT</th>
-              <th>DATE</th>
-              <th>STATUS</th>
+              <th>{{ 'analytics.table.saleId' | translate }}</th>
+              <th>{{ 'analytics.table.branch' | translate }}</th>
+              <th class="col-right">{{ 'analytics.table.amount' | translate }}</th>
+              <th>{{ 'analytics.table.date' | translate }}</th>
+              <th>{{ 'analytics.table.status' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -204,7 +204,7 @@
               <td>{{ sale.branchId ?? '-' }}</td>
               <td class="col-right">{{ sale.totalAmount ? ('$' + (sale.totalAmount | number: '1.2-2')) : '-' }}</td>
               <td>{{ sale.saleDate | date: 'MMM d, yyyy' }}</td>
-              <td><span class="status-resolved">{{ sale.status ?? 'COMPLETED' }}</span></td>
+              <td><span class="status-resolved">{{ sale.status ?? ('analytics.table.completed' | translate) }}</span></td>
             </tr>
           </tbody>
         </table>
@@ -212,6 +212,6 @@
     </div>
   </div>
   <div class="empty-state" *ngIf="stockDiscrepancies().length === 0 && criticalProducts().length === 0 && recentSales().length === 0 && !recentSalesLoading()">
-    <p>No analytics data found.</p>
+    <p>{{ 'analytics.empty' | translate }}</p>
   </div>
 </div>

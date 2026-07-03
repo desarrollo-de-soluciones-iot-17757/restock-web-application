@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { TrackingStore } from '../../../application/tracking.store';
 import { TRACKING_PATHS } from '../../tracking-paths';
@@ -10,7 +11,7 @@ type HistoryTab = 'resolved' | 'pending' | 'archived';
 @Component({
   selector: 'app-resolution-history-view',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslatePipe],
   templateUrl: './resolution-history-view.html',
   styleUrl: './resolution-history-view.css',
 })

@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { TrackingStore } from '../../../application/tracking.store';
@@ -16,7 +17,7 @@ import { RecalibrateScaleDialog } from '../../components/recalibrate-scale-dialo
 @Component({
   selector: 'app-discrepancy-detail-view',
   standalone: true,
-  imports: [CommonModule, RouterLink, ResolveDiscrepancyDialog, RecalibrateScaleDialog],
+  imports: [CommonModule, RouterLink, TranslatePipe, ResolveDiscrepancyDialog, RecalibrateScaleDialog],
   templateUrl: './discrepancy-detail-view.html',
   styleUrl: './discrepancy-detail-view.css',
 })
@@ -29,6 +30,9 @@ export class DiscrepancyDetailView implements OnInit {
   showResolveDialog = false;
   showRecalibrateDialog = false;
 
+  /** Holds the conciliation task ID to resolve — set when dialog opens */
+  resolveTaskId = '';
+
   ngOnInit(): void {
     const id = this.params()?.get('id') ?? '';
     if (id) {
@@ -37,11 +41,13 @@ export class DiscrepancyDetailView implements OnInit {
   }
 
   openResolveDialog(): void {
+    this.resolveTaskId = this.params()?.get('id') ?? '';
     this.showResolveDialog = true;
   }
 
   closeResolveDialog(): void {
     this.showResolveDialog = false;
+    this.resolveTaskId = '';
   }
 
   openRecalibrateDialog(): void {
