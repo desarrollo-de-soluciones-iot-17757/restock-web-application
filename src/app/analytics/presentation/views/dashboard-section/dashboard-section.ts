@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal, effect } from '@angular/core';
 import { NgFor, NgIf, DatePipe, DecimalPipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { AnalyticsStore } from '../../../application/analytics.store';
 import { IamStore } from '../../../../iam/application/iam.store';
 import { MetricCategory, MetricType } from '../../../domain/model/metric.entity';
@@ -19,7 +20,7 @@ interface MetricRow {
 @Component({
   selector: 'app-dashboard-section',
   standalone: true,
-  imports: [NgFor, NgIf,DatePipe, DecimalPipe],
+  imports: [NgFor, NgIf, DatePipe, DecimalPipe, TranslatePipe],
   templateUrl: './dashboard-section.html',
   styleUrl: './dashboard-section.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

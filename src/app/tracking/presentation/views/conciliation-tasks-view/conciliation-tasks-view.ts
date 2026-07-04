@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { TrackingStore } from '../../../application/tracking.store';
 import { TRACKING_PATHS } from '../../tracking-paths';
@@ -10,7 +11,7 @@ import { IamStore } from '../../../../iam/application/iam.store';
 @Component({
   selector: 'app-conciliation-tasks-view',
   standalone: true,
-  imports: [CommonModule, RouterLink, ResolveDiscrepancyDialog],
+  imports: [CommonModule, RouterLink, TranslatePipe, ResolveDiscrepancyDialog],
   templateUrl: './conciliation-tasks-view.html',
   styleUrl: './conciliation-tasks-view.css',
 })
