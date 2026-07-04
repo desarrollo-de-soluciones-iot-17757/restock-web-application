@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { TrackingStore } from '../../../application/tracking.store';
 import { IamStore } from '../../../../iam/application/iam.store';
@@ -48,7 +49,7 @@ const REASON_LABELS: Record<string, string> = {
 @Component({
   selector: 'app-resolve-discrepancy-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslatePipe],
   templateUrl: './resolve-discrepancy-dialog.html',
   styleUrl: './resolve-discrepancy-dialog.css',
 })
@@ -62,9 +63,35 @@ export class ResolveDiscrepancyDialog implements OnInit {
 
   readonly actions = Object.keys(ACTION_LABELS) as ResolutionAction[];
   readonly reasons = RESOLUTION_REASONS;
-  readonly actionLabels = ACTION_LABELS;
-  readonly actionInfo = ACTION_INFO;
-  readonly reasonLabels = REASON_LABELS;
+
+  getActionKey(action: string): string {
+    const map: Record<string, string> = {
+      ADJUST_DIGITAL_STOCK: 'actionAdjust',
+      UPDATE_JUSTIFIED_WITHDRAWN_STOCK: 'actionUpdateJustified',
+      RECALIBRATE_DEVICE: 'actionRecalibrate',
+    };
+    return map[action] ?? 'actionAdjust';
+  }
+
+  getActionDescKey(action: string): string {
+    const map: Record<string, string> = {
+      ADJUST_DIGITAL_STOCK: 'descAdjust',
+      UPDATE_JUSTIFIED_WITHDRAWN_STOCK: 'descUpdateJustified',
+      RECALIBRATE_DEVICE: 'descRecalibrate',
+    };
+    return map[action] ?? 'descAdjust';
+  }
+
+  getReasonKey(reason: string): string {
+    const map: Record<string, string> = {
+      WASTE_OR_SPOILAGE: 'reasonWaste',
+      THEFT_OR_LOSS: 'reasonTheft',
+      UNREGISTERED_USE: 'reasonUnregistered',
+      TRANSFER_OR_DISPLAY: 'reasonTransfer',
+      SENSOR_FAULT: 'reasonSensorFault',
+    };
+    return 'tracking.resolveDialog.' + (map[reason] ?? '');
+  }
 
   selectedAction = signal<ResolutionAction | ''>('');
   selectedReason = signal<string>('');

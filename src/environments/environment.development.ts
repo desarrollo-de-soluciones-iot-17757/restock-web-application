@@ -33,7 +33,12 @@ export const environment = {
 
   // Notifications
   platformProviderNotificationsEndpointPath: 'notifications',
+  notificationsByRecipientUserIdPath: 'notifications?recipientUserId={recipientUserId}',
+  notificationsByIdPath: 'notifications/{notificationId}',
   platformProviderPushSubscriptionsEndpointPath: 'push-subscriptions',
+
+  // Stock Threshold Alerts
+  stockThresholdsEvaluatePath: 'alerts/stock-thresholds/evaluate',
 
   // Analytics
   platformProviderAnalyticsEndpointPath: 'metrics',
