@@ -158,7 +158,7 @@ export class IamStore {
     ).subscribe({
       next: () => {
         this.loadingSignal.set(false);
-        void this.router.navigate(['/profiles/register/branch'], { replaceUrl: true });
+        void this.router.navigate(['/profiles/register/plan'], { replaceUrl: true });
       },
 
       error: (error) => {

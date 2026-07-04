@@ -13,6 +13,7 @@ const profilesRoute = () =>import('./profiles/presentation/profiles.routes').the
 const recipesRoute = () =>import('./planning/recipes/presentation/recipes.routes').then((m) => m.recipesRoutes);
 const kitsRoute = () =>import('./planning/kits/presentation/kits.routes').then((m) => m.kitsRoutes);
 const analyticsRoute = () =>import('./analytics/presentation/analytics.routes').then((m) => m.analyticsRoutes);
+const subscriptionsRoute = () =>import('./subscriptions/presentation/subscriptions.routes').then((m) => m.subscriptionsRoutes);
 const communicationsRoute = () =>import('./communications/presentation/communications.routes').then((m) => m.communicationsRoutes);
 const homePage = () =>import('./shared/presentation/views/home/home-page').then((m) => m.HomePage);
 const pageNotFound = () =>import('./shared/presentation/views/page-not-found/page-not-found').then((m) => m.PageNotFound,);
@@ -22,6 +23,7 @@ const placeholder = () =>import('./shared/presentation/views/placeholder-page/pl
  * Application routes configuration.
  * Defines the routing structure for the Angular application, including lazy-loaded components and child routes.
  */
+
 export const appRoutes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'sign-in' },
   { path: 'login', pathMatch: 'full', redirectTo: 'sign-in' },
@@ -41,6 +43,7 @@ export const appRoutes: Routes = [
       { path: 'kits', loadChildren: kitsRoute, title: `${baseTitle} · Kits` },
       { path: 'sales', loadChildren: salesRoute, title: `${baseTitle} · Sales` },
       { path: 'analytics', loadChildren: analyticsRoute, title: `${baseTitle} · Analytics` },
+      { path: 'subscriptions', loadChildren: subscriptionsRoute, title: `${baseTitle} · Subscriptions` },
 
       {
         path: 'settings',
