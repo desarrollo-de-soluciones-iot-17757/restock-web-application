@@ -239,7 +239,6 @@ export class SystemPreferences {
         this.subStore.loadPlans();
         this.subStore.loadInvoices(currentUser.accountId);
         this.devicesStore.loadDevicesForAccount(currentUser.accountId);
-        this.kitStore.accountId.set(currentUser.accountId);
         this.kitStore.loadAllKits();
         this.recipesStore.loadAll(currentUser.accountId);
       }
