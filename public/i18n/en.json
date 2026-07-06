@@ -365,7 +365,16 @@
       "required": "Required",
       "cancel": "Cancel",
       "register": "Register Device",
-      "error": "Failed to register device. Please try again."
+      "error": "Failed to register device. Please try again.",
+      "displayMode": "LCD Display Mode",
+      "displayModeError": "Device registered, but failed to set the display mode. You can change it later.",
+      "displayModes": {
+        "environment": "Environment (temperature & humidity)",
+        "temperature": "Temperature",
+        "humidity": "Humidity",
+        "weight": "Weight",
+        "convertedUnits": "Converted units"
+      }
     },
     "status": {
       "registered": "AWAITING SETUP",
@@ -450,7 +459,8 @@
       "fields": {
         "companyName": "COMPANY NAME",
         "ruc": "TAX ID / RUC",
-        "mainLocation": "MAIN LOCATION"
+        "mainLocation": "MAIN LOCATION",
+        "picture": "BUSINESS LOGO"
       },
       "placeholders": {
         "companyName": "e.g. Nexus Logistics",
@@ -461,12 +471,6 @@
         "discard": "DISCARD",
         "save": "SAVE BUSINESS",
         "uploadPicture": "UPLOAD LOGO"
-      },
-      "fields": {
-        "companyName": "COMPANY NAME",
-        "ruc": "TAX ID / RUC",
-        "mainLocation": "MAIN LOCATION",
-        "picture": "BUSINESS LOGO"
       }
     },
     "branches": {
