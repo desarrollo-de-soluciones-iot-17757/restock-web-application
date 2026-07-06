@@ -23,10 +23,11 @@ export class DeviceAssembler {
       weightUnitName: resource.weightUnitName ?? resource.weightUnit,
       weightUnitAbbreviation: resource.weightUnitAbbreviation,
       justifiedWithdrawnStock: resource.justifiedWithdrawnStock,
+      displayMode: resource.displayMode ?? null,
     });
   }
 
   toEntitiesFromArray(resources: DeviceResource[]): Device[] {
-    return resources.map(r => this.toEntityFromResource(r));
+    return resources.map((r) => this.toEntityFromResource(r));
   }
 }

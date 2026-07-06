@@ -1,4 +1,13 @@
-import { AfterViewChecked, Component, computed, effect, inject, OnInit, untracked, ViewChild } from '@angular/core';
+import {
+  AfterViewChecked,
+  Component,
+  computed,
+  effect,
+  inject,
+  OnInit,
+  untracked,
+  ViewChild,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -12,12 +21,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator } from '@angular/material/paginator';
 import {
-  MatCell, MatCellDef,
+  MatCell,
+  MatCellDef,
   MatColumnDef,
   MatHeaderCell,
   MatHeaderCellDef,
-  MatHeaderRow, MatHeaderRowDef,
-  MatRow, MatRowDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
   MatTable,
   MatTableDataSource,
 } from '@angular/material/table';
@@ -60,16 +72,21 @@ export class DevicesList implements AfterViewChecked, OnInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  readonly configuredCount = computed(() =>
-    this.store.devices().filter(d => d.status === 'CONFIGURED' || d.status === 'CALIBRATED' || d.status === 'ACTIVE').length
+  readonly configuredCount = computed(
+    () =>
+      this.store
+        .devices()
+        .filter(
+          (d) => d.status === 'CONFIGURED' || d.status === 'CALIBRATED' || d.status === 'ACTIVE',
+        ).length,
   );
 
-  readonly registeredCount = computed(() =>
-    this.store.devices().filter(d => d.status === 'REGISTERED').length
+  readonly registeredCount = computed(
+    () => this.store.devices().filter((d) => d.status === 'REGISTERED').length,
   );
 
-  readonly inactiveCount = computed(() =>
-    this.store.devices().filter(d => d.status === 'INACTIVE').length
+  readonly inactiveCount = computed(
+    () => this.store.devices().filter((d) => d.status === 'INACTIVE').length,
   );
 
   readonly dataSource = computed(() => new MatTableDataSource(this.store.devices()));

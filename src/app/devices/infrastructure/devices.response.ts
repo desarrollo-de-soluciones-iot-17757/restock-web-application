@@ -21,4 +21,5 @@ export interface DeviceResource extends BaseResource {
   weightUnitName?: string | null;
   weightUnitAbbreviation: string | null;
   justifiedWithdrawnStock: number;
+  displayMode?: string | null;
 }

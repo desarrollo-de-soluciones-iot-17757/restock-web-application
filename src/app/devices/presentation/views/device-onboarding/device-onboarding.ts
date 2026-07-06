@@ -1,7 +1,13 @@
 import { Component, effect, inject, OnInit, OnDestroy, signal, untracked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -181,7 +187,7 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
     this.trackingApi.getTelemetryReadings(deviceId).subscribe({
       next: (readings) => {
         const sorted = readings.sort(
-          (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+          (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
         );
         this.telemetryReadings.set(sorted.slice(0, 15)); // Keep latest 15 readings
       },
@@ -191,7 +197,7 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
     this.devicesApi.getDeviceHealthLogs(deviceId).subscribe({
       next: (logs: any) => {
         const sorted = logs.sort(
-          (a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+          (a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
         );
         this.healthLogs.set(sorted.slice(0, 15)); // Keep latest 15 health logs
       },
@@ -231,9 +237,11 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
 
   specificationsChanged(device: Device): boolean {
     const v = this.specificationsForm.getRawValue();
-    return v.manufacturer !== (device.manufacturer ?? '')
-      || v.model !== (device.model ?? '')
-      || v.firmwareVersion !== (device.firmwareVersion ?? '');
+    return (
+      v.manufacturer !== (device.manufacturer ?? '') ||
+      v.model !== (device.model ?? '') ||
+      v.firmwareVersion !== (device.firmwareVersion ?? '')
+    );
   }
 
   branchChanged(device: Device): boolean {
@@ -246,20 +254,24 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
 
   batchName(id: string): string {
     const batches = this.resourceStore.rows();
-    const batch = batches.find(row => row.id === id);
+    const batch = batches.find((row) => row.id === id);
     if (batch) return `${batch.code} · ${batch.supplyName}`;
-    return batches.length === 0 ? this.translateService.instant('devices.onboarding.operationalSummary.loadingBatch') : this.translateService.instant('devices.onboarding.operationalSummary.unknownBatch');
+    return batches.length === 0
+      ? this.translateService.instant('devices.onboarding.operationalSummary.loadingBatch')
+      : this.translateService.instant('devices.onboarding.operationalSummary.unknownBatch');
   }
 
   branchName(id: string): string {
     const branches = this.resourceStore.branches();
-    const branch = branches.find(b => b.id === id);
+    const branch = branches.find((b) => b.id === id);
     if (branch) return branch.name;
-    return branches.length === 0 ? this.translateService.instant('devices.onboarding.operationalSummary.loadingBranch') : id;
+    return branches.length === 0
+      ? this.translateService.instant('devices.onboarding.operationalSummary.loadingBranch')
+      : id;
   }
 
   selectedBatchCustomSupplyId(device: Device): string {
-    const batch = this.resourceStore.rows().find(row => row.id === device.assignedBatchId);
+    const batch = this.resourceStore.rows().find((row) => row.id === device.assignedBatchId);
     return batch?.customSupplyId ?? '';
   }
 
@@ -268,32 +280,40 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
     if (!device?.assignedBatchId) return;
 
     const threshold = device.supplyThresholdId
-      ? this.thresholdsStore.thresholds().find(item => item.id === device.supplyThresholdId)
+      ? this.thresholdsStore.thresholds().find((item) => item.id === device.supplyThresholdId)
       : undefined;
 
     if (threshold) {
-      this.thresholdsForm.patchValue({
-        minStock: threshold.minStock,
-        maxStock: threshold.maxStock,
-        anomalyThreshold: threshold.anomalyThreshold,
-        minTemperature: threshold.minTemperature,
-        maxTemperature: threshold.maxTemperature,
-        minHumidity: threshold.minHumidity,
-        maxHumidity: threshold.maxHumidity,
-      }, { emitEvent: false });
+      this.thresholdsForm.patchValue(
+        {
+          minStock: threshold.minStock,
+          maxStock: threshold.maxStock,
+          anomalyThreshold: threshold.anomalyThreshold,
+          minTemperature: threshold.minTemperature,
+          maxTemperature: threshold.maxTemperature,
+          minHumidity: threshold.minHumidity,
+          maxHumidity: threshold.maxHumidity,
+        },
+        { emitEvent: false },
+      );
       return;
     }
 
     const customSupplyId = this.selectedBatchCustomSupplyId(device);
     if (!customSupplyId) return;
 
-    const customSupply = this.resourceStore.customSupplies().find(supply => supply.id === customSupplyId);
+    const customSupply = this.resourceStore
+      .customSupplies()
+      .find((supply) => supply.id === customSupplyId);
     if (!customSupply) return;
 
-    this.thresholdsForm.patchValue({
-      minStock: customSupply.minStock,
-      maxStock: customSupply.maxStock,
-    }, { emitEvent: false });
+    this.thresholdsForm.patchValue(
+      {
+        minStock: customSupply.minStock,
+        maxStock: customSupply.maxStock,
+      },
+      { emitEvent: false },
+    );
   }
 
   private prefillCalibration(): void {
@@ -302,44 +322,59 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
 
     if (device.unitStockWeight !== null || device.tareWeight !== null || device.weightUnitName) {
       const unit = this.weightUnitOption(device.weightUnitName, device.weightUnitAbbreviation);
-      this.calibrationForm.patchValue({
-        unitStockWeight: device.unitStockWeight,
-        tareWeight: device.tareWeight ?? 0,
-        weightUnitName: unit.name,
-        weightUnitAbbreviation: unit.abbr,
-      }, { emitEvent: false });
+      this.calibrationForm.patchValue(
+        {
+          unitStockWeight: device.unitStockWeight,
+          tareWeight: device.tareWeight ?? 0,
+          weightUnitName: unit.name,
+          weightUnitAbbreviation: unit.abbr,
+        },
+        { emitEvent: false },
+      );
       return;
     }
 
     const customSupplyId = this.selectedBatchCustomSupplyId(device);
     if (!customSupplyId) return;
 
-    const customSupply = this.resourceStore.customSupplies().find(supply => supply.id === customSupplyId);
+    const customSupply = this.resourceStore
+      .customSupplies()
+      .find((supply) => supply.id === customSupplyId);
     if (!customSupply) return;
 
     const unit = this.weightUnitOption(customSupply.unit.name, customSupply.unit.abbreviation);
-    this.calibrationForm.patchValue({
-      weightUnitName: unit.name,
-      weightUnitAbbreviation: unit.abbr,
-    }, { emitEvent: false });
+    this.calibrationForm.patchValue(
+      {
+        weightUnitName: unit.name,
+        weightUnitAbbreviation: unit.abbr,
+      },
+      { emitEvent: false },
+    );
   }
 
-  private weightUnitOption(name?: string | null, abbreviation?: string | null): { name: string; abbr: string } {
+  private weightUnitOption(
+    name?: string | null,
+    abbreviation?: string | null,
+  ): { name: string; abbr: string } {
     const normalizedName = (name ?? '').toLowerCase().trim();
     const normalizedAbbr = (abbreviation ?? '').toLowerCase().trim();
 
-    return this.weightUnits.find(unit => {
-      const unitName = unit.name.toLowerCase();
-      const unitAbbr = unit.abbr.toLowerCase();
-      return normalizedName === unitName
-        || normalizedName === `${unitName}s`
-        || normalizedAbbr === unitAbbr;
-    }) ?? this.weightUnits[0];
+    return (
+      this.weightUnits.find((unit) => {
+        const unitName = unit.name.toLowerCase();
+        const unitAbbr = unit.abbr.toLowerCase();
+        return (
+          normalizedName === unitName ||
+          normalizedName === `${unitName}s` ||
+          normalizedAbbr === unitAbbr
+        );
+      }) ?? this.weightUnits[0]
+    );
   }
 
   onWeightUnitChange(event: Event): void {
     const name = (event.target as HTMLSelectElement).value;
-    const unit = this.weightUnits.find(u => u.name === name);
+    const unit = this.weightUnits.find((u) => u.name === name);
     if (unit) this.calibrationForm.patchValue({ weightUnitAbbreviation: unit.abbr });
   }
 
@@ -347,7 +382,9 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
     this.resourceStore.loadInventoryContext(this.accountId);
     this.showAssignBatchDialog.set(true);
   }
-  closeAssignBatchDialog(): void { this.showAssignBatchDialog.set(false); }
+  closeAssignBatchDialog(): void {
+    this.showAssignBatchDialog.set(false);
+  }
 
   submitAssignBatch(): void {
     if (this.assignBatchForm.invalid || !this.currentDevice()) return;
@@ -357,12 +394,17 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
     const device = this.currentDevice()!;
 
     this.devicesStore.assignBatch(device.id, batchId).subscribe({
-      next: updated => {
+      next: (updated) => {
         this.currentDevice.set(updated);
         this.loading.set(false);
         this.showAssignBatchDialog.set(false);
       },
-      error: err => { this.pageError.set(err?.message ?? this.translateService.instant('devices.onboarding.errors.assignBatch')); this.loading.set(false); },
+      error: (err) => {
+        this.pageError.set(
+          err?.message ?? this.translateService.instant('devices.onboarding.errors.assignBatch'),
+        );
+        this.loading.set(false);
+      },
     });
   }
 
@@ -374,31 +416,46 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
     const device = this.currentDevice()!;
     const customSupplyId = this.selectedBatchCustomSupplyId(device);
     if (!customSupplyId) {
-      this.pageError.set(this.translateService.instant('devices.onboarding.errors.batchNotAvailable'));
+      this.pageError.set(
+        this.translateService.instant('devices.onboarding.errors.batchNotAvailable'),
+      );
       this.loading.set(false);
       return;
     }
 
-    of(device).pipe(
-      switchMap(updated => this.saveSpecificationsIfNeeded(updated)),
-      switchMap(updated => this.assignBranchIfNeeded(updated)),
-      switchMap(updated => this.thresholdsStore.createThreshold({
-        deviceId: updated.id,
-        accountId: this.accountId,
-        customSupplyId,
-        minStock: v.minStock,
-        maxStock: v.maxStock,
-        anomalyThreshold: v.anomalyThreshold ?? 0,
-        minTemperatureCelsius: v.minTemperature ?? undefined,
-        maxTemperatureCelsius: v.maxTemperature ?? undefined,
-        minHumidityPercentage: v.minHumidity ?? undefined,
-        maxHumidityPercentage: v.maxHumidity ?? undefined,
-      })),
-      switchMap(() => this.devicesStore.fetchDeviceById(device.id)),
-    ).subscribe({
-      next: updated => { this.currentDevice.set(updated); this.loading.set(false); },
-      error: err => { this.pageError.set(err?.message ?? this.translateService.instant('devices.onboarding.errors.saveThresholds')); this.loading.set(false); },
-    });
+    of(device)
+      .pipe(
+        switchMap((updated) => this.saveSpecificationsIfNeeded(updated)),
+        switchMap((updated) => this.assignBranchIfNeeded(updated)),
+        switchMap((updated) =>
+          this.thresholdsStore.createThreshold({
+            deviceId: updated.id,
+            accountId: this.accountId,
+            customSupplyId,
+            minStock: v.minStock,
+            maxStock: v.maxStock,
+            anomalyThreshold: v.anomalyThreshold ?? 0,
+            minTemperatureCelsius: v.minTemperature ?? undefined,
+            maxTemperatureCelsius: v.maxTemperature ?? undefined,
+            minHumidityPercentage: v.minHumidity ?? undefined,
+            maxHumidityPercentage: v.maxHumidity ?? undefined,
+          }),
+        ),
+        switchMap(() => this.devicesStore.fetchDeviceById(device.id)),
+      )
+      .subscribe({
+        next: (updated) => {
+          this.currentDevice.set(updated);
+          this.loading.set(false);
+        },
+        error: (err) => {
+          this.pageError.set(
+            err?.message ??
+              this.translateService.instant('devices.onboarding.errors.saveThresholds'),
+          );
+          this.loading.set(false);
+        },
+      });
   }
 
   saveSpecifications(): void {
@@ -406,10 +463,21 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
     this.loading.set(true);
     this.pageError.set(null);
 
-    this.devicesStore.addSpecifications(this.currentDevice()!.id, this.specificationsForm.getRawValue()).subscribe({
-      next: updated => { this.currentDevice.set(updated); this.loading.set(false); },
-      error: err => { this.pageError.set(err?.message ?? this.translateService.instant('devices.onboarding.errors.saveSpecifications')); this.loading.set(false); },
-    });
+    this.devicesStore
+      .addSpecifications(this.currentDevice()!.id, this.specificationsForm.getRawValue())
+      .subscribe({
+        next: (updated) => {
+          this.currentDevice.set(updated);
+          this.loading.set(false);
+        },
+        error: (err) => {
+          this.pageError.set(
+            err?.message ??
+              this.translateService.instant('devices.onboarding.errors.saveSpecifications'),
+          );
+          this.loading.set(false);
+        },
+      });
   }
 
   saveBranch(): void {
@@ -417,10 +485,20 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
     this.loading.set(true);
     this.pageError.set(null);
 
-    this.devicesStore.assignBranch(this.currentDevice()!.id, this.branchForm.getRawValue().branchId).subscribe({
-      next: updated => { this.currentDevice.set(updated); this.loading.set(false); },
-      error: err => { this.pageError.set(err?.message ?? this.translateService.instant('devices.onboarding.errors.assignBranch')); this.loading.set(false); },
-    });
+    this.devicesStore
+      .assignBranch(this.currentDevice()!.id, this.branchForm.getRawValue().branchId)
+      .subscribe({
+        next: (updated) => {
+          this.currentDevice.set(updated);
+          this.loading.set(false);
+        },
+        error: (err) => {
+          this.pageError.set(
+            err?.message ?? this.translateService.instant('devices.onboarding.errors.assignBranch'),
+          );
+          this.loading.set(false);
+        },
+      });
   }
 
   private saveSpecificationsIfNeeded(device: Device): Observable<Device> {
@@ -455,35 +533,60 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
     const measurement = this.calibrationForm.getRawValue();
     const grossWeight = (measurement.unitStockWeight ?? 0) + (measurement.tareWeight ?? 0);
 
-    this.devicesStore.updateMeasurement(device.id, {
-      unitStockWeight: measurement.unitStockWeight ?? 0,
-      tareWeight: measurement.tareWeight ?? 0,
-      grossWeight,
-      calibrationDate: new Date().toISOString().split('T')[0],
-      weightUnitName: measurement.weightUnitName,
-      weightUnitAbbreviation: measurement.weightUnitAbbreviation,
-    }).subscribe({
-      next: updated => { this.currentDevice.set(updated); this.loading.set(false); },
-      error: err => { this.pageError.set(err?.message ?? this.translateService.instant('devices.onboarding.errors.calibrate')); this.loading.set(false); },
-    });
+    this.devicesStore
+      .updateMeasurement(device.id, {
+        unitStockWeight: measurement.unitStockWeight ?? 0,
+        tareWeight: measurement.tareWeight ?? 0,
+        grossWeight,
+        calibrationDate: new Date().toISOString().split('T')[0],
+        weightUnitName: measurement.weightUnitName,
+        weightUnitAbbreviation: measurement.weightUnitAbbreviation,
+      })
+      .subscribe({
+        next: (updated) => {
+          this.currentDevice.set(updated);
+          this.loading.set(false);
+        },
+        error: (err) => {
+          this.pageError.set(
+            err?.message ?? this.translateService.instant('devices.onboarding.errors.calibrate'),
+          );
+          this.loading.set(false);
+        },
+      });
   }
 
   resetTare(): void {
     this.calibrationForm.patchValue({ tareWeight: 0 });
   }
 
-  openUnlinkConfirm(): void { this.showUnlinkDialog.set(true); }
-  closeUnlinkConfirm(): void { this.showUnlinkDialog.set(false); this.unlinkConfirmText = ''; }
+  openUnlinkConfirm(): void {
+    this.showUnlinkDialog.set(true);
+  }
+  closeUnlinkConfirm(): void {
+    this.showUnlinkDialog.set(false);
+    this.unlinkConfirmText = '';
+  }
 
   confirmUnlink(): void {
     if (!this.currentDevice()) return;
     this.loading.set(true);
     this.pageError.set(null);
     this.devicesStore.updateStatus(this.currentDevice()!.id, 'INACTIVE').subscribe({
-      next: () => { this.loading.set(false); this.router.navigate(['/devices']); },
-      error: err => { this.pageError.set(err?.message ?? this.translateService.instant('devices.onboarding.errors.unlink')); this.loading.set(false); },
+      next: () => {
+        this.loading.set(false);
+        this.router.navigate(['/devices']);
+      },
+      error: (err) => {
+        this.pageError.set(
+          err?.message ?? this.translateService.instant('devices.onboarding.errors.unlink'),
+        );
+        this.loading.set(false);
+      },
     });
   }
 
-  goToList(): void { this.router.navigate(['/devices']); }
+  goToList(): void {
+    this.router.navigate(['/devices']);
+  }
 }

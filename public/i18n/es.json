@@ -375,7 +375,16 @@
       "required": "Obligatorio",
       "cancel": "Cancelar",
       "register": "Registrar Dispositivo",
-      "error": "Error al registrar el dispositivo. Inténtalo de nuevo."
+      "error": "Error al registrar el dispositivo. Inténtalo de nuevo.",
+      "displayMode": "Modo de pantalla LCD",
+      "displayModeError": "El dispositivo fue registrado, pero no se pudo configurar el modo de pantalla. Puedes cambiarlo más tarde.",
+      "displayModes": {
+        "environment": "Ambiente (temperatura y humedad)",
+        "temperature": "Temperatura",
+        "humidity": "Humedad",
+        "weight": "Peso",
+        "convertedUnits": "Unidades convertidas"
+      }
     },
     "status": {
       "registered": "ESPERANDO CONFIGURACIÓN",
@@ -460,7 +469,8 @@
       "fields": {
         "companyName": "NOMBRE DE EMPRESA",
         "ruc": "RUC / ID FISCAL",
-        "mainLocation": "UBICACIÓN PRINCIPAL"
+        "mainLocation": "UBICACIÓN PRINCIPAL",
+        "picture": "LOGO DEL NEGOCIO"
       },
       "placeholders": {
         "companyName": "ej. Nexus Logistics",
@@ -471,12 +481,6 @@
         "discard": "DESCARTAR",
         "save": "GUARDAR NEGOCIO",
         "uploadPicture": "SUBIR LOGO"
-      },
-      "fields": {
-        "companyName": "NOMBRE DE EMPRESA",
-        "ruc": "RUC / ID FISCAL",
-        "mainLocation": "UBICACIÓN PRINCIPAL",
-        "picture": "LOGO DEL NEGOCIO"
       }
     },
     "branches": {
