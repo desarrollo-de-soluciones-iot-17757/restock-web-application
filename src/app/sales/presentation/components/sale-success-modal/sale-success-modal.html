@@ -1,0 +1,19 @@
+@if (order) {
+  <div class="modal-backdrop">
+    <div class="success-modal">
+      <div class="success-icon">
+        <svg class="check-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <h2 class="success-title">Sale Registered Successfully</h2>
+      <span class="trx-badge">Transaction #{{ order.id.slice(0, 8).toUpperCase() }}</span>
+      <p class="success-description">
+        Inventory components have been automatically deducted.
+      </p>
+
+      <button class="start-new-btn" (click)="startNewSale.emit()">Start New Sale</button>
+      <button class="back-to-sales-btn" (click)="backToSales.emit()">Back to Sales</button>
+    </div>
+  </div>
+}

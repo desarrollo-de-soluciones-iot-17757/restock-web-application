@@ -1,0 +1,102 @@
+<div class="pos-layout">
+  <section class="catalog-section">
+    <a class="back-link" (click)="onBackToSales()">← Sales</a>
+    <h1 class="page-title">Kits</h1>
+
+    <div class="catalog-tabs">
+      <button class="tab-btn active">All</button>
+      <button class="tab-btn">Best</button>
+    </div>
+
+    @if (branchError()) {
+      <div class="error-banner">
+        {{ branchError() }}
+        <button class="retry-btn" (click)="onRetryBranch()">Retry</button>
+      </div>
+    } @else {
+      @if (store.error()) {
+        <div class="error-banner">{{ store.error() }}</div>
+      }
+
+      @if (kitsStore.loading()) {
+        <p class="loading-text">Loading catalog…</p>
+      } @else {
+        <div class="catalog-grid">
+          @for (kit of kitsStore.kits(); track kit.id) {
+            <app-kit-catalog-card [kit]="kit" (add)="onAddKit($event)" />
+          } @empty {
+            <p class="empty-catalog">No kits available for sale yet.</p>
+          }
+
+          <div class="quick-add-card" (click)="openQuickAddModal()">
+            <div class="quick-add-content">
+              <span class="plus-icon">+</span>
+              <span class="quick-add-text">Quick Add Custom</span>
+            </div>
+          </div>
+        </div>
+      }
+    }
+  </section>
+
+  <app-order-ticket
+    [order]="store.activeOrder()"
+    [saving]="store.saving()"
+    (adjustQuantity)="onAdjustQuantity($event)"
+    (removeItem)="onRemoveItem($event)"
+    (completeOrder)="onCompleteOrder()"
+    (clearOrder)="onClearOrder()"
+  />
+</div>
+
+<app-sale-success-modal
+  [order]="store.lastCompletedOrder()"
+  (startNewSale)="onStartNewSale()"
+  (backToSales)="onBackToSales()"
+/>
+
+<app-insufficient-stock-modal
+  [error]="store.insufficientStockError()"
+  [productName]="offendingItem()?.nameSnapshot ?? ''"
+  (removeItem)="onRemoveOffendingItem()"
+/>
+
+@if (showQuickAddModal()) {
+  <div class="modal-backdrop-custom" (click)="showQuickAddModal.set(false)">
+    <div class="quick-add-modal" (click)="$event.stopPropagation()">
+      <h2 class="modal-title">Quick Add Custom Item</h2>
+      <p class="modal-subtitle">Select an existing kit or an existing supply from your inventory</p>
+
+      <div class="form-tabs">
+        <button class="form-tab-btn" [class.active]="quickAddTab() === 'select'" (click)="quickAddTab.set('select')">Select Kit</button>
+        <button class="form-tab-btn" [class.active]="quickAddTab() === 'manual'" (click)="quickAddTab.set('manual')">Custom Supply</button>
+      </div>
+
+      @if (quickAddTab() === 'select') {
+        <div class="form-group">
+          <label class="form-label">Choose Kit</label>
+          <select class="form-select" #kitSelect>
+            @for (k of kitsStore.kits(); track k.id) {
+              <option [value]="k.id">{{ k.name }} (S/ {{ k.sellingPrice.toFixed(2) }})</option>
+            }
+          </select>
+        </div>
+        <button class="modal-primary-btn" (click)="onAddSelectedKit(kitSelect.value)">Add Kit to Order</button>
+      } @else {
+        <div class="form-group">
+          <label class="form-label">Choose Supply</label>
+          <select class="form-select" #supplySelect>
+            @for (s of resourceStore.getCustomSupplies(); track s.id) {
+              <option [value]="s.id">{{ s.name }} (S/ {{ s.unitPrice.toFixed(2) }})</option>
+            } @empty {
+              <option value="" disabled>No supplies registered for this account yet.</option>
+            }
+          </select>
+        </div>
+        <button class="modal-primary-btn" [disabled]="!resourceStore.getCustomSupplies().length" (click)="onAddSupply(supplySelect.value)">Add Supply to Order</button>
+      }
+
+      <button class="modal-cancel-btn" (click)="showQuickAddModal.set(false)">Cancel</button>
+    </div>
+  </div>
+}

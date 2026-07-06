@@ -1,0 +1,77 @@
+<div class="page">
+  <header class="page-header">
+    <h1 class="page-title">Sales Overview</h1>
+    <div class="header-actions">
+      <button class="export-btn" (click)="onExportCSV()">Export CSV</button>
+      <button class="filters-btn" (click)="toggleFilters()">Advanced Filters</button>
+      <button class="primary-btn" (click)="goToNewSale()">+ New Sale</button>
+    </div>
+  </header>
+
+  @if (showFilters()) {
+    <div class="filters-panel">
+      <div class="filter-group">
+        <label class="filter-label">Status</label>
+        <select class="filter-select" (change)="onStatusFilterChange($event)">
+          <option value="ALL">All Statuses</option>
+          <option value="COMPLETED">LOGGED</option>
+          <option value="CANCELLED">FAILED SYNC</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Min Value (S/)</label>
+        <input class="filter-input" type="number" placeholder="0.00" (input)="onMinAmountChange($event)">
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Search Transaction ID</label>
+        <input class="filter-input" type="text" placeholder="Search TRX ID..." (input)="onSearchTermChange($event)">
+      </div>
+    </div>
+  }
+
+  @if (store.error()) {
+    <div class="error-banner">{{ store.error() }}</div>
+  }
+
+  <div class="kpi-grid">
+    <app-kpi-card
+      label="Total Sales (MTD)"
+      [value]="'S/ ' + store.totalSalesAmount().toFixed(2)"
+      [caption]="salesDeltaCaption()"
+      [variant]="(store.salesDeltaPercent() ?? 0) >= 0 ? 'positive' : 'negative'"
+    />
+    <app-kpi-card
+      label="Transaction Count"
+      [value]="store.transactionCount().toString()"
+      [caption]="store.orders().length + ' orders in total'"
+      variant="neutral"
+    />
+    <app-kpi-card
+      label="Failed Sync Rate"
+      [value]="failedSyncRate().toFixed(2) + '%'"
+      [caption]="failedSyncCaption()"
+      variant="negative"
+    />
+    <app-kpi-card
+      label="Active Terminals"
+      value="6"
+      caption="All systems operational"
+      variant="neutral"
+      captionVariant="positive"
+    />
+  </div>
+
+  @if (store.loading()) {
+    <p class="loading-text">Loading transactions…</p>
+  } @else {
+    <app-transactions-table
+      [orders]="filteredOrders()"
+      (viewDetail)="onViewDetail($event)"
+    />
+  }
+</div>
+
+<app-transaction-detail-drawer
+  [order]="selectedOrder()"
+  (close)="onCloseDrawer()"
+/>
