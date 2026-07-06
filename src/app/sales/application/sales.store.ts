@@ -20,6 +20,7 @@ export class SalesStore {
   readonly error = signal<string | null>(null);
 
   // ── POS / New Sale state ──────────────────────────────────────────────
+  private readonly _accountId = signal<string>('');
   readonly activeOrder = signal<SalesOrderEntity | null>(null);
   readonly saving = signal(false);
   readonly insufficientStockError = signal<InsufficientStockError | null>(null);
@@ -94,6 +95,7 @@ export class SalesStore {
 
   /** Starts a fresh ticket for the given branch. */
   startNewOrder(accountId: string, branchId: string): void {
+    this._accountId.set(accountId);
     this.saving.set(true);
     this.error.set(null);
     this.branchError.set(null);
@@ -230,7 +232,7 @@ export class SalesStore {
     this.error.set(null);
     this.insufficientStockError.set(null);
 
-    this.api.completeOrder(order.id).subscribe({
+    this.api.completeOrder(order.id, this._accountId()).subscribe({
       next: (completed) => {
         this.lastCompletedOrder.set(completed);
         this.activeOrder.set(null);

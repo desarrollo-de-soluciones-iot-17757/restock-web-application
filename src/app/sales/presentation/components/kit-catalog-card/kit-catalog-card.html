@@ -20,7 +20,7 @@
         class="add-btn"
         [disabled]="!isSellable"
         (click)="add.emit(kit)"
-        aria-label="Add to order"
+        [attr.aria-label]="'sales.kitCard.addToOrderAria' | translate"
       >+</button>
     </div>
   </div>

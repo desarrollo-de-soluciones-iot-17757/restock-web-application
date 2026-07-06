@@ -75,8 +75,9 @@ export class SalesApiEndpoint extends ErrorHandlingEnabledBaseType {
    * carries the structured insufficient-stock payload, which the generic
    * handleError() would otherwise flatten into a plain string and lose.
    */
-  complete(orderId: string): Observable<SalesOrderEntity> {
-    return this.http.patch<SalesOrderResource>(`${this.baseUrl}/${orderId}/complete`, {}).pipe(
+  complete(orderId: string, accountId?: string): Observable<SalesOrderEntity> {
+    const params = accountId ? { accountId } : undefined;
+    return this.http.patch<SalesOrderResource>(`${this.baseUrl}/${orderId}/complete`, undefined, { params }).pipe(
       map((resource) => this.assembler.toEntityFromResource(resource)),
       catchError((error: HttpErrorResponse) => {
         const body = error.error as InsufficientStockErrorResource | undefined;

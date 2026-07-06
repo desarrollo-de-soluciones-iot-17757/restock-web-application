@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { SalesOrderEntity } from '../../../domain/model/sales-order.entity';
 
 /**
@@ -9,7 +10,7 @@ import { SalesOrderEntity } from '../../../domain/model/sales-order.entity';
 @Component({
   selector: 'app-sale-success-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './sale-success-modal.html',
   styleUrl: './sale-success-modal.css',
 })

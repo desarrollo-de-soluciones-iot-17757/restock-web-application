@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { SalesOrderEntity } from '../../../domain/model/sales-order.entity';
 import { SalesOrderItemEntity } from '../../../domain/model/sales-order-item.entity';
 
@@ -12,7 +13,7 @@ import { SalesOrderItemEntity } from '../../../domain/model/sales-order-item.ent
 @Component({
   selector: 'app-order-ticket',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './order-ticket.html',
   styleUrl: './order-ticket.css',
 })

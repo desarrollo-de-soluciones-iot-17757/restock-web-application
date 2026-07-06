@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { SalesOrderEntity } from '../../../domain/model/sales-order.entity';
 import { KitStore } from '../../../../planning/kits/application/kits.store';
 
@@ -11,7 +12,7 @@ import { KitStore } from '../../../../planning/kits/application/kits.store';
 @Component({
   selector: 'app-transaction-detail-drawer',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './transaction-detail-drawer.html',
   styleUrl: './transaction-detail-drawer.css',
 })
@@ -20,6 +21,7 @@ export class TransactionDetailDrawerComponent {
   @Output() close = new EventEmitter<void>();
 
   private readonly kitsStore = inject(KitStore);
+  private readonly translate = inject(TranslateService);
 
   constructor() {
     this.kitsStore.loadAllKits();
@@ -39,7 +41,11 @@ export class TransactionDetailDrawerComponent {
       for (const ingredient of item.ingredientsResolved) {
         for (const batch of ingredient.batchesReserved) {
           log.push({
-            label: `Deducted: ${item.nameSnapshot} (-${batch.quantityToConsume} unit) from Batch ${batch.batchId.slice(0, 6).toUpperCase()}`,
+            label: this.translate.instant('sales.transactionDetail.deductionEntry', {
+              name: item.nameSnapshot,
+              qty: batch.quantityToConsume,
+              batchId: batch.batchId.slice(0, 6).toUpperCase(),
+            }),
             time: order.createdAt ? order.createdAt.slice(11, 16) : '',
           });
         }
@@ -62,11 +68,11 @@ export class TransactionDetailDrawerComponent {
   statusLabel(status: string): string {
     switch (status) {
       case 'COMPLETED':
-        return 'LOGGED';
+        return 'sales.table.statusLabel.logged';
       case 'CANCELLED':
-        return 'FAILED SYNC';
+        return 'sales.table.statusLabel.failed';
       default:
-        return 'PENDING';
+        return 'sales.table.statusLabel.pending';
     }
   }
 }

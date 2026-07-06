@@ -6,6 +6,7 @@ export class RecentSaleAssembler {
     return {
       saleId: response.saleId,
       branchId: response.branchId,
+      branchName: response.branchName,
       totalAmount: response.totalAmount,
       saleDate: response.saleDate,
       status: response.status,

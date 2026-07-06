@@ -8,8 +8,8 @@
           <line x1="12" x2="12.01" y1="17" y2="17"/>
         </svg>
       </div>
-      <h2 class="block-title">Action Blocked: Insufficient Physical Inventory</h2>
-      <p class="block-description">The transaction cannot proceed due to component stock</p>
+      <h2 class="block-title">{{ 'sales.insufficientStock.title' | translate }}</h2>
+      <p class="block-description">{{ 'sales.insufficientStock.description' | translate }}</p>
 
       <div class="component-box-row">
         <div class="box-icon-col">
@@ -23,20 +23,20 @@
             <span class="component-name">{{ productName }}</span>
           }
           <span class="missing-label">
-            Missing Component: <strong class="red-text">{{ error.supplyName }}</strong>
+            {{ 'sales.insufficientStock.missingComponent' | translate }} <strong class="red-text">{{ error.supplyName }}</strong>
           </span>
           <div class="stock-figures">
-            <span class="needed-pill">NEEDED: {{ error.quantityNeeded }}</span>
-            <span class="available-pill">AVAILABLE: {{ error.quantityAvailable }}</span>
+            <span class="needed-pill">{{ 'sales.insufficientStock.needed' | translate }} {{ error.quantityNeeded }}</span>
+            <span class="available-pill">{{ 'sales.insufficientStock.available' | translate }} {{ error.quantityAvailable }}</span>
           </div>
         </div>
       </div>
 
       <button class="remove-item-btn" (click)="removeItem.emit()">
-        <span class="trash-icon">🗑</span> Remove Item from Order
+        <span class="trash-icon">🗑</span> {{ 'sales.insufficientStock.removeItem' | translate }}
       </button>
 
-      <span class="ref-code">Ref Code: ERR_INV_404</span>
+      <span class="ref-code">{{ 'sales.insufficientStock.refCode' | translate }}</span>
     </div>
   </div>
 }

@@ -40,12 +40,12 @@
 }
 
 .btn-primary {
-  background-color: #065F46;
+  background-color: #1a5c3a;
   color: #ffffff;
 }
 
 .btn-primary:hover {
-  background-color: #064e3a;
+  background-color: #13462b;
 }
 
 .btn-outline {
@@ -251,14 +251,14 @@
 }
 
 .btn-investigate {
-  background-color: #065F46;
+  background-color: #1a5c3a;
   color: #ffffff;
   text-decoration: none;
   border-radius: 4px;
 }
 
 .btn-investigate:hover {
-  background-color: #064e3a;
+  background-color: #13462b;
 }
 
 .btn-icon {

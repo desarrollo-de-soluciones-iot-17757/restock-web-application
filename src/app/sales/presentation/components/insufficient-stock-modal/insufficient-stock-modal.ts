@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { InsufficientStockError } from '../../../domain/model/insufficient-stock-error.model';
 
 /**
@@ -10,7 +11,7 @@ import { InsufficientStockError } from '../../../domain/model/insufficient-stock
 @Component({
   selector: 'app-insufficient-stock-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './insufficient-stock-modal.html',
   styleUrl: './insufficient-stock-modal.css',
 })

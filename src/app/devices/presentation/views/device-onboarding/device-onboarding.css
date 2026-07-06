@@ -610,12 +610,12 @@
 }
 
 .btn-primary {
-  background: #047857;
+  background: #1a5c3a;
   color: #ffffff;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #065f46;
+  background: #13462b;
 }
 
 .btn-outline,
@@ -919,9 +919,9 @@ button:disabled {
 }
 
 .tab-btn.active {
-  background: #047857;
+  background: #1a5c3a;
   color: #ffffff;
-  border-color: #047857;
+  border-color: #1a5c3a;
 }
 
 .scrollable-log-panel {

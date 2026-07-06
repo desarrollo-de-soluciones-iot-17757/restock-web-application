@@ -1,21 +1,21 @@
 <div class="custom-supply-card">
   <div class="card-image-wrapper">
-    <img [src]="customSupply.imgUrl" alt="Supply image" class="supply-image" />
+    <img [src]="customSupply.imgUrl" alt="Supply image" class="supply-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22 viewBox=%220 0 200 200%22%3E%3Crect fill=%22%23e5e7eb%22 width=%22200%22 height=%22200%22/%3E%3Ctext fill=%22%239ca3af%22 font-family=%22sans-serif%22 font-size=%2250%22 text-anchor=%22middle%22 dominant-baseline=%22central%22 x=%22100%22 y=%22100%22%3E?%3C/text%3E%3C/svg%3E'" />
     <span class="badge status-badge" [ngClass]="customSupply.isPerishable() ? 'perishable' : 'non-perishable'">
       {{ (customSupply.isPerishable() ? 'resource.customSupplies.card.perishable' : 'resource.customSupplies.card.nonPerishable') | translate }}
     </span>
   </div>
-  
+
   <div class="card-body">
     <div class="card-meta">
       <span class="category-text">{{ customSupply.category }}</span>
       <span class="uom-badge">{{ customSupply.unit.abbreviation }}</span>
     </div>
-    
+
     <h3 class="supply-name">{{ customSupply.name }}</h3>
-    
+
     <p class="supply-price">{{ customSupply.unitPrice }} PEN</p>
-    
+
     <div class="card-actions">
       <button class="action-btn edit-btn" (click)="edit()">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

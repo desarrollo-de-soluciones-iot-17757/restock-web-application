@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { KitEntity } from '../../../../planning/kits/domain/model/kit.entity';
 
 /**
@@ -10,13 +11,15 @@ import { KitEntity } from '../../../../planning/kits/domain/model/kit.entity';
 @Component({
   selector: 'app-kit-catalog-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './kit-catalog-card.html',
   styleUrl: './kit-catalog-card.css',
 })
 export class KitCatalogCardComponent {
   @Input({ required: true }) kit!: KitEntity;
   @Output() add = new EventEmitter<KitEntity>();
+
+  private readonly translate = inject(TranslateService);
 
   readonly fallbackImage =
     'https://st.depositphotos.com/9012638/52754/i/450/depositphotos_527544842-stock-photo-meal-kit-delivery-concept-set.jpg?h=400&w=600&fit=crop';
@@ -28,11 +31,11 @@ export class KitCatalogCardComponent {
   get availabilityLabel(): string {
     switch (this.kit.status) {
       case 'LOW_STOCK':
-        return 'Available: 0 Kits';
+        return this.translate.instant('sales.kitCard.availability.zeroKits');
       case 'RESTOCK':
-        return 'Restocking';
+        return this.translate.instant('sales.kitCard.availability.restocking');
       default:
-        return 'Available';
+        return this.translate.instant('sales.kitCard.availability.available');
     }
   }
 

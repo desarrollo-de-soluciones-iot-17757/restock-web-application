@@ -81,14 +81,37 @@ export class AnalyticsStore {
     this.criticalProductsLoading.set(true);
     this.criticalProductsError.set(null);
 
-    this.analyticsApi.getCriticalProducts(accountId).subscribe({
-      next: (data) => {
-        this.criticalProducts.set(data);
-        this.criticalProductsLoading.set(false);
+    this.analyticsApi.getSupplies().subscribe({
+      next: (supplies) => {
+        const supplyMap = new Map(supplies.map(s => [s.id, s.description]));
+
+        this.analyticsApi.getCriticalProducts(accountId).subscribe({
+          next: (data) => {
+            this.criticalProducts.set(
+              data.map(p => ({
+                ...p,
+                description: supplyMap.get(p.supplyId) ?? '',
+              }))
+            );
+            this.criticalProductsLoading.set(false);
+          },
+          error: (error) => {
+            this.criticalProductsError.set(error.message ?? 'Error loading critical products');
+            this.criticalProductsLoading.set(false);
+          },
+        });
       },
-      error: (error) => {
-        this.criticalProductsError.set(error.message ?? 'Error loading critical products');
-        this.criticalProductsLoading.set(false);
+      error: () => {
+        this.analyticsApi.getCriticalProducts(accountId).subscribe({
+          next: (data) => {
+            this.criticalProducts.set(data);
+            this.criticalProductsLoading.set(false);
+          },
+          error: (error) => {
+            this.criticalProductsError.set(error.message ?? 'Error loading critical products');
+            this.criticalProductsLoading.set(false);
+          },
+        });
       },
     });
   }
