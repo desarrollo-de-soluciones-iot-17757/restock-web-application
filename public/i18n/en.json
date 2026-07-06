@@ -561,7 +561,7 @@
       "build": "System Build v4.2.0-stable | Node: US-EAST-1"
     },
     "alertType": {
-      "hardwareOffline": "HARDWARE OFFLINE",
+      "hardwareOffline": "HARDWARE / HEALTH ALERT",
       "deviceRegistration": "DEVICE REGISTRATION",
       "dataMismatch": "DATA MISMATCH",
       "manualTransfer": "MANUAL STOCK TRANSFER",
@@ -576,6 +576,7 @@
       "investigate": "Investigate",
       "markResolved": "Mark Resolved",
       "runDiagnostics": "Run Diagnostics",
+      "viewDetails": "View Details",
       "acknowledge": "Acknowledge",
       "reviewConfirm": "Review & Confirm",
       "dismiss": "Dismiss"

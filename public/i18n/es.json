@@ -561,7 +561,7 @@
       "build": "Build v4.2.0-stable | Nodo: US-EAST-1"
     },
     "alertType": {
-      "hardwareOffline": "EQUIPO DESCONECTADO",
+      "hardwareOffline": "ALERTA DE HARDWARE / SALUD",
       "deviceRegistration": "REGISTRO DE DISPOSITIVO",
       "dataMismatch": "DISCREPANCIA DE DATOS",
       "manualTransfer": "TRANSFERENCIA MANUAL DE STOCK",
@@ -576,6 +576,7 @@
       "investigate": "Investigar",
       "markResolved": "Marcar como resuelto",
       "runDiagnostics": "Ejecutar diagnóstico",
+      "viewDetails": "Ver detalles",
       "acknowledge": "Reconocer",
       "reviewConfirm": "Revisar y confirmar",
       "dismiss": "Descartar"

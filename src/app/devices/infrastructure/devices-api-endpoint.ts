@@ -15,6 +15,7 @@ import {
   UPDATE_MEASUREMENT_URL,
   UPDATE_DEVICE_STATUS_URL,
   UPDATE_WITHDRAWN_STOCK_URL,
+  DEVICES_HEALTH_URL,
 } from './devices.endpoint';
 
 export interface AddSpecificationsRequest {
@@ -109,4 +110,9 @@ export class DevicesApiEndpoint extends ErrorHandlingEnabledBaseType {
     );
   }
 
+  getDeviceHealthLogs(deviceId: string): Observable<unknown> {
+    return this.http.get<unknown>(DEVICES_HEALTH_URL(deviceId)).pipe(
+      catchError(this.handleError('Failed to fetch device health logs')),
+    );
+  }
 }
