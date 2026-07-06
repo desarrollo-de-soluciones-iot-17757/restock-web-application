@@ -20,11 +20,11 @@
 
       <div class="header-actions">
         <span class="status-badge"
-          [class.badge-pending]="device.status === 'REGISTERED'"
-          [class.badge-configured]="device.status === 'CONFIGURED'"
-          [class.badge-active]="device.status === 'CALIBRATED'"
-          [class.badge-active]="device.status === 'ACTIVE'"
-          [class.badge-inactive]="device.status === 'INACTIVE'">
+              [class.badge-pending]="device.status === 'REGISTERED'"
+              [class.badge-configured]="device.status === 'CONFIGURED'"
+              [class.badge-active]="device.status === 'CALIBRATED'"
+              [class.badge-active]="device.status === 'ACTIVE'"
+              [class.badge-inactive]="device.status === 'INACTIVE'">
           {{ statusLabel(device.status) | translate }}
         </span>
         <button class="btn-outline" type="button">
@@ -141,8 +141,8 @@
 
             <div class="section-actions">
               <button class="btn-outline" type="button"
-                [disabled]="!device.assignedBatchId || specificationsForm.invalid || loading() || (hasSpecifications(device) && !specificationsChanged(device))"
-                (click)="saveSpecifications()">
+                      [disabled]="!device.assignedBatchId || specificationsForm.invalid || loading() || (hasSpecifications(device) && !specificationsChanged(device))"
+                      (click)="saveSpecifications()">
                 <mat-icon>save</mat-icon>
                 @if (loading()) {
                   <mat-spinner diameter="16"></mat-spinner>
@@ -190,8 +190,8 @@
 
             <div class="section-actions">
               <button class="btn-outline" type="button"
-                [disabled]="!device.assignedBatchId || branchForm.invalid || loading() || (!!device.branchId && !branchChanged(device))"
-                (click)="saveBranch()">
+                      [disabled]="!device.assignedBatchId || branchForm.invalid || loading() || (!!device.branchId && !branchChanged(device))"
+                      (click)="saveBranch()">
                 <mat-icon>storefront</mat-icon>
                 @if (loading()) {
                   <mat-spinner diameter="16"></mat-spinner>
@@ -290,8 +290,8 @@
 
               <div class="threshold-footer">
                 <button class="btn-primary" type="button"
-                  [disabled]="thresholdsForm.invalid || specificationsForm.invalid || branchForm.invalid || loading()"
-                  (click)="saveThresholds()">
+                        [disabled]="thresholdsForm.invalid || specificationsForm.invalid || branchForm.invalid || loading()"
+                        (click)="saveThresholds()">
                   <mat-icon>task_alt</mat-icon>
                   @if (loading()) {
                     <mat-spinner diameter="16"></mat-spinner>
@@ -364,8 +364,8 @@
 
               <div class="section-actions">
                 <button class="btn-primary" type="button"
-                  [disabled]="calibrationForm.invalid || loading()"
-                  (click)="saveCalibration()">
+                        [disabled]="calibrationForm.invalid || loading()"
+                        (click)="saveCalibration()">
                   <mat-icon>scale</mat-icon>
                   @if (loading()) {
                     <mat-spinner diameter="16"></mat-spinner>
@@ -536,8 +536,8 @@
         <div class="modal-footer">
           <button class="btn-ghost" type="button" (click)="closeAssignBatchDialog()">{{ 'devices.onboarding.assignBatch.cancel' | translate }}</button>
           <button class="btn-primary" type="button"
-            [disabled]="assignBatchForm.invalid || loading()"
-            (click)="submitAssignBatch()">
+                  [disabled]="assignBatchForm.invalid || loading()"
+                  (click)="submitAssignBatch()">
             @if (loading()) {
               <mat-spinner diameter="16"></mat-spinner>
             } @else {
@@ -568,8 +568,8 @@
           <div class="field-group mt-16">
             <label class="field-label-caps">{{ 'devices.onboarding.unlinkDialog.confirmLabel' | translate }}</label>
             <input [(ngModel)]="unlinkConfirmText"
-              [placeholder]="'devices.onboarding.unlinkDialog.confirmPlaceholder' | translate"
-              class="form-input" />
+                   [placeholder]="'devices.onboarding.unlinkDialog.confirmPlaceholder' | translate"
+                   class="form-input" />
           </div>
         </div>
 
