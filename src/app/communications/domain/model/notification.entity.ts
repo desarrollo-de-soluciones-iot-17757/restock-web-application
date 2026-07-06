@@ -106,7 +106,11 @@ export class DeviceAlert implements BaseEntity {
   }
 
   get isConnectionLost(): boolean {
-    return this.alertType === 'CONNECTION_LOST' || this.alertType === 'DEVICE_REGISTERED' || this.sourceType === 'DEVICE';
+    return this.alertType === 'CONNECTION_LOST';
+  }
+
+  get isDeviceRegistered(): boolean {
+    return this.alertType === 'DEVICE_REGISTERED';
   }
 
   get isInconsistentReading(): boolean {

@@ -1,4 +1,5 @@
-import { Component, effect, inject, OnInit, signal, untracked } from '@angular/core';
+import { Component, effect, inject, OnInit, OnDestroy, signal, untracked } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,10 +12,13 @@ import { IamStore } from '../../../../iam/application/iam.store';
 import { ResourceStore } from '../../../../resource/application/resource.store';
 import { Device } from '../../../domain/model/device.entity';
 import { DeviceStatus } from '../../../domain/model/device-status';
+import { TrackingApi } from '../../../../tracking/infrastructure/tracking-api';
+import { DevicesApi } from '../../../infrastructure/devices-api';
 
 @Component({
   selector: 'app-device-onboarding',
   imports: [
+    CommonModule,
     ReactiveFormsModule,
     FormsModule,
     MatIconModule,
@@ -23,13 +27,15 @@ import { DeviceStatus } from '../../../domain/model/device-status';
   templateUrl: './device-onboarding.html',
   styleUrls: ['./device-onboarding.css'],
 })
-export class DeviceOnboarding implements OnInit {
+export class DeviceOnboarding implements OnInit, OnDestroy {
   private readonly devicesStore = inject(DevicesStore);
   private readonly thresholdsStore = inject(DeviceThresholdsStore);
   private readonly iamStore = inject(IamStore);
   readonly resourceStore = inject(ResourceStore);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
+  private readonly trackingApi = inject(TrackingApi);
+  private readonly devicesApi = inject(DevicesApi);
 
   readonly currentDevice = signal<Device | null>(null);
   readonly loading = signal(false);
@@ -38,6 +44,10 @@ export class DeviceOnboarding implements OnInit {
   readonly showUnlinkDialog = signal(false);
   unlinkConfirmText = '';
 
+  readonly historyTab = signal<'weight' | 'health'>('weight');
+  readonly telemetryReadings = signal<any[]>([]);
+  readonly healthLogs = signal<any[]>([]);
+  private pollingIntervalId: any = null;
   readonly weightUnits = [
     { name: 'gram', abbr: 'g' },
     { name: 'kilogram', abbr: 'kg' },
@@ -68,7 +78,7 @@ export class DeviceOnboarding implements OnInit {
   readonly thresholdsForm: FormGroup = this.fb.group({
     minStock: [null, [Validators.required, Validators.min(0)]],
     maxStock: [null, [Validators.required, Validators.min(0)]],
-    anomalyThreshold: [0, [Validators.min(0)]],
+    anomalyThreshold: [15, [Validators.min(0)]],
     minTemperature: [null],
     maxTemperature: [null],
     minHumidity: [null, [Validators.min(0), Validators.max(100)]],
@@ -79,7 +89,10 @@ export class DeviceOnboarding implements OnInit {
     effect(() => {
       const accountId = this.iamStore.currentUser()?.accountId ?? '';
       if (accountId) {
-        untracked(() => this.resourceStore.loadInventoryContext(accountId));
+        untracked(() => {
+          this.resourceStore.loadInventoryContext(accountId);
+          this.thresholdsStore.loadThresholdsForAccount(accountId);
+        });
       }
     });
 
@@ -132,8 +145,55 @@ export class DeviceOnboarding implements OnInit {
     } else {
       this.router.navigate(['/devices']);
     }
-    this.resourceStore.loadInventoryContext(this.accountId);
-    this.thresholdsStore.loadThresholdsForAccount(this.accountId);
+    this.startLogsPolling();
+  }
+
+  ngOnDestroy(): void {
+    this.stopLogsPolling();
+  }
+
+  setHistoryTab(tab: 'weight' | 'health'): void {
+    this.historyTab.set(tab);
+  }
+
+  private startLogsPolling(): void {
+    const device = this.currentDevice();
+    if (!device) return;
+
+    this.fetchLogs(device.macAddress);
+
+    this.pollingIntervalId = setInterval(() => {
+      this.fetchLogs(device.macAddress);
+    }, 5000);
+  }
+
+  private stopLogsPolling(): void {
+    if (this.pollingIntervalId) {
+      clearInterval(this.pollingIntervalId);
+      this.pollingIntervalId = null;
+    }
+  }
+
+  private fetchLogs(deviceId: string): void {
+    this.trackingApi.getTelemetryReadings(deviceId).subscribe({
+      next: (readings) => {
+        const sorted = readings.sort(
+          (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+        );
+        this.telemetryReadings.set(sorted.slice(0, 15)); // Keep latest 15 readings
+      },
+      error: (err: any) => console.error('Failed to fetch telemetry readings', err),
+    });
+
+    this.devicesApi.getDeviceHealthLogs(deviceId).subscribe({
+      next: (logs: any) => {
+        const sorted = logs.sort(
+          (a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+        );
+        this.healthLogs.set(sorted.slice(0, 15)); // Keep latest 15 health logs
+      },
+      error: (err: any) => console.error('Failed to fetch health logs', err),
+    });
   }
 
   private get accountId(): string {
