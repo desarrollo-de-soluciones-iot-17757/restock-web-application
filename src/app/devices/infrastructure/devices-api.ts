@@ -65,6 +65,10 @@ export class DevicesApi extends BaseApi {
     return this.devicesEndpoint.updateWithdrawnStock(deviceId, amount);
   }
 
+  getDeviceHealthLogs(deviceId: string): Observable<any> {
+    return this.devicesEndpoint.getDeviceHealthLogs(deviceId);
+  }
+
   // --- Threshold queries & mutations ---
 
   getThresholdsByAccountId(accountId: string): Observable<DeviceThreshold[]> {

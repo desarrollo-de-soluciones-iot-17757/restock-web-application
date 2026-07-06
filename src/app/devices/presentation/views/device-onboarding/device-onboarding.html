@@ -229,9 +229,9 @@
               <div class="threshold-section">
                 <div class="section-header-sm">
                   <mat-icon>inventory</mat-icon>
-                  <h4>Stock limits</h4>
+                  <h4>Stock & Anomaly limits</h4>
                 </div>
-                <div class="threshold-row-2 mt-12">
+                <div class="threshold-row-3 mt-12" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
                   <div class="field-group">
                     <label class="field-label-caps">Minimum stock alert</label>
                     <div class="input-with-unit">
@@ -244,6 +244,13 @@
                     <div class="input-with-unit">
                       <input type="number" formControlName="maxStock" class="form-input" />
                       <span class="unit-tag">units</span>
+                    </div>
+                  </div>
+                  <div class="field-group">
+                    <label class="field-label-caps">Weight Anomaly Tolerance</label>
+                    <div class="input-with-unit">
+                      <input type="number" formControlName="anomalyThreshold" placeholder="15.0" class="form-input" />
+                      <span class="unit-tag">%</span>
                     </div>
                   </div>
                 </div>
@@ -415,6 +422,70 @@
             <mat-icon class="hint-icon">info_outline</mat-icon>
             Empty the physical scale before applying tare.
           </p>
+        </section>
+
+        <section class="panel-card history-card">
+          <div class="panel-header compact" style="margin-bottom: 12px;">
+            <mat-icon class="panel-icon">history_edu</mat-icon>
+            <h3 class="panel-title">Device History Logs</h3>
+          </div>
+
+          <div class="tab-header" style="display: flex; gap: 8px; margin-bottom: 12px;">
+            <button type="button" class="tab-btn" [class.active]="historyTab() === 'weight'" (click)="setHistoryTab('weight')">
+              Weight Log
+            </button>
+            <button type="button" class="tab-btn" [class.active]="historyTab() === 'health'" (click)="setHistoryTab('health')">
+              Health Log
+            </button>
+          </div>
+
+          <div class="log-list scrollable-log-panel" style="max-height: 240px; overflow-y: auto;">
+            @if (historyTab() === 'weight') {
+              @if (telemetryReadings().length === 0) {
+                <div class="empty-log-state">
+                  <mat-icon>trending_flat</mat-icon>
+                  <span>No weight records yet.</span>
+                </div>
+              } @else {
+                @for (reading of telemetryReadings(); track reading.id) {
+                  <div class="log-item">
+                    <div class="log-meta">
+                      <span class="log-time">{{ reading.timestamp | date:'HH:mm:ss · dd/MM' }}</span>
+                      <span class="log-badge">Weight</span>
+                    </div>
+                    <div class="log-details">
+                      <span class="log-value">{{ reading.physicalStock }} {{ device.weightUnitAbbreviation || 'g' }}</span>
+                      @if (reading.temperature || reading.humidity) {
+                        <span class="log-env">
+                          ({{ reading.temperature }}°C · {{ reading.humidity }}%)
+                        </span>
+                      }
+                    </div>
+                  </div>
+                }
+              }
+            } @else {
+              @if (healthLogs().length === 0) {
+                <div class="empty-log-state">
+                  <mat-icon>thermostat</mat-icon>
+                  <span>No health logs yet.</span>
+                </div>
+              } @else {
+                @for (log of healthLogs(); track log.id) {
+                  <div class="log-item">
+                    <div class="log-meta">
+                      <span class="log-time">{{ log.timestamp | date:'HH:mm:ss · dd/MM' }}</span>
+                      <span class="log-badge health">Health</span>
+                    </div>
+                    <div class="log-details font-mono">
+                      <span>V: {{ log.voltageVolts | number:'1.2-2' }}V | CPU: {{ log.cpuUsagePercentage | number:'1.1-1' }}%</span>
+                      <span>RAM: {{ log.memoryFreeBytes / 1024 | number:'1.0-0' }}KB | T: {{ log.temperatureInCelsius | number:'1.1-1' }}°C</span>
+                    </div>
+                  </div>
+                }
+              }
+            }
+          </div>
         </section>
 
         <section class="panel-card danger-card">
