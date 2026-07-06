@@ -35,7 +35,7 @@
         <span class="top-card-label">{{ 'analytics.activeMetrics.title' | translate }}</span>
         <i class="ti ti-chart-bar top-card-icon" aria-hidden="true"></i>
       </div>
-      <div class="top-card-headline">{{ (stockDiscrepancies().length + criticalProducts().length + recentSales().length) }}/3</div>
+      <div class="top-card-headline">{{ (stockDiscrepancies().length + criticalProducts().length) }}/2</div>
       <div class="top-card-sub">{{ 'analytics.activeMetrics.subtitle' | translate }}</div>
       <div class="activity-bars" aria-hidden="true">
         <span class="bar bar-full"></span>
@@ -80,11 +80,6 @@
         {{ criticalProducts().length }}
       </div>
       <div class="summary-card-sub">{{ 'analytics.summary.deficit' | translate }} {{ totalStockDeficit() | number: '1.1-1' }}</div>
-    </div>
-    <div class="summary-card">
-      <div class="summary-card-label">{{ 'analytics.summary.recentSales' | translate }}</div>
-      <div class="summary-card-value">{{ recentSales().length }}</div>
-      <div class="summary-card-sub">{{ 'analytics.summary.total' | translate }} ${{ totalSalesAmount() | number: '1.2-2' }}</div>
     </div>
   </div>
   <div class="analytics-section" *ngIf="stockDiscrepancies().length > 0">
@@ -150,7 +145,7 @@
           <tbody>
             <tr *ngFor="let product of criticalProducts()">
               <td class="cell-bold">{{ product.productName }}</td>
-              <td class="cell-mono">{{ product.supplyId }}</td>
+              <td class="cell-mono">{{ product.description }}</td>
               <td>{{ product.branchName }}</td>
               <td class="col-right">{{ product.totalStock | number: '1.2-2' }}</td>
               <td class="col-right">{{ product.minStock | number: '1.2-2' }}</td>
@@ -161,57 +156,7 @@
       </div>
     </div>
   </div>
-  <div class="analytics-section" *ngIf="recentSales().length > 0 || recentSalesLoading()">
-    <div class="section-header">
-      <h2 class="section-title">{{ 'analytics.section.recentSales' | translate }}</h2>
-      <span class="section-badge">{{ recentSales().length }} {{ 'analytics.section.salesBadge' | translate }}</span>
-    </div>
-    <div class="date-filter-bar">
-      <label class="date-filter-label" for="startDate">{{ 'analytics.dateFilter.from' | translate }}</label>
-      <input
-        id="startDate"
-        type="date"
-        class="date-input"
-        [value]="salesStartDate()"
-        (change)="onStartDateChange($event)"
-      />
-      <label class="date-filter-label" for="endDate">{{ 'analytics.dateFilter.to' | translate }}</label>
-      <input
-        id="endDate"
-        type="date"
-        class="date-input"
-        [value]="salesEndDate()"
-        (change)="onEndDateChange($event)"
-      />
-      <button type="button" class="btn-filter-apply" (click)="applyDateFilter()">{{ 'analytics.dateFilter.apply' | translate }}</button>
-      <button type="button" class="btn-filter-clear" (click)="clearDateFilter()">{{ 'analytics.dateFilter.clear' | translate }}</button>
-    </div>
-    <div class="table-card">
-      <div class="table-responsive">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>{{ 'analytics.table.saleId' | translate }}</th>
-              <th>{{ 'analytics.table.branch' | translate }}</th>
-              <th class="col-right">{{ 'analytics.table.amount' | translate }}</th>
-              <th>{{ 'analytics.table.date' | translate }}</th>
-              <th>{{ 'analytics.table.status' | translate }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let sale of recentSales()">
-              <td class="cell-mono">{{ sale.saleId }}</td>
-              <td>{{ sale.branchId ?? '-' }}</td>
-              <td class="col-right">{{ sale.totalAmount ? ('$' + (sale.totalAmount | number: '1.2-2')) : '-' }}</td>
-              <td>{{ sale.saleDate | date: 'MMM d, yyyy' }}</td>
-              <td><span class="status-resolved">{{ sale.status ?? ('analytics.table.completed' | translate) }}</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  <div class="empty-state" *ngIf="stockDiscrepancies().length === 0 && criticalProducts().length === 0 && recentSales().length === 0 && !recentSalesLoading()">
+  <div class="empty-state" *ngIf="stockDiscrepancies().length === 0 && criticalProducts().length === 0">
     <p>{{ 'analytics.empty' | translate }}</p>
   </div>
 </div>

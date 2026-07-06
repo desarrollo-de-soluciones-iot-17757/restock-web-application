@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, catchError, map } from 'rxjs';
+import { Observable, catchError, map, throwError } from 'rxjs';
 import { BaseApiEndpoint } from '../../../shared/infrastructure/base-api-endpoint';
 import { Profile } from '../../domain/model/profile.entity';
 import { ProfileResource, ProfilesListResponse } from './profiles.response';
@@ -35,20 +35,33 @@ export class ProfilesApiEndpoint extends BaseApiEndpoint<
     const primaryUrl = `${this.primaryUrl}?accountId=${encodedAccountId}`;
     const fallbackUrl = `${this.fallbackUrl}?accountId=${encodedAccountId}`;
 
-    const parseLast = (response: unknown): Profile => {
-      const list: ProfileResource[] = Array.isArray(response)
-        ? response
-        : (response as any)?.profiles ?? [];
-      const resource = list[list.length - 1];
-      if (!resource) throw new HttpErrorResponse({ status: 404, statusText: 'Not Found' });
+    const parse = (response: unknown): Profile => {
+      // The backend returns a single object, not an array.
+      // Guard for both shapes in case the API ever changes.
+      if (Array.isArray(response)) {
+        const list = response as ProfileResource[];
+        if (!list.length) {
+          throw new HttpErrorResponse({ status: 404, statusText: 'Not Found' });
+        }
+        return this.assembler.toEntityFromResource(list[0]);
+      }
+
+      // Single-object response (current backend contract)
+      const resource = response as ProfileResource;
+      if (!resource?.id) {
+        throw new HttpErrorResponse({ status: 404, statusText: 'Not Found' });
+      }
       return this.assembler.toEntityFromResource(resource);
     };
 
     return this.http.get<unknown>(primaryUrl).pipe(
-      map(parseLast),
-      catchError(() =>
-        this.http.get<unknown>(fallbackUrl).pipe(map(parseLast)),
-      ),
+      map(parse),
+      catchError((primaryErr) => {
+        if (primaryErr instanceof HttpErrorResponse && primaryErr.status === 404) {
+          return throwError(() => primaryErr);
+        }
+        return this.http.get<unknown>(fallbackUrl).pipe(map(parse));
+      }),
     ) as Observable<Profile>;
   }
 
@@ -90,24 +103,28 @@ export class ProfilesApiEndpoint extends BaseApiEndpoint<
       imageFile
     );
 
-    const operation = () =>
-      this.http.patch<ProfileResource>(
-        `${this.endpointUrl}/${encodeURIComponent(id)}`,
-        fd
-      ).pipe(
-        map((updated) => this.assembler.toEntityFromResource(updated)),
-      );
-
-    return operation().pipe(
-      catchError(() => this.withFallback(operation)),
+    return this.http.patch<ProfileResource>(
+      `${this.primaryUrl}/${encodeURIComponent(id)}`,
+      fd
+    ).pipe(
+      map((updated) => this.assembler.toEntityFromResource(updated)),
+      catchError(() =>
+        this.http.patch<ProfileResource>(
+          `${this.fallbackUrl}/${encodeURIComponent(id)}`,
+          fd
+        ).pipe(
+          map((updated) => this.assembler.toEntityFromResource(updated)),
+        )
+      ),
       catchError(this.handleError('Failed to update profile')),
     );
   }
 
   private withFallback<T>(operation: () => Observable<T>): Observable<T> {
+    const savedUrl = this.endpointUrl;
     this.endpointUrl = this.fallbackUrl;
     const result$ = operation();
-    this.endpointUrl = this.primaryUrl;
+    this.endpointUrl = savedUrl;
 
     return result$;
   }
@@ -116,13 +133,15 @@ export class ProfilesApiEndpoint extends BaseApiEndpoint<
 function buildProfileFormData(resource: ProfileResource, imageFile?: File): FormData {
   const fd = new FormData();
 
+  // Always send all fields — use null-coalescing to ensure empty strings are sent,
+  // so the backend can clear fields the user deliberately left blank.
+  fd.append('name', resource.name ?? '');
+  fd.append('lastName', resource.lastName ?? '');
+  fd.append('phoneNumber', resource.phoneNumber ?? '');
+  fd.append('gender', resource.gender ?? '');
+  fd.append('birthDate', resource.birthDate ?? '');
   if (resource.accountId) fd.append('accountId', resource.accountId);
   if (resource.userId) fd.append('userId', resource.userId);
-  if (resource.name) fd.append('name', resource.name);
-  if (resource.lastName) fd.append('lastName', resource.lastName);
-  if (resource.phoneNumber) fd.append('phoneNumber', resource.phoneNumber);
-  if (resource.gender) fd.append('gender', resource.gender);
-  if (resource.birthDate) fd.append('birthDate', resource.birthDate);
   if (imageFile) fd.append('image', imageFile);
 
   return fd;

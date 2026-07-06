@@ -1,8 +1,10 @@
 import { AfterViewChecked, Component, computed, effect, inject, OnInit, untracked, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslatePipe } from '@ngx-translate/core';
 import { RegisterDeviceDialog } from '../device-onboarding/register-device-dialog';
 import { Device } from '../../../domain/model/device.entity';
+import { DeviceStatus } from '../../../domain/model/device-status';
 import { DevicesStore } from '../../../application/devices.store';
 import { IamStore } from '../../../../iam/application/iam.store';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
@@ -25,6 +27,7 @@ import { MatChipsModule } from '@angular/material/chips';
 @Component({
   selector: 'app-devices-list',
   imports: [
+    TranslatePipe,
     MatSort,
     MatPaginator,
     MatButtonModule,
@@ -100,5 +103,16 @@ export class DevicesList implements AfterViewChecked, OnInit {
 
   deactivate(deviceId: string): void {
     this.store.updateStatus(deviceId, 'INACTIVE').subscribe();
+  }
+
+  statusLabel(status: DeviceStatus): string {
+    const map: Record<DeviceStatus, string> = {
+      REGISTERED: 'devices.status.registered',
+      CONFIGURED: 'devices.status.configured',
+      CALIBRATED: 'devices.status.calibrated',
+      ACTIVE: 'devices.status.active',
+      INACTIVE: 'devices.status.inactive',
+    };
+    return map[status];
   }
 }

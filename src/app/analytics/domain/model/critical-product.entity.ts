@@ -2,6 +2,7 @@ export interface CriticalProduct {
   productId: string;
   productName: string;
   supplyId: string;
+  description: string;
   totalStock: number;
   minStock: number;
   maxStock: number;

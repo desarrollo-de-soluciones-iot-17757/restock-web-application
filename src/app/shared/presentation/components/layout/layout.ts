@@ -65,7 +65,7 @@ export class Layout {
     },
     { 
       labelKey: 'nav.kits', 
-      icon: 'inventory', 
+      icon: 'widgets', 
       link: '/kits',
       allowedRoles: ['RETAILADMIN']
     },

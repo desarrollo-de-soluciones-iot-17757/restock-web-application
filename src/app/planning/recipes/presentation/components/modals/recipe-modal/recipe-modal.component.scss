@@ -1,5 +1,5 @@
-$emerald: #0F766E;
-$emerald-hover: #0D9488;
+$emerald: #1a5c3a;
+$emerald-hover: #13462b;
 $red: #EF4444;
 $red-light: #FEF2F2;
 $gray-50: #F9FAFB;
@@ -190,7 +190,7 @@ $white: #FFFFFF;
   color: $gray-500;
   transition: color 0.2s ease;
   min-width: 60px;
-  
+
   &.active-text {
     color: $emerald; // green accent
   }
@@ -201,21 +201,21 @@ $white: #FFFFFF;
   display: inline-block;
   width: 44px;
   height: 24px;
-  
+
   input {
     opacity: 0;
     width: 0;
     height: 0;
-    
+
     &:checked + .slider {
       background-color: $emerald-hover; // green accent
       box-shadow: 0 0 8px rgba(13, 148, 136, 0.4);
     }
-    
+
     &:focus + .slider {
       box-shadow: 0 0 1px $emerald-hover;
     }
-    
+
     &:checked + .slider:before {
       transform: translateX(20px);
       background-color: $white;
@@ -230,7 +230,7 @@ $white: #FFFFFF;
   background-color: $gray-300;
   transition: .3s;
   border-radius: 24px;
-  
+
   &:before {
     position: absolute;
     content: "";

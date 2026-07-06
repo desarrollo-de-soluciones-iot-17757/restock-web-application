@@ -18,6 +18,8 @@ import { StockDiscrepancyEndpoint } from './metric/stock-discrepancy.endpoint';
 import { RecentSaleEndpoint } from './metric/recent-sale.endpoint';
 import { CriticalProductEndpoint } from './metric/critical-product.endpoint';
 import { LoadMetricsCommand } from '../domain/commands/load-metrics.command';
+import { SupplyResponse } from './supply/supply.response';
+import { SUPPLY_ENDPOINT } from './supply/supply.endpoint';
 
 @Injectable({ providedIn: 'root' })
 export class AnalyticsApi {
@@ -66,5 +68,9 @@ export class AnalyticsApi {
     return this.http
       .get<CriticalProductResponse[]>(CriticalProductEndpoint.byAccountId(accountId))
       .pipe(map(CriticalProductAssembler.toEntityList));
+  }
+
+  getSupplies(): Observable<SupplyResponse[]> {
+    return this.http.get<SupplyResponse[]>(SUPPLY_ENDPOINT);
   }
 }

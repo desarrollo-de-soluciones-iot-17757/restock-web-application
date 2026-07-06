@@ -194,32 +194,194 @@
     }
   },
   "devices": {
-    "list-title": "Device Management",
-    "register-device-btn": "Register Device",
-    "list-error": "Error loading devices",
-    "stats-active-scales": "Active Scales",
-    "stats-from-yesterday": "↓ 4 from yesterday",
-    "stats-stock-alerts": "Stock Alerts",
-    "stats-critical": "Critical",
-    "stats-environmental-alerts": "Environmental Alerts",
-    "stats-temp-deviation": "Temp deviation detected",
-    "stats-offline": "Offline",
-    "stats-check-connectivity": "Check connectivity",
-    "table-title": "Active Device Directory",
-    "table-macAddress": "MAC ADDRESS",
-    "table-assignedSupply": "ASSIGNED SUPPLY",
-    "table-network": "NETWORK",
-    "table-deviceStatus": "SENSOR HEALTH",
-    "table-footer-showing": "Showing",
-    "table-footer-of": "of",
-    "table-footer-devices": "devices"
+    "list": {
+      "title": "Device Management",
+      "registerDevice": "Register Device",
+      "error": "Error loading devices",
+      "stats": {
+        "total": "TOTAL",
+        "allDevices": "All Devices",
+        "configuredActive": "Configured / Active",
+        "pendingSetup": "Pending Setup",
+        "inactive": "Inactive"
+      },
+      "table": {
+        "title": "Device Directory",
+        "macAddress": "MAC ADDRESS",
+        "description": "DESCRIPTION",
+        "status": "STATUS",
+        "firmware": "FIRMWARE",
+        "actions": "ACTIONS",
+        "openDetails": "Open details",
+        "deactivate": "Deactivate",
+        "footer": "{{count}} devices"
+      }
+    },
+    "onboarding": {
+      "backAria": "Back to device list",
+      "eyebrow": "Device onboarding",
+      "editInfo": "Edit info",
+      "steps": {
+        "batch": "Batch",
+        "hardware": "Hardware",
+        "branch": "Branch",
+        "alerts": "Alerts",
+        "calibration": "Calibration"
+      },
+      "inventoryAssignment": {
+        "title": "Inventory assignment",
+        "subtitle": "Connect this scale to the supply batch it will monitor.",
+        "noBatchAssigned": "No batch assigned",
+        "noBatchDesc": "Assign an inventory batch before configuring alerts or activating monitoring.",
+        "assignBatch": "Assign batch",
+        "currentBatch": "Current batch",
+        "change": "Change"
+      },
+      "hardwareSpecs": {
+        "title": "Hardware specifications",
+        "subtitle": "Identify the equipment version used by operations and support.",
+        "locked": "Locked",
+        "manufacturer": "Manufacturer",
+        "manufacturerPlaceholder": "Restock",
+        "model": "Model",
+        "modelPlaceholder": "Supply Keeper",
+        "firmwareVersion": "Firmware version",
+        "firmwarePlaceholder": "1.0.0",
+        "update": "Update hardware",
+        "save": "Save hardware"
+      },
+      "branchAssignment": {
+        "title": "Branch assignment",
+        "subtitle": "Place the device in the store branch where readings belong.",
+        "branch": "Branch",
+        "noBranches": "No branches available.",
+        "selectBranch": "Select a branch...",
+        "update": "Update branch",
+        "assign": "Assign branch"
+      },
+      "alertThresholds": {
+        "title": "Alert thresholds",
+        "subtitle": "Define stock and environmental limits for automatic monitoring.",
+        "lockedDesc": "Assign a batch to enable stock, temperature, and humidity thresholds.",
+        "stockAnomaly": "Stock & Anomaly limits",
+        "minStock": "Minimum stock alert",
+        "maxCapacity": "Maximum capacity",
+        "weightAnomaly": "Weight Anomaly Tolerance",
+        "units": "units",
+        "environmental": "Environmental limits",
+        "temperature": "Temperature",
+        "tempHint": "Allowed sensor range in C",
+        "humidity": "Humidity",
+        "humidityHint": "Allowed relative humidity",
+        "min": "Min",
+        "max": "Max",
+        "to": "to",
+        "save": "Save configuration"
+      },
+      "calibration": {
+        "title": "Weight calibration",
+        "subtitle": "Define how sensor weight converts into stock units.",
+        "lockedDesc": "Save batch, branch, hardware, and alert thresholds before calibrating the scale.",
+        "weightUnit": "Weight unit",
+        "unitWeight": "Unit weight",
+        "tareWeight": "Tare weight",
+        "resetScale": "Reset scale to zero",
+        "tareWarning": "Empty the physical scale before applying tare. The current weight becomes the zero reference point.",
+        "update": "Update calibration",
+        "calibrate": "Calibrate device"
+      },
+      "operationalSummary": {
+        "title": "Operational summary",
+        "batch": "Batch",
+        "branch": "Branch",
+        "firmware": "Firmware",
+        "lastCalibration": "Last calibration",
+        "notAssigned": "Not assigned",
+        "notSet": "Not set",
+        "notCalibrated": "Not calibrated",
+        "loadingBatch": "Loading...",
+        "unknownBatch": "Unknown batch",
+        "loadingBranch": "Loading..."
+      },
+      "scaleActions": {
+        "title": "Scale actions",
+        "resetTare": "Reset tare",
+        "tareHint": "Empty the physical scale before applying tare."
+      },
+      "deviceHistory": {
+        "title": "Device History Logs",
+        "weightLog": "Weight Log",
+        "healthLog": "Health Log",
+        "noWeightRecords": "No weight records yet.",
+        "noHealthLogs": "No health logs yet.",
+        "weightBadge": "Weight",
+        "healthBadge": "Health"
+      },
+      "assignBatch": {
+        "title": "Assign batch",
+        "subtitle": "Select the inventory batch monitored by {{device}}.",
+        "selectBatch": "Select batch",
+        "loading": "Loading batches...",
+        "noBatches": "No batches available. Add stock in Inventory first.",
+        "selectPlaceholder": "Select a batch...",
+        "cancel": "Cancel",
+        "save": "Save assignment"
+      },
+      "unlinkDialog": {
+        "title": "Unlink Supply Keeper",
+        "body": "Unlinking this Supply Keeper will stop real-time monitoring. Historical data will be retained.",
+        "deviceId": "Device ID",
+        "confirmLabel": "Confirmation required",
+        "confirmPlaceholder": "Write the scale name to confirm",
+        "cancel": "Cancel",
+        "unlink": "Unlink scale",
+        "confirm": "Unlink scale"
+      },
+      "dangerZone": {
+        "label": "Danger zone",
+        "desc": "Disconnecting stops monitoring for this Supply Keeper.",
+        "unlink": "Unlink Supply Keeper",
+        "delete": "Delete registration"
+      },
+      "errors": {
+        "assignBatch": "Failed to assign batch. Please try again.",
+        "batchNotAvailable": "Batch details are not available yet. Please try again.",
+        "saveThresholds": "Failed to save alert thresholds. Please try again.",
+        "saveSpecifications": "Failed to save hardware specifications. Please try again.",
+        "assignBranch": "Failed to assign branch. Please try again.",
+        "completeSpecs": "Please complete all hardware specification fields.",
+        "assignBranchFirst": "Please select a branch before saving.",
+        "calibrate": "Failed to save calibration. Please try again.",
+        "unlink": "Failed to unlink device. Please try again."
+      }
+    },
+    "registerDialog": {
+      "title": "Register New Supply Keeper",
+      "macAddress": "MAC Address",
+      "macPlaceholder": "00:1A:2B:3C:4D:5E",
+      "macFormatError": "Format: 00:11:22:33:44:55",
+      "alias": "Supply Keeper Alias",
+      "aliasPlaceholder": "e.g., Balanza Lácteos",
+      "required": "Required",
+      "cancel": "Cancel",
+      "register": "Register Device",
+      "error": "Failed to register device. Please try again."
+    },
+    "status": {
+      "registered": "AWAITING SETUP",
+      "configured": "CONFIGURED",
+      "calibrated": "CALIBRATED",
+      "active": "Online",
+      "inactive": "Inactive"
+    }
   },
   "settings": {
     "breadcrumb": {
       "root": "SETTINGS",
       "general": "GENERAL",
       "profile": "PROFILE",
-      "branches": "BRANCHES"
+      "branches": "BRANCHES",
+      "subscriptions": "SUBSCRIPTIONS"
     },
     "title": "Account Settings",
     "subtitle": "Manage your personal credentials and business organizational details.",
@@ -337,6 +499,57 @@
         "image": "BRANCH IMAGE",
         "imagePlaceholder": "Choose image…"
       }
+    },
+    "subscriptions": {
+      "loading": "Loading subscription details...",
+      "noActiveTitle": "No Active Subscription",
+      "noActiveDesc": "Subscribe to one of our premium tiers to unlock your full recipe, kit, and device capabilities.",
+      "viewPlansBtn": "View Pricing Tiers",
+      "noCommitment": "Cancel anytime. No long-term commitment.",
+      "feature1Title": "Inventory & Recipes",
+      "feature1Desc": "Manage unlimited recipes and production kits for all your branches.",
+      "feature2Title": "Real-time Analytics",
+      "feature2Desc": "Get detailed sales insights, consumption trends, and performance reports.",
+      "feature3Title": "IoT Device Integration",
+      "feature3Desc": "Connect and monitor sensors across your operation in real time.",
+      "renewalText": "Renews automatically on {{date}}",
+      "limitsTitle": "Tier Usage Limits",
+      "limitRecipes": "Recipes count limit",
+      "limitKits": "Kits count limit",
+      "limitDevices": "Devices count limit",
+      "manageBtn": "Manage Plan"
+    }
+  },
+  "subscriptions": {
+    "plans": {
+      "backToSettings": "Back to Settings",
+      "title": "Pricing & Tiers",
+      "subtitle": "Choose the right plan for your business needs. Upgrade or cancel anytime.",
+      "loading": "Retrieving plan details...",
+      "popular": "Recommended",
+      "month": "mo",
+      "year": "yr",
+      "limitRecipes": "Up to {{count}} Recipes",
+      "limitKits": "Up to {{count}} Kits",
+      "limitDevices": "Up to {{count}} Devices",
+      "realtimeAnalytics": "Real-time Scale Analytics",
+      "alertNotifications": "Push & Email Notifications",
+      "choosePlan": "Subscribe",
+      "currentPlan": "Your Current Plan",
+      "redirecting": "Redirecting to Checkout...",
+      "retry": "Try Again"
+    },
+    "success": {
+      "title": "Payment Successful!",
+      "message": "Thank you for subscribing. Your account tier limits have been upgraded immediately.",
+      "redirectNotice": "You will be redirected back to settings shortly...",
+      "continueButton": "Return to Settings"
+    },
+    "cancel": {
+      "title": "Payment Canceled",
+      "message": "The checkout process was canceled. No charges were made to your card.",
+      "tryAgainButton": "View Plans & Try Again",
+      "backButton": "Cancel & Return to Settings"
     }
   },
   "iam": {
@@ -509,7 +722,7 @@
       "build": "System Build v4.2.0-stable | Node: US-EAST-1"
     },
     "alertType": {
-      "hardwareOffline": "HARDWARE OFFLINE",
+      "hardwareOffline": "HARDWARE / HEALTH ALERT",
       "deviceRegistration": "DEVICE REGISTRATION",
       "dataMismatch": "DATA MISMATCH",
       "manualTransfer": "MANUAL STOCK TRANSFER",
@@ -524,6 +737,7 @@
       "investigate": "Investigate",
       "markResolved": "Mark Resolved",
       "runDiagnostics": "Run Diagnostics",
+      "viewDetails": "View Details",
       "acknowledge": "Acknowledge",
       "reviewConfirm": "Review & Confirm",
       "dismiss": "Dismiss"
@@ -603,7 +817,7 @@
       "yes": "Yes",
       "no": "No",
       "productName": "PRODUCT NAME",
-      "supplyId": "SUPPLY ID",
+      "supplyId": "DESCRIPTION",
       "branch": "BRANCH",
       "totalStock": "TOTAL STOCK",
       "minStock": "MIN STOCK",
@@ -750,6 +964,138 @@
       "notePlaceholder": "Add any additional notes about the recalibration...",
       "cancel": "Cancel",
       "confirm": "Recalibrate & Dismiss Discrepancy"
+    }
+  },
+  "sales": {
+    "overview": {
+      "title": "Sales Overview",
+      "exportCsv": "Export CSV",
+      "advancedFilters": "Advanced Filters",
+      "newSale": "+ New Sale",
+      "loading": "Loading transactions…",
+      "noDataAlert": "No transactions to export.",
+      "filters": {
+        "status": "Status",
+        "allStatuses": "All Statuses",
+        "statusLogged": "LOGGED",
+        "statusFailed": "FAILED SYNC",
+        "minValue": "Min Value (S/)",
+        "searchTrxId": "Search Transaction ID",
+        "searchPlaceholder": "Search TRX ID..."
+      },
+      "kpi": {
+        "totalSales": "Total Sales (MTD)",
+        "transactionCount": "Transaction Count",
+        "ordersSuffix": "orders in total",
+        "failedSyncRate": "Failed Sync Rate",
+        "activeTerminals": "Active Terminals",
+        "allSystemsOperational": "All systems operational",
+        "deltaNoData": "No data from last month yet",
+        "deltaPercent": "{{arrow}} {{percent}}% vs last month",
+        "failedSync": "{{count}} critical errors",
+        "failedSyncOne": "1 critical error"
+      }
+    },
+    "newSale": {
+      "back": "← Sales",
+      "title": "Kits",
+      "tabAll": "All",
+      "tabBest": "Best",
+      "retry": "Retry",
+      "loading": "Loading catalog…",
+      "empty": "No kits available for sale yet.",
+      "quickAdd": "Quick Add Custom"
+    },
+    "quickAddModal": {
+      "title": "Quick Add Custom Item",
+      "subtitle": "Select an existing kit or an existing supply from your inventory",
+      "tabSelectKit": "Select Kit",
+      "tabCustomSupply": "Custom Supply",
+      "chooseKit": "Choose Kit",
+      "addKitToOrder": "Add Kit to Order",
+      "chooseSupply": "Choose Supply",
+      "noSupplies": "No supplies registered for this account yet.",
+      "addSupplyToOrder": "Add Supply to Order",
+      "cancel": "Cancel"
+    },
+    "table": {
+      "trxId": "TRX ID",
+      "timestamp": "TIMESTAMP",
+      "itemsCount": "ITEMS COUNT",
+      "totalValue": "TOTAL VALUE",
+      "status": "STATUS",
+      "actions": "ACTIONS",
+      "viewDetailsAria": "View Details",
+      "itemsSuffix": "items",
+      "empty": "No transactions recorded yet.",
+      "footer": "Showing {{start}} to {{end}} of {{total}} transactions",
+      "statusLabel": {
+        "logged": "LOGGED",
+        "failed": "FAILED SYNC",
+        "pending": "PENDING"
+      }
+    },
+    "transactionDetail": {
+      "title": "Transaction #{{id}}",
+      "closeAria": "Close",
+      "processedAt": "Processed at {{time}} UTC",
+      "soldItems": "SOLD ITEMS",
+      "itemsSuffix": "items",
+      "unitAndId": "Unit: {{qty}} | ID: {{id}}",
+      "total": "Total",
+      "deductionLog": "INVENTORY DEDUCTION LOG",
+      "deductionEntry": "Deducted: {{name}} (-{{qty}} unit) from Batch {{batchId}}",
+      "emptyDeductions": "No inventory deductions logged for this order.",
+      "closeDetails": "Close Details"
+    },
+    "saleDetail": {
+      "title": "Transaction #{{id}}",
+      "closeAria": "Close",
+      "processedAt": "Processed at {{time}} UTC",
+      "soldItems": "Sold Items",
+      "itemsSuffix": "items",
+      "qtyAndId": "QTY: {{qty}} | ID: {{id}}",
+      "total": "Total",
+      "deductionLog": "Inventory Deduction Log",
+      "deductionEntry": "Deducted: {{name}} (-{{qty}} unit)",
+      "closeDetails": "Close Details"
+    },
+    "insufficientStock": {
+      "title": "Action Blocked: Insufficient Physical Inventory",
+      "description": "The transaction cannot proceed due to component stock",
+      "missingComponent": "Missing Component:",
+      "needed": "NEEDED:",
+      "available": "AVAILABLE:",
+      "removeItem": "Remove Item from Order",
+      "refCode": "Ref Code: ERR_INV_404"
+    },
+    "saleSuccess": {
+      "title": "Sale Registered Successfully",
+      "description": "Inventory components have been automatically deducted.",
+      "transactionBadge": "Transaction #{{id}}",
+      "startNewSale": "Start New Sale",
+      "backToSales": "Back to Sales"
+    },
+    "kitCard": {
+      "addToOrderAria": "Add to order",
+      "availability": {
+        "available": "Available",
+        "zeroKits": "Available: 0 Kits",
+        "restocking": "Restocking"
+      }
+    },
+    "orderTicket": {
+      "title": "Order Ticket",
+      "empty": "Add products from the catalog to start a sale.",
+      "subtotal": "Subtotal",
+      "taxes": "Taxes ({{rate}}%)",
+      "total": "Total",
+      "logSale": "Log Sale & Update Stock",
+      "clearOrder": "Clear Order"
+    },
+    "routes": {
+      "overview": "Sales Overview",
+      "newSale": "New Sale"
     }
   },
   "kits": {

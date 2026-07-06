@@ -36,6 +36,25 @@
     <h2 class="alert-title">{{ alert().title || ('communications.card.offlineTitle' | translate) }}</h2>
     <p class="alert-description">{{ alert().message }}</p>
     <div class="alert-actions" (click)="stopPropagation($event)">
+      <button class="btn btn-secondary" (click)="viewDetail.emit(alert()); stopPropagation($event)">{{ 'communications.card.viewDetails' | translate }}</button>
+      <button class="btn btn-ghost" (click)="acknowledge.emit(alert().id); stopPropagation($event)">{{ 'communications.card.acknowledge' | translate }}</button>
+    </div>
+  </div>
+</article>
+<article *ngIf="alert().isDeviceRegistered" class="alert-card alert-card--transfer" role="listitem">
+  <div class="alert-icon alert-type--transfer">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <path d="M20 13V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7m16 0v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-5m16 0h-4l-2 3h-4l-2-3H4"/>
+    </svg>
+  </div>
+  <div class="alert-body">
+    <div class="alert-header">
+      <span class="alert-label alert-type--transfer">{{ alertTypeKey(alert().alertType) | translate }}</span>
+      <span class="alert-timestamp">{{ timeAgo(alert().detectedAt) }}</span>
+    </div>
+    <h2 class="alert-title">{{ alert().title }}</h2>
+    <p class="alert-description">{{ alert().message }}</p>
+    <div class="alert-actions" (click)="stopPropagation($event)">
       <button class="btn btn-secondary" (click)="viewDetail.emit(alert()); stopPropagation($event)">{{ 'communications.card.runDiagnostics' | translate }}</button>
       <button class="btn btn-ghost" (click)="acknowledge.emit(alert().id); stopPropagation($event)">{{ 'communications.card.acknowledge' | translate }}</button>
     </div>

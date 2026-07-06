@@ -9,6 +9,7 @@ import { NotificationResource } from './notifications.response';
 export class NotificationsAssembler {
   static inferAlertType(resource: NotificationResource): string {
     const sourceType = resource.sourceType?.toUpperCase() ?? '';
+    const title = resource.title?.toLowerCase() ?? '';
 
     switch (sourceType) {
       case 'MANUAL':
@@ -16,9 +17,16 @@ export class NotificationsAssembler {
       case 'INVENTORY':
         return 'MANUAL_TRANSFER';
       case 'DISCREPANCY':
-        return 'STOCK_WARNING';
-      case 'DEVICE':
-        return 'DEVICE_REGISTERED';
+        return 'INCONSISTENT_READING';
+      case 'DEVICE': {
+        if (title.includes('salud') || title.includes('health') || title.includes('voltage') || title.includes('tensión') || title.includes('cpu') || title.includes('temperatura')) {
+          return 'CONNECTION_LOST';
+        }
+        if (title.includes('new device') || title.includes('registro') || title.includes('registered')) {
+          return 'DEVICE_REGISTERED';
+        }
+        return 'CONNECTION_LOST';
+      }
       default:
         return 'STOCK_WARNING';
     }

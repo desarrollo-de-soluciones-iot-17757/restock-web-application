@@ -48,7 +48,7 @@
 .range-group button:last-child { border-right: none; }
 .range-group button:hover { background: #f3f4f6; }
 .range-group button.range-active {
-  background: #1a7a4a;
+  background: #1a5c3a;
   color: #fff;
 }
 
@@ -244,10 +244,10 @@
   transition: border-color 0.15s;
   cursor: pointer;
 }
-.date-input:focus { border-color: #1a7a4a; background: #fff; }
+.date-input:focus { border-color: #1a5c3a; background: #fff; }
 
 .btn-filter-apply {
-  background: #1a7a4a;
+  background: #1a5c3a;
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -257,7 +257,7 @@
   cursor: pointer;
   transition: background 0.15s;
 }
-.btn-filter-apply:hover { background: #15803d; }
+.btn-filter-apply:hover { background: #13462b; }
 
 .btn-filter-clear {
   background: transparent;
@@ -321,7 +321,7 @@
 }
 
 .btn-export-solid {
-  background: #1a7a4a;
+  background: #1a5c3a;
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -331,7 +331,7 @@
   cursor: pointer;
   transition: background 0.15s;
 }
-.btn-export-solid:hover { background: #15803d; }
+.btn-export-solid:hover { background: #13462b; }
 
 .table-responsive { overflow-x: auto; }
 

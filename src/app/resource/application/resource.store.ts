@@ -114,6 +114,7 @@ export class ResourceStore {
     this.setAccountId(accountId);
     this.loadCustomSuppliesByAccount(accountId);
     this.loadBranches(accountId);
+    this.refreshBatch();
   }
 
   createBatch(command: CreateBatchCommand): void {

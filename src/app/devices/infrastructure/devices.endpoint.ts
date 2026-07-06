@@ -23,6 +23,8 @@ export const UPDATE_DEVICE_STATUS_URL = (deviceId: string) =>
   `${DEVICES_BASE}/${deviceId}/status`;
 export const UPDATE_WITHDRAWN_STOCK_URL = (deviceId: string) =>
   `${DEVICES_BASE}/${deviceId}/withdrawn-stock`;
+export const DEVICES_HEALTH_URL = (deviceId?: string) =>
+  deviceId ? `${environment.baseUrl}/devices-health?deviceId=${deviceId}` : `${environment.baseUrl}/devices-health`;
 
 export const THRESHOLDS_BY_ACCOUNT_URL = (accountId: string) =>
   `${THRESHOLDS_BASE}?accountId=${accountId}`;

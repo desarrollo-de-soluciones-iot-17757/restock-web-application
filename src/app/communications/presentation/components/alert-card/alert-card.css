@@ -21,9 +21,9 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.alert-card--mismatch { border-left-color: #dc2626; }
-.alert-card--offline { border-left-color: #64748b; }
-.alert-card--transfer { border-left-color: #2563eb; }
+.alert-card--mismatch { border-left-color: #ef4444; }
+.alert-card--offline { border-left-color: #f59e0b; }
+.alert-card--transfer { border-left-color: #3b82f6; }
 .alert-card--stock { border-left-color: #d97706; }
 
 /* ────────────────────────────────────────────────────────────────────────────── */
@@ -58,11 +58,11 @@
 }
 
 .alert-icon.alert-type--offline {
-  background: #f3f4f6;
+  background: #fef3c7;
 }
 
 .alert-icon.alert-type--offline svg {
-  color: #64748b;
+  color: #d97706;
 }
 
 .alert-icon.alert-type--transfer {
