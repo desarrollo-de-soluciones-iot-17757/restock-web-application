@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { SalesOrderEntity } from '../../../domain/model/sales-order.entity';
 
 /**
@@ -10,7 +11,7 @@ import { SalesOrderEntity } from '../../../domain/model/sales-order.entity';
 @Component({
   selector: 'app-transactions-table',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './transactions-table.html',
   styleUrl: './transactions-table.css',
 })
@@ -71,11 +72,11 @@ export class TransactionsTableComponent {
   statusLabel(status: string): string {
     switch (status) {
       case 'COMPLETED':
-        return 'LOGGED';
+        return 'sales.table.statusLabel.logged';
       case 'CANCELLED':
-        return 'FAILED SYNC';
+        return 'sales.table.statusLabel.failed';
       default:
-        return 'PENDING';
+        return 'sales.table.statusLabel.pending';
     }
   }
 }

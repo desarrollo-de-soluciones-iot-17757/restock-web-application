@@ -1,6 +1,7 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { SalesStore } from '../../../application/sales.store';
 import { SalesOrderItemEntity } from '../../../domain/model/sales-order-item.entity';
 import { IamStore } from '../../../../iam/application/iam.store';
@@ -26,6 +27,7 @@ import { SALES_PATHS } from '../../sales-paths';
   standalone: true,
   imports: [
     CommonModule,
+    TranslatePipe,
     KitCatalogCardComponent,
     OrderTicketComponent,
     SaleSuccessModalComponent,
@@ -42,6 +44,7 @@ export class NewSaleComponent implements OnInit {
   private readonly profilesStore = inject(ProfilesStore);
   private readonly resourceApi = inject(ResourceApi);
   private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
 
   // Quick Add Custom signals
   readonly showQuickAddModal = signal(false);
@@ -216,18 +219,14 @@ export class NewSaleComponent implements OnInit {
       next: (branches) => {
         const firstBranch = branches[0];
         if (!firstBranch) {
-          this.store.branchError.set(
-            'No branch is configured for this account yet. Create one in Settings before making a sale.',
-          );
+          this.store.branchError.set(this.translate.instant('sales.newSale.noBranchError'));
           return;
         }
         this.profilesStore.setCurrentBranchId(firstBranch.id);
         this.store.startNewOrder(accountId, firstBranch.id);
       },
       error: () => {
-        this.store.branchError.set(
-          'Could not resolve a branch for this account. Please set one in Settings and try again.',
-        );
+        this.store.branchError.set(this.translate.instant('sales.newSale.branchResolveError'));
       },
     });
   }

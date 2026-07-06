@@ -3,20 +3,20 @@
     <aside class="drawer-panel" (click)="$event.stopPropagation()">
       <header class="drawer-header">
         <div class="header-left">
-          <h2 class="drawer-title">Transaction #{{ order.id.slice(0, 8).toUpperCase() }}</h2>
-          <span class="status-badge" [ngClass]="statusClass(order.status)">{{ statusLabel(order.status) }}</span>
+          <h2 class="drawer-title">{{ 'sales.transactionDetail.title' | translate:{ id: order.id.slice(0, 8).toUpperCase() } }}</h2>
+          <span class="status-badge" [ngClass]="statusClass(order.status)">{{ statusLabel(order.status) | translate }}</span>
         </div>
-        <button class="close-btn" (click)="close.emit()" aria-label="Close">✕</button>
+        <button class="close-btn" (click)="close.emit()" [attr.aria-label]="'sales.transactionDetail.closeAria' | translate">✕</button>
       </header>
 
       <div class="processed-at">
-        Processed at {{ order.createdAt ? (order.createdAt | date: 'HH:mm:ss') : '—' }} UTC
+        {{ 'sales.transactionDetail.processedAt' | translate:{ time: order.createdAt ? (order.createdAt | date: 'HH:mm:ss') : '—' } }}
       </div>
 
       <section class="items-section">
         <div class="section-header-row">
-          <span class="section-title">SOLD ITEMS</span>
-          <span class="items-count">{{ order.items.length }} items</span>
+          <span class="section-title">{{ 'sales.transactionDetail.soldItems' | translate }}</span>
+          <span class="items-count">{{ order.items.length }} {{ 'sales.transactionDetail.itemsSuffix' | translate }}</span>
         </div>
 
         @for (item of order.items; track item.id) {
@@ -36,7 +36,7 @@
             </div>
             <div class="sold-item-info">
               <span class="sold-item-name">{{ item.nameSnapshot }}</span>
-              <span class="sold-item-meta">Unit: {{ item.quantity }} | ID: {{ item.productId.slice(0, 8).toUpperCase() }}</span>
+              <span class="sold-item-meta">{{ 'sales.transactionDetail.unitAndId' | translate:{ qty: item.quantity, id: item.productId.slice(0, 8).toUpperCase() } }}</span>
             </div>
             <span class="sold-item-price">S/ {{ item.lineTotal.toFixed(2) }}</span>
           </div>
@@ -44,12 +44,12 @@
       </section>
 
       <div class="total-row">
-        <span>Total</span>
+        <span>{{ 'sales.transactionDetail.total' | translate }}</span>
         <span class="total-value">S/ {{ order.totalAmount.toFixed(2) }}</span>
       </div>
 
       <section class="deduction-section">
-        <span class="section-title">INVENTORY DEDUCTION LOG</span>
+        <span class="section-title">{{ 'sales.transactionDetail.deductionLog' | translate }}</span>
         <div class="deduction-box">
           @for (entry of deductionLog; track $index) {
             <div class="deduction-entry">
@@ -63,13 +63,13 @@
               <span class="deduction-time">{{ entry.time }}</span>
             </div>
           } @empty {
-            <div class="deduction-empty">No inventory deductions logged for this order.</div>
+            <div class="deduction-empty">{{ 'sales.transactionDetail.emptyDeductions' | translate }}</div>
           }
         </div>
       </section>
 
       <footer class="drawer-footer">
-        <button class="close-details-btn" (click)="close.emit()">Close Details</button>
+        <button class="close-details-btn" (click)="close.emit()">{{ 'sales.transactionDetail.closeDetails' | translate }}</button>
       </footer>
     </aside>
   </div>

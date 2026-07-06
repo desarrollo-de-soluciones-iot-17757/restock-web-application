@@ -42,8 +42,8 @@ export class SalesApi extends BaseApi {
     return this.salesOrdersEndpoint.removeItem(command);
   }
 
-  completeOrder(orderId: string): Observable<SalesOrderEntity> {
-    return this.salesOrdersEndpoint.complete(orderId);
+  completeOrder(orderId: string, accountId?: string): Observable<SalesOrderEntity> {
+    return this.salesOrdersEndpoint.complete(orderId, accountId);
   }
 
   cancelOrder(orderId: string): Observable<void> {

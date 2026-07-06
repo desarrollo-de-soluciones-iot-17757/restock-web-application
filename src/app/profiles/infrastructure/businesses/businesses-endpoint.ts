@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, catchError, map } from 'rxjs';
+import { Observable, catchError, map, throwError } from 'rxjs';
 import { BaseApiEndpoint } from '../../../shared/infrastructure/base-api-endpoint';
 import { Business } from '../../domain/model/business.entity';
 import { BusinessResource, BusinessesListResponse } from './businesses.response';
@@ -35,20 +35,33 @@ export class BusinessesApiEndpoint extends BaseApiEndpoint<
     const primaryUrl = `${this.primaryUrl}?accountId=${encodedAccountId}`;
     const fallbackUrl = `${this.fallbackUrl}?accountId=${encodedAccountId}`;
 
-    const parseFirst = (response: unknown): Business => {
-      const list: BusinessResource[] = Array.isArray(response)
-        ? response
-        : (response as any)?.businesses ?? [];
-      const resource = list[0];
-      if (!resource) throw new HttpErrorResponse({ status: 404, statusText: 'Not Found' });
+    const parse = (response: unknown): Business => {
+      // The backend returns a single object, not an array.
+      // Guard for both shapes in case the API ever changes.
+      if (Array.isArray(response)) {
+        const list = response as BusinessResource[];
+        if (!list.length) {
+          throw new HttpErrorResponse({ status: 404, statusText: 'Not Found' });
+        }
+        return this.assembler.toEntityFromResource(list[0]);
+      }
+
+      // Single-object response (current backend contract)
+      const resource = response as BusinessResource;
+      if (!resource?.id) {
+        throw new HttpErrorResponse({ status: 404, statusText: 'Not Found' });
+      }
       return this.assembler.toEntityFromResource(resource);
     };
 
     return this.http.get<unknown>(primaryUrl).pipe(
-      map(parseFirst),
-      catchError(() =>
-        this.http.get<unknown>(fallbackUrl).pipe(map(parseFirst)),
-      ),
+      map(parse),
+      catchError((primaryErr) => {
+        if (primaryErr instanceof HttpErrorResponse && primaryErr.status === 404) {
+          return throwError(() => primaryErr);
+        }
+        return this.http.get<unknown>(fallbackUrl).pipe(map(parse));
+      }),
     ) as Observable<Business>;
   }
 
@@ -90,24 +103,28 @@ export class BusinessesApiEndpoint extends BaseApiEndpoint<
       imageFile
     );
 
-    const operation = () =>
-      this.http.patch<BusinessResource>(
-        `${this.endpointUrl}/${encodeURIComponent(id)}`,
-        fd
-      ).pipe(
-        map((updated) => this.assembler.toEntityFromResource(updated)),
-      );
-
-    return operation().pipe(
-      catchError(() => this.withFallback(operation)),
+    return this.http.patch<BusinessResource>(
+      `${this.primaryUrl}/${encodeURIComponent(id)}`,
+      fd
+    ).pipe(
+      map((updated) => this.assembler.toEntityFromResource(updated)),
+      catchError(() =>
+        this.http.patch<BusinessResource>(
+          `${this.fallbackUrl}/${encodeURIComponent(id)}`,
+          fd
+        ).pipe(
+          map((updated) => this.assembler.toEntityFromResource(updated)),
+        )
+      ),
       catchError(this.handleError('Failed to update business')),
     );
   }
 
   private withFallback<T>(operation: () => Observable<T>): Observable<T> {
+    const savedUrl = this.endpointUrl;
     this.endpointUrl = this.fallbackUrl;
     const result$ = operation();
-    this.endpointUrl = this.primaryUrl;
+    this.endpointUrl = savedUrl;
 
     return result$;
   }
@@ -116,11 +133,11 @@ export class BusinessesApiEndpoint extends BaseApiEndpoint<
 function buildBusinessFormData(resource: BusinessResource, imageFile?: File): FormData {
   const fd = new FormData();
 
+  fd.append('companyName', resource.companyName ?? '');
+  fd.append('ruc', resource.ruc ?? '');
+  fd.append('mainLocation', resource.mainLocation ?? '');
   if (resource.accountId) fd.append('accountId', resource.accountId);
   if (resource.userId) fd.append('userId', resource.userId);
-  if (resource.companyName) fd.append('companyName', resource.companyName);
-  if (resource.ruc) fd.append('ruc', resource.ruc);
-  if (resource.mainLocation) fd.append('mainLocation', resource.mainLocation);
   if (imageFile) fd.append('image', imageFile);
 
   return fd;

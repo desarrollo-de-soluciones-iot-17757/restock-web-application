@@ -167,7 +167,14 @@ export class SystemPreferences {
   private savedProfileFields: ProfileFieldSnapshot | null = null;
 
   constructor() {
-    this.store.loadProfilesState();
+    // Re-load profile/business whenever the authenticated user changes.
+    // This covers both the initial page load and any future sign-in transitions.
+    effect(() => {
+      const user = this.iamStore.currentUser();
+      if (user?.accountId) {
+        this.store.loadProfilesState();
+      }
+    });
 
     if (this.resourceStore.branches().length === 0) {
       this.resourceStore.loadBranches();
@@ -347,12 +354,18 @@ export class SystemPreferences {
   }
 
   saveProfileChanges(): void {
+    // Always read the live profile from the store — never trust the local signal alone,
+    // because profileEntityId may still be '' if the effect hasn't fired yet.
+    const liveProfile = this.store.profile();
+    const resolvedProfileId = liveProfile?.id || this.profileEntityId();
+
     const userId =
-      this.store.profile()?.userId.getValue() ||
+      liveProfile?.userId.getValue() ||
       this.iamStore.currentUser()?.id ||
       '';
+
     const cmd = new UpdateProfileCommand({
-      profileId: this.profileEntityId(),
+      profileId: resolvedProfileId,
       userId,
       name: this.firstName(),
       lastName: this.lastName(),
@@ -379,12 +392,17 @@ export class SystemPreferences {
   }
 
   saveBusinessChanges(): void {
+    // Always read the live business from the store — never trust the local signal alone.
+    const liveBusiness = this.store.business();
+    const resolvedBusinessId = liveBusiness?.id || this.businessId();
+
     const userId =
-      this.store.business()?.ownerId.getValue() ||
+      liveBusiness?.ownerId.getValue() ||
       this.iamStore.currentUser()?.id ||
       '';
+
     const cmd = new UpdateBusinessCommand(
-      this.businessId(),
+      resolvedBusinessId,
       userId,
       this.businessName(),
       this.businessRuc(),

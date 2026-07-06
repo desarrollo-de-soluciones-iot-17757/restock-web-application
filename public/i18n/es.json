@@ -194,25 +194,196 @@
     }
   },
   "devices": {
-    "list-title": "Gestión de Dispositivos",
-    "register-device-btn": "Registrar Dispositivo",
-    "list-error": "Error al cargar los dispositivos",
-    "stats-active-scales": "Básculas Activas",
-    "stats-from-yesterday": "↓ 4 de ayer",
-    "stats-stock-alerts": "Alertas de Stock",
-    "stats-critical": "Críticas",
-    "stats-environmental-alerts": "Alertas Ambientales",
-    "stats-temp-deviation": "Desviación de temperatura detectada",
-    "stats-offline": "Desconectados",
-    "stats-check-connectivity": "Verificar conectividad",
-    "table-title": "Directorio Activo de Dispositivos",
-    "table-macAddress": "DIRECCIÓN MAC",
-    "table-assignedSupply": "SUMINISTRO ASIGNADO",
-    "table-network": "RED",
-    "table-deviceStatus": "SALUD DEL SENSOR",
-    "table-footer-showing": "Mostrando",
-    "table-footer-of": "de",
-    "table-footer-devices": "dispositivos"
+    "list": {
+      "title": "Gestión de Dispositivos",
+      "registerDevice": "Registrar Dispositivo",
+      "error": "Error al cargar los dispositivos",
+      "stats": {
+        "total": "TOTAL",
+        "allDevices": "Todos los Dispositivos",
+        "configuredActive": "Configurados / Activos",
+        "pendingSetup": "Pendientes de Configuración",
+        "inactive": "Inactivos"
+      },
+      "table": {
+        "title": "Directorio de Dispositivos",
+        "macAddress": "DIRECCIÓN MAC",
+        "description": "DESCRIPCIÓN",
+        "status": "ESTADO",
+        "firmware": "FIRMWARE",
+        "actions": "ACCIONES",
+        "openDetails": "Abrir detalles",
+        "deactivate": "Desactivar",
+        "footer": "{{count}} dispositivos"
+      }
+    },
+    "onboarding": {
+      "backAria": "Volver a la lista de dispositivos",
+      "eyebrow": "Configuración de dispositivo",
+      "editInfo": "Editar información",
+      "steps": {
+        "batch": "Lote",
+        "hardware": "Hardware",
+        "branch": "Sucursal",
+        "alerts": "Alertas",
+        "calibration": "Calibración"
+      },
+      "inventoryAssignment": {
+        "title": "Asignación de inventario",
+        "subtitle": "Conecta esta báscula al lote de inventario que monitoreará.",
+        "noBatchAssigned": "Sin lote asignado",
+        "noBatchDesc": "Asigna un lote de inventario antes de configurar alertas o activar el monitoreo.",
+        "assignBatch": "Asignar lote",
+        "currentBatch": "Lote actual",
+        "change": "Cambiar"
+      },
+      "hardwareSpecs": {
+        "title": "Especificaciones de hardware",
+        "subtitle": "Identifica la versión del equipo utilizada por operaciones y soporte.",
+        "locked": "Bloqueado",
+        "manufacturer": "Fabricante",
+        "manufacturerPlaceholder": "Restock",
+        "model": "Modelo",
+        "modelPlaceholder": "Supply Keeper",
+        "firmwareVersion": "Versión de firmware",
+        "firmwarePlaceholder": "1.0.0",
+        "update": "Actualizar hardware",
+        "save": "Guardar hardware"
+      },
+      "branchAssignment": {
+        "title": "Asignación de sucursal",
+        "subtitle": "Coloca el dispositivo en la sucursal donde pertenecen las lecturas.",
+        "branch": "Sucursal",
+        "noBranches": "No hay sucursales disponibles.",
+        "selectBranch": "Selecciona una sucursal...",
+        "update": "Actualizar sucursal",
+        "assign": "Asignar sucursal"
+      },
+      "alertThresholds": {
+        "title": "Límites de alerta",
+        "subtitle": "Define límites de stock y ambientales para monitoreo automático.",
+        "lockedDesc": "Asigna un lote para habilitar los límites de stock, temperatura y humedad.",
+        "stockAnomaly": "Límites de stock y anomalías",
+        "minStock": "Alerta de stock mínimo",
+        "maxCapacity": "Capacidad máxima",
+        "weightAnomaly": "Tolerancia de anomalía de peso",
+        "units": "unidades",
+        "environmental": "Límites ambientales",
+        "temperature": "Temperatura",
+        "tempHint": "Rango de sensor permitido en °C",
+        "humidity": "Humedad",
+        "humidityHint": "Humedad relativa permitida",
+        "min": "Mín",
+        "max": "Máx",
+        "to": "a",
+        "save": "Guardar configuración"
+      },
+      "calibration": {
+        "title": "Calibración de peso",
+        "subtitle": "Define cómo el peso del sensor se convierte en unidades de stock.",
+        "lockedDesc": "Guarda lote, sucursal, hardware y límites de alerta antes de calibrar la báscula.",
+        "weightUnit": "Unidad de peso",
+        "unitWeight": "Peso unitario",
+        "tareWeight": "Peso de tara",
+        "resetScale": "Restablecer báscula a cero",
+        "tareWarning": "Vacía la báscula física antes de aplicar la tara. El peso actual se convierte en el punto de referencia cero.",
+        "update": "Actualizar calibración",
+        "calibrate": "Calibrar dispositivo"
+      },
+      "operationalSummary": {
+        "title": "Resumen operativo",
+        "batch": "Lote",
+        "branch": "Sucursal",
+        "firmware": "Firmware",
+        "lastCalibration": "Última calibración",
+        "notAssigned": "No asignado",
+        "notSet": "No configurado",
+        "notCalibrated": "No calibrado",
+        "loadingBatch": "Cargando...",
+        "unknownBatch": "Lote desconocido",
+        "loadingBranch": "Cargando..."
+      },
+      "scaleActions": {
+        "title": "Acciones de báscula",
+        "resetTare": "Restablecer tara",
+        "tareHint": "Vacía la báscula física antes de aplicar la tara."
+      },
+      "deviceHistory": {
+        "title": "Registros del dispositivo",
+        "weightLog": "Registro de peso",
+        "healthLog": "Registro de salud",
+        "noWeightRecords": "Aún no hay registros de peso.",
+        "noHealthLogs": "Aún no hay registros de salud.",
+        "weightBadge": "Peso",
+        "healthBadge": "Salud"
+      },
+      "assignBatchDialog": {
+        "title": "Asignar lote",
+        "subtitle": "Selecciona el lote de inventario monitoreado por {{device}}.",
+        "selectBatch": "Seleccionar lote",
+        "loading": "Cargando lotes...",
+        "noBatches": "No hay lotes disponibles. Agrega stock en Inventario primero.",
+        "selectPlaceholder": "Selecciona un lote...",
+        "cancel": "Cancelar",
+        "save": "Guardar asignación"
+      },
+      "assignBatch": {
+        "title": "Asignar lote",
+        "subtitle": "Selecciona el lote de inventario monitoreado por {{device}}.",
+        "selectBatch": "Seleccionar lote",
+        "loading": "Cargando lotes...",
+        "noBatches": "No hay lotes disponibles. Agrega stock en Inventario primero.",
+        "selectPlaceholder": "Selecciona un lote...",
+        "cancel": "Cancelar",
+        "save": "Guardar asignación"
+      },
+      "unlinkDialog": {
+        "title": "Desvincular Supply Keeper",
+        "body": "Desvincular este Supply Keeper detendrá el monitoreo en tiempo real. Los datos históricos se conservarán.",
+        "deviceId": "ID del dispositivo",
+        "confirmLabel": "Confirmación requerida",
+        "confirmPlaceholder": "Escribe el nombre de la báscula para confirmar",
+        "cancel": "Cancelar",
+        "unlink": "Desvincular báscula",
+        "confirm": "Desvincular báscula"
+      },
+      "dangerZone": {
+        "label": "Zona de peligro",
+        "desc": "Desconectar detiene el monitoreo de este Supply Keeper.",
+        "unlink": "Desvincular Supply Keeper",
+        "delete": "Eliminar registro"
+      },
+      "errors": {
+        "assignBatch": "Error al asignar el lote. Inténtalo de nuevo.",
+        "batchNotAvailable": "Los detalles del lote aún no están disponibles. Inténtalo de nuevo.",
+        "saveThresholds": "Error al guardar los límites de alerta. Inténtalo de nuevo.",
+        "saveSpecifications": "Error al guardar las especificaciones de hardware. Inténtalo de nuevo.",
+        "assignBranch": "Error al asignar la sucursal. Inténtalo de nuevo.",
+        "completeSpecs": "Por favor completa todos los campos de especificaciones de hardware.",
+        "assignBranchFirst": "Por favor selecciona una sucursal antes de guardar.",
+        "calibrate": "Error al guardar la calibración. Inténtalo de nuevo.",
+        "unlink": "Error al desvincular el dispositivo. Inténtalo de nuevo."
+      }
+    },
+    "registerDialog": {
+      "title": "Registrar nuevo Supply Keeper",
+      "macAddress": "Dirección MAC",
+      "macPlaceholder": "00:1A:2B:3C:4D:5E",
+      "macFormatError": "Formato: 00:11:22:33:44:55",
+      "alias": "Alias del Supply Keeper",
+      "aliasPlaceholder": "ej., Balanza Lácteos",
+      "required": "Obligatorio",
+      "cancel": "Cancelar",
+      "register": "Registrar Dispositivo",
+      "error": "Error al registrar el dispositivo. Inténtalo de nuevo."
+    },
+    "status": {
+      "registered": "ESPERANDO CONFIGURACIÓN",
+      "configured": "CONFIGURADO",
+      "calibrated": "CALIBRADO",
+      "active": "En línea",
+      "inactive": "Inactivo"
+    }
   },
   "settings": {
     "breadcrumb": {
@@ -803,6 +974,138 @@
       "notePlaceholder": "Añade cualquier nota adicional sobre la recalibración...",
       "cancel": "Cancelar",
       "confirm": "Recalibrar y Descartar Discrepancia"
+    }
+  },
+  "sales": {
+    "overview": {
+      "title": "Resumen de Ventas",
+      "exportCsv": "Exportar CSV",
+      "advancedFilters": "Filtros Avanzados",
+      "newSale": "+ Nueva Venta",
+      "loading": "Cargando transacciones…",
+      "noDataAlert": "No hay transacciones para exportar.",
+      "filters": {
+        "status": "Estado",
+        "allStatuses": "Todos los Estados",
+        "statusLogged": "REGISTRADA",
+        "statusFailed": "SINCRONIZACIÓN FALLIDA",
+        "minValue": "Valor Mínimo (S/)",
+        "searchTrxId": "Buscar ID de Transacción",
+        "searchPlaceholder": "Buscar TRX ID..."
+      },
+      "kpi": {
+        "totalSales": "Ventas Totales (MTD)",
+        "transactionCount": "Cantidad de Transacciones",
+        "ordersSuffix": "órdenes en total",
+        "failedSyncRate": "Tasa de Sincronización Fallida",
+        "activeTerminals": "Terminales Activos",
+        "allSystemsOperational": "Todos los sistemas operativos",
+        "deltaNoData": "Sin datos del mes anterior",
+        "deltaPercent": "{{arrow}} {{percent}}% vs el mes anterior",
+        "failedSync": "{{count}} errores críticos",
+        "failedSyncOne": "1 error crítico"
+      }
+    },
+    "newSale": {
+      "back": "← Ventas",
+      "title": "Kits",
+      "tabAll": "Todos",
+      "tabBest": "Mejores",
+      "retry": "Reintentar",
+      "loading": "Cargando catálogo…",
+      "empty": "No hay kits disponibles para la venta.",
+      "quickAdd": "Agregar Personalizado"
+    },
+    "quickAddModal": {
+      "title": "Agregar Producto Personalizado",
+      "subtitle": "Selecciona un kit existente o un insumo de tu inventario",
+      "tabSelectKit": "Seleccionar Kit",
+      "tabCustomSupply": "Insumo Personalizado",
+      "chooseKit": "Elegir Kit",
+      "addKitToOrder": "Agregar Kit a la Orden",
+      "chooseSupply": "Elegir Insumo",
+      "noSupplies": "No hay insumos registrados para esta cuenta.",
+      "addSupplyToOrder": "Agregar Insumo a la Orden",
+      "cancel": "Cancelar"
+    },
+    "table": {
+      "trxId": "ID TRANSACCIÓN",
+      "timestamp": "FECHA/HORA",
+      "itemsCount": "CANT. PRODUCTOS",
+      "totalValue": "VALOR TOTAL",
+      "status": "ESTADO",
+      "actions": "ACCIONES",
+      "viewDetailsAria": "Ver detalles",
+      "itemsSuffix": "productos",
+      "empty": "Aún no hay transacciones registradas.",
+      "footer": "Mostrando {{start}} a {{end}} de {{total}} transacciones",
+      "statusLabel": {
+        "logged": "REGISTRADA",
+        "failed": "SINCRONIZACIÓN FALLIDA",
+        "pending": "PENDIENTE"
+      }
+    },
+    "transactionDetail": {
+      "title": "Transacción #{{id}}",
+      "closeAria": "Cerrar",
+      "processedAt": "Procesada a las {{time}} UTC",
+      "soldItems": "PRODUCTOS VENDIDOS",
+      "itemsSuffix": "productos",
+      "unitAndId": "Unidad: {{qty}} | ID: {{id}}",
+      "total": "Total",
+      "deductionLog": "REGISTRO DE DEDUCCIÓN DE INVENTARIO",
+      "deductionEntry": "Deducido: {{name}} (-{{qty}} unidad) del Lote {{batchId}}",
+      "emptyDeductions": "No hay deducciones de inventario registradas para esta orden.",
+      "closeDetails": "Cerrar Detalles"
+    },
+    "saleDetail": {
+      "title": "Transacción #{{id}}",
+      "closeAria": "Cerrar",
+      "processedAt": "Procesada a las {{time}} UTC",
+      "soldItems": "Productos Vendidos",
+      "itemsSuffix": "productos",
+      "qtyAndId": "CANT: {{qty}} | ID: {{id}}",
+      "total": "Total",
+      "deductionLog": "Registro de Deducción de Inventario",
+      "deductionEntry": "Deducido: {{name}} (-{{qty}} unidad)",
+      "closeDetails": "Cerrar Detalles"
+    },
+    "insufficientStock": {
+      "title": "Acción Bloqueada: Inventario Físico Insuficiente",
+      "description": "La transacción no puede continuar debido a falta de stock",
+      "missingComponent": "Componente Faltante:",
+      "needed": "NECESARIO:",
+      "available": "DISPONIBLE:",
+      "removeItem": "Eliminar Producto de la Orden",
+      "refCode": "Código de Referencia: ERR_INV_404"
+    },
+    "saleSuccess": {
+      "title": "Venta Registrada Exitosamente",
+      "description": "Los componentes del inventario han sido deducidos automáticamente.",
+      "transactionBadge": "Transacción #{{id}}",
+      "startNewSale": "Iniciar Nueva Venta",
+      "backToSales": "Volver a Ventas"
+    },
+    "kitCard": {
+      "addToOrderAria": "Agregar a la orden",
+      "availability": {
+        "available": "Disponible",
+        "zeroKits": "Disponible: 0 Kits",
+        "restocking": "Reabasteciendo"
+      }
+    },
+    "orderTicket": {
+      "title": "Ticket de Orden",
+      "empty": "Agrega productos del catálogo para iniciar una venta.",
+      "subtotal": "Subtotal",
+      "taxes": "Impuestos ({{rate}}%)",
+      "total": "Total",
+      "logSale": "Registrar Venta y Actualizar Stock",
+      "clearOrder": "Limpiar Orden"
+    },
+    "routes": {
+      "overview": "Resumen de Ventas",
+      "newSale": "Nueva Venta"
     }
   },
   "kits": {

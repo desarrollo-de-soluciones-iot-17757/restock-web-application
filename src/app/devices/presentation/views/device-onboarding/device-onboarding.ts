@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Observable, of, switchMap } from 'rxjs';
 
 import { DevicesStore } from '../../../application/devices.store';
@@ -23,6 +24,7 @@ import { DevicesApi } from '../../../infrastructure/devices-api';
     FormsModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    TranslateModule,
   ],
   templateUrl: './device-onboarding.html',
   styleUrls: ['./device-onboarding.css'],
@@ -36,6 +38,7 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly trackingApi = inject(TrackingApi);
   private readonly devicesApi = inject(DevicesApi);
+  private readonly translateService = inject(TranslateService);
 
   readonly currentDevice = signal<Device | null>(null);
   readonly loading = signal(false);
@@ -202,11 +205,11 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
 
   statusLabel(status: DeviceStatus): string {
     const labels: Record<DeviceStatus, string> = {
-      REGISTERED: 'AWAITING SETUP',
-      CONFIGURED: 'CONFIGURED',
-      CALIBRATED: 'CALIBRATED',
-      ACTIVE: 'Online',
-      INACTIVE: 'Inactive',
+      REGISTERED: 'devices.status.registered',
+      CONFIGURED: 'devices.status.configured',
+      CALIBRATED: 'devices.status.calibrated',
+      ACTIVE: 'devices.status.active',
+      INACTIVE: 'devices.status.inactive',
     };
     return labels[status];
   }
@@ -245,14 +248,14 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
     const batches = this.resourceStore.rows();
     const batch = batches.find(row => row.id === id);
     if (batch) return `${batch.code} · ${batch.supplyName}`;
-    return batches.length === 0 ? 'Loading batch...' : 'Unknown batch';
+    return batches.length === 0 ? this.translateService.instant('devices.onboarding.operationalSummary.loadingBatch') : this.translateService.instant('devices.onboarding.operationalSummary.unknownBatch');
   }
 
   branchName(id: string): string {
     const branches = this.resourceStore.branches();
     const branch = branches.find(b => b.id === id);
     if (branch) return branch.name;
-    return branches.length === 0 ? 'Loading branch...' : id;
+    return branches.length === 0 ? this.translateService.instant('devices.onboarding.operationalSummary.loadingBranch') : id;
   }
 
   selectedBatchCustomSupplyId(device: Device): string {
@@ -359,7 +362,7 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
         this.loading.set(false);
         this.showAssignBatchDialog.set(false);
       },
-      error: err => { this.pageError.set(err?.message ?? 'Failed to assign batch'); this.loading.set(false); },
+      error: err => { this.pageError.set(err?.message ?? this.translateService.instant('devices.onboarding.errors.assignBatch')); this.loading.set(false); },
     });
   }
 
@@ -371,7 +374,7 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
     const device = this.currentDevice()!;
     const customSupplyId = this.selectedBatchCustomSupplyId(device);
     if (!customSupplyId) {
-      this.pageError.set('Selected batch is not available. Reload inventory context and try again.');
+      this.pageError.set(this.translateService.instant('devices.onboarding.errors.batchNotAvailable'));
       this.loading.set(false);
       return;
     }
@@ -394,7 +397,7 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
       switchMap(() => this.devicesStore.fetchDeviceById(device.id)),
     ).subscribe({
       next: updated => { this.currentDevice.set(updated); this.loading.set(false); },
-      error: err => { this.pageError.set(err?.message ?? 'Failed to save thresholds'); this.loading.set(false); },
+      error: err => { this.pageError.set(err?.message ?? this.translateService.instant('devices.onboarding.errors.saveThresholds')); this.loading.set(false); },
     });
   }
 
@@ -405,7 +408,7 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
 
     this.devicesStore.addSpecifications(this.currentDevice()!.id, this.specificationsForm.getRawValue()).subscribe({
       next: updated => { this.currentDevice.set(updated); this.loading.set(false); },
-      error: err => { this.pageError.set(err?.message ?? 'Failed to save specifications'); this.loading.set(false); },
+      error: err => { this.pageError.set(err?.message ?? this.translateService.instant('devices.onboarding.errors.saveSpecifications')); this.loading.set(false); },
     });
   }
 
@@ -416,7 +419,7 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
 
     this.devicesStore.assignBranch(this.currentDevice()!.id, this.branchForm.getRawValue().branchId).subscribe({
       next: updated => { this.currentDevice.set(updated); this.loading.set(false); },
-      error: err => { this.pageError.set(err?.message ?? 'Failed to assign branch'); this.loading.set(false); },
+      error: err => { this.pageError.set(err?.message ?? this.translateService.instant('devices.onboarding.errors.assignBranch')); this.loading.set(false); },
     });
   }
 
@@ -427,7 +430,7 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
     }
     if (this.specificationsForm.invalid) {
       this.specificationsForm.markAllAsTouched();
-      throw new Error('Complete hardware specifications before saving thresholds');
+      throw new Error(this.translateService.instant('devices.onboarding.errors.completeSpecs'));
     }
     return this.devicesStore.addSpecifications(device.id, this.specificationsForm.getRawValue());
   }
@@ -439,7 +442,7 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
     }
     if (this.branchForm.invalid) {
       this.branchForm.markAllAsTouched();
-      throw new Error('Assign a branch before saving thresholds');
+      throw new Error(this.translateService.instant('devices.onboarding.errors.assignBranchFirst'));
     }
     return this.devicesStore.assignBranch(device.id, this.branchForm.getRawValue().branchId);
   }
@@ -461,7 +464,7 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
       weightUnitAbbreviation: measurement.weightUnitAbbreviation,
     }).subscribe({
       next: updated => { this.currentDevice.set(updated); this.loading.set(false); },
-      error: err => { this.pageError.set(err?.message ?? 'Failed to calibrate device'); this.loading.set(false); },
+      error: err => { this.pageError.set(err?.message ?? this.translateService.instant('devices.onboarding.errors.calibrate')); this.loading.set(false); },
     });
   }
 
@@ -478,7 +481,7 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
     this.pageError.set(null);
     this.devicesStore.updateStatus(this.currentDevice()!.id, 'INACTIVE').subscribe({
       next: () => { this.loading.set(false); this.router.navigate(['/devices']); },
-      error: err => { this.pageError.set(err?.message ?? 'Failed to unlink device'); this.loading.set(false); },
+      error: err => { this.pageError.set(err?.message ?? this.translateService.instant('devices.onboarding.errors.unlink')); this.loading.set(false); },
     });
   }
 

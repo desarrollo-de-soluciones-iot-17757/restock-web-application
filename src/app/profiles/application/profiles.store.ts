@@ -59,6 +59,13 @@ export class ProfilesStore {
       return;
     }
 
+    // If we already have data in memory (e.g. called multiple times due to reactive
+    // effects), skip the network round-trip to avoid resetting the signals.
+    if (this.profileSignal() !== null || this.businessSignal() !== null) {
+      this.loadingSignal.set(false);
+      return;
+    }
+
     forkJoin({
       profile: this.profilesApi.getProfileByAccountId(accountId).pipe(
         catchError((err) => this.nullIfNotFound<Profile>(err))
@@ -70,6 +77,7 @@ export class ProfilesStore {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: ({ profile, business }) => {
+          console.log('[ProfilesStore] loadProfilesState — profile.id:', profile?.id, '| business.id:', business?.id);
           this.profileSignal.set(profile);
           this.businessSignal.set(business);
           this.loadingSignal.set(false);
@@ -82,6 +90,16 @@ export class ProfilesStore {
   }
 
   /**
+   * Forces a reload from the server, bypassing the in-memory cache.
+   * Call this after a successful create/update to refresh the signals.
+   */
+  reloadProfilesState(): void {
+    this.profileSignal.set(null);
+    this.businessSignal.set(null);
+    this.loadProfilesState();
+  }
+
+  /**
    * Persists profile edits using the command DTO, then refreshes the in-memory aggregate.
    *
    * @param command - Snapshot produced by the presentation layer.
@@ -90,8 +108,14 @@ export class ProfilesStore {
     const current = this.profileSignal();
     const accountId = this.iamStore.currentUser()?.accountId ?? '';
 
+    // Resolve the profile ID: prefer the command value, then the in-memory signal.
+    // This guards against the race where the component saves before the effect fires.
+    const profileId = command.profileId || current?.id || '';
+
+    console.log('[ProfilesStore] updateProfile — profileId:', profileId, '| command.profileId:', command.profileId, '| current?.id:', current?.id);
+
     const profile = new Profile({
-      profileId: command.profileId,
+      profileId,
       accountId,
       userId: command.userId,
       name: command.name,
@@ -105,8 +129,8 @@ export class ProfilesStore {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
-    const request$ = command.profileId
-      ? this.profilesApi.updateProfile(profile, command.profileId, command.imageFile)
+    const request$ = profileId
+      ? this.profilesApi.updateProfile(profile, profileId, command.imageFile)
       : this.profilesApi.createProfile(profile, command.imageFile);
 
     request$
@@ -131,8 +155,13 @@ export class ProfilesStore {
     const current = this.businessSignal();
     const accountId = this.iamStore.currentUser()?.accountId ?? '';
 
+    // Resolve the business ID: prefer the command value, then the in-memory signal.
+    const businessId = command.businessId || current?.id || '';
+
+    console.log('[ProfilesStore] saveBusiness — businessId:', businessId, '| command.businessId:', command.businessId, '| current?.id:', current?.id);
+
     const business = new Business({
-      businessId: command.businessId || '',
+      businessId,
       accountId,
       ownerId: command.userId,
       companyName: command.companyName,
@@ -144,8 +173,8 @@ export class ProfilesStore {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
-    const request$ = command.businessId
-      ? this.profilesApi.updateBusiness(business, command.businessId, command.imageFile)
+    const request$ = businessId
+      ? this.profilesApi.updateBusiness(business, businessId, command.imageFile)
       : this.profilesApi.createBusiness(business, command.imageFile);
 
     request$

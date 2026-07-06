@@ -6,14 +6,14 @@
           <polyline points="20 6 9 17 4 12"/>
         </svg>
       </div>
-      <h2 class="success-title">Sale Registered Successfully</h2>
-      <span class="trx-badge">Transaction #{{ order.id.slice(0, 8).toUpperCase() }}</span>
+      <h2 class="success-title">{{ 'sales.saleSuccess.title' | translate }}</h2>
+      <span class="trx-badge">{{ 'sales.saleSuccess.transactionBadge' | translate:{ id: order.id.slice(0, 8).toUpperCase() } }}</span>
       <p class="success-description">
-        Inventory components have been automatically deducted.
+        {{ 'sales.saleSuccess.description' | translate }}
       </p>
 
-      <button class="start-new-btn" (click)="startNewSale.emit()">Start New Sale</button>
-      <button class="back-to-sales-btn" (click)="backToSales.emit()">Back to Sales</button>
+      <button class="start-new-btn" (click)="startNewSale.emit()">{{ 'sales.saleSuccess.startNewSale' | translate }}</button>
+      <button class="back-to-sales-btn" (click)="backToSales.emit()">{{ 'sales.saleSuccess.backToSales' | translate }}</button>
     </div>
   </div>
 }

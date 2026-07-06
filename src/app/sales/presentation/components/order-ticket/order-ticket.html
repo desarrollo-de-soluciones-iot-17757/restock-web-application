@@ -1,6 +1,6 @@
 <aside class="ticket-panel">
   <header class="ticket-header">
-    <h2 class="ticket-title">Order Ticket</h2>
+    <h2 class="ticket-title">{{ 'sales.orderTicket.title' | translate }}</h2>
     @if (order) {
       <span class="ticket-code">#{{ order.id.slice(0, 8).toUpperCase() }}</span>
     }
@@ -11,7 +11,7 @@
       <div class="ticket-line-card">
         <div class="line-info">
           <span class="line-name">{{ item.nameSnapshot }}</span>
-          <span class="line-unit">S/ {{ item.unitPrice.toFixed(2) }}</span>
+          <span class="line-unit">S/ {{ (item.unitPrice ?? 0).toFixed(2) }}</span>
         </div>
 
         <div class="line-controls">
@@ -20,36 +20,36 @@
             <span class="step-value">{{ item.quantity }}</span>
             <button class="step-btn increase" (click)="adjustQuantity.emit({ item, delta: 1 })" [disabled]="saving">+</button>
           </div>
-          <span class="line-total">S/ {{ item.lineTotal.toFixed(2) }}</span>
+          <span class="line-total">S/ {{ (item.lineTotal ?? 0).toFixed(2) }}</span>
         </div>
       </div>
     } @empty {
-      <p class="empty-ticket">Add products from the catalog to start a sale.</p>
+      <p class="empty-ticket">{{ 'sales.orderTicket.empty' | translate }}</p>
     }
   </div>
 
   @if (order && order.items.length > 0) {
     <div class="ticket-summary">
       <div class="summary-row">
-        <span>Subtotal</span>
-        <span class="summary-value">S/ {{ order.subtotalAmount.toFixed(2) }}</span>
+        <span>{{ 'sales.orderTicket.subtotal' | translate }}</span>
+        <span class="summary-value">S/ {{ (order.subtotalAmount ?? 0).toFixed(2) }}</span>
       </div>
       <div class="summary-row">
-        <span>Taxes (18%)</span>
-        <span class="summary-value">S/ {{ order.taxAmount.toFixed(2) }}</span>
+        <span>{{ 'sales.orderTicket.taxes' | translate:{ rate: '18' } }}</span>
+        <span class="summary-value">S/ {{ (order.taxAmount ?? 0).toFixed(2) }}</span>
       </div>
       <div class="summary-row total">
-        <span>Total</span>
-        <span class="total-price-green">S/ {{ order.totalAmount.toFixed(2) }}</span>
+        <span>{{ 'sales.orderTicket.total' | translate }}</span>
+        <span class="total-price-green">S/ {{ (order.totalAmount ?? 0).toFixed(2) }}</span>
       </div>
     </div>
 
     <div class="ticket-actions">
       <button class="log-sale-btn" [disabled]="saving" (click)="completeOrder.emit()">
-        Log Sale & Update Stock <span class="arrow">➔</span>
+        {{ 'sales.orderTicket.logSale' | translate }} <span class="arrow">➔</span>
       </button>
       <button class="clear-order-btn" [disabled]="saving" (click)="clearOrder.emit()">
-        <span class="trash-icon">🗑</span> Clear Order
+        <span class="trash-icon">🗑</span> {{ 'sales.orderTicket.clearOrder' | translate }}
       </button>
     </div>
   }

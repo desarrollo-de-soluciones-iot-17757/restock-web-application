@@ -1,6 +1,7 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { SalesStore } from '../../../application/sales.store';
 import { IamStore } from '../../../../iam/application/iam.store';
 import { KpiCardComponent } from '../../components/kpi-card/kpi-card';
@@ -15,7 +16,7 @@ import { SALES_PATHS } from '../../sales-paths';
 @Component({
   selector: 'app-sales-overview',
   standalone: true,
-  imports: [CommonModule, KpiCardComponent, TransactionsTableComponent, TransactionDetailDrawerComponent],
+  imports: [CommonModule, TranslatePipe, KpiCardComponent, TransactionsTableComponent, TransactionDetailDrawerComponent],
   templateUrl: './sales-overview.html',
   styleUrl: './sales-overview.css',
 })
@@ -23,6 +24,7 @@ export class SalesOverviewComponent implements OnInit {
   protected readonly store = inject(SalesStore);
   private readonly iamStore = inject(IamStore);
   private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
 
   readonly selectedOrderId = signal<string | null>(null);
   readonly selectedOrder = computed(() =>
@@ -39,14 +41,15 @@ export class SalesOverviewComponent implements OnInit {
 
   readonly salesDeltaCaption = computed(() => {
     const delta = this.store.salesDeltaPercent();
-    if (delta === null) return 'No data from last month yet';
+    if (delta === null) return this.translate.instant('sales.overview.kpi.deltaNoData');
     const arrow = delta >= 0 ? '↑' : '↓';
-    return `${arrow} ${Math.abs(delta).toFixed(1)}% vs last month`;
+    return this.translate.instant('sales.overview.kpi.deltaPercent', { arrow, percent: Math.abs(delta).toFixed(1) });
   });
 
   readonly failedSyncCaption = computed(() => {
     const count = this.store.failedOrdersCount();
-    return count === 1 ? '1 critical error' : `${count} critical errors`;
+    if (count === 1) return this.translate.instant('sales.overview.kpi.failedSyncOne');
+    return this.translate.instant('sales.overview.kpi.failedSync', { count });
   });
 
   // Advanced Filters states
@@ -121,11 +124,17 @@ export class SalesOverviewComponent implements OnInit {
   onExportCSV(): void {
     const orders = this.store.orders();
     if (!orders || orders.length === 0) {
-      alert('No transactions to export.');
+      alert(this.translate.instant('sales.overview.noDataAlert'));
       return;
     }
 
-    const headers = ['Transaction ID', 'Timestamp', 'Items Count', 'Total Value (PEN)', 'Status'];
+    const headers = [
+      this.translate.instant('sales.table.trxId'),
+      this.translate.instant('sales.table.timestamp'),
+      this.translate.instant('sales.table.itemsCount'),
+      this.translate.instant('sales.table.totalValue'),
+      this.translate.instant('sales.table.status'),
+    ];
     const rows = orders.map((o) => [
       o.id,
       o.createdAt || '',

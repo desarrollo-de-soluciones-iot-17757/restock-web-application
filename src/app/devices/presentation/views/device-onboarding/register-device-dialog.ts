@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { DevicesStore } from '../../../application/devices.store';
 import { IamStore } from '../../../../iam/application/iam.store';
@@ -10,7 +11,7 @@ import { Device } from '../../../domain/model/device.entity';
 
 @Component({
   selector: 'app-register-device-dialog',
-  imports: [ReactiveFormsModule, MatIconModule, MatProgressSpinnerModule],
+  imports: [ReactiveFormsModule, MatIconModule, MatProgressSpinnerModule, TranslateModule],
   templateUrl: './register-device-dialog.html',
   styleUrls: ['./register-device-dialog.css'],
 })
@@ -19,6 +20,7 @@ export class RegisterDeviceDialog {
   private readonly iamStore = inject(IamStore);
   private readonly dialogRef = inject(MatDialogRef<RegisterDeviceDialog>);
   private readonly fb = inject(FormBuilder);
+  private readonly translateService = inject(TranslateService);
 
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
@@ -40,7 +42,7 @@ export class RegisterDeviceDialog {
     this.devicesStore.createDevice({ accountId: this.accountId, macAddress, description }).subscribe({
       next: (device: Device) => this.dialogRef.close(device),
       error: (err: { message?: string }) => {
-        this.error.set(err?.message ?? 'Failed to register device');
+        this.error.set(err?.message ?? this.translateService.instant('devices.registerDialog.error'));
         this.loading.set(false);
       },
     });
