@@ -74,6 +74,27 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
     weightUnitAbbreviation: ['g', Validators.required],
   });
 
+  readonly displayModeOptions: { value: string; labelKey: string }[] = [
+    {
+      value: 'DISPLAY_MODE_ENVIRONMENT',
+      labelKey: 'devices.onboarding.displayMode.options.environment',
+    },
+    {
+      value: 'DISPLAY_MODE_TEMPERATURE',
+      labelKey: 'devices.onboarding.displayMode.options.temperature',
+    },
+    { value: 'DISPLAY_MODE_HUMIDITY', labelKey: 'devices.onboarding.displayMode.options.humidity' },
+    { value: 'DISPLAY_MODE_WEIGHT', labelKey: 'devices.onboarding.displayMode.options.weight' },
+    {
+      value: 'DISPLAY_MODE_CONVERTED_UNITS',
+      labelKey: 'devices.onboarding.displayMode.options.convertedUnits',
+    },
+  ];
+
+  readonly displayModeForm: FormGroup = this.fb.group({
+    displayMode: ['DISPLAY_MODE_ENVIRONMENT', Validators.required],
+  });
+
   readonly specificationsForm: FormGroup = this.fb.group({
     manufacturer: ['', Validators.required],
     model: ['', Validators.required],
@@ -136,6 +157,7 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
         weightUnitName: s._weightUnitName ?? s.weightUnitName ?? null,
         weightUnitAbbreviation: s._weightUnitAbbreviation ?? s.weightUnitAbbreviation ?? null,
         justifiedWithdrawnStock: s._justifiedWithdrawnStock ?? s.justifiedWithdrawnStock ?? 0,
+        displayMode: s._displayMode ?? s.displayMode ?? null,
       });
       this.currentDevice.set(device);
       this.specificationsForm.patchValue({
@@ -150,6 +172,9 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
         tareWeight: device.tareWeight ?? 0,
         weightUnitName: device.weightUnitName ?? 'gram',
         weightUnitAbbreviation: device.weightUnitAbbreviation ?? 'g',
+      });
+      this.displayModeForm.patchValue({
+        displayMode: device.displayMode ?? 'DISPLAY_MODE_ENVIRONMENT',
       });
     } else {
       this.router.navigate(['/devices']);
@@ -250,6 +275,17 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
 
   hasCalibration(device: Device): boolean {
     return device.unitStockWeight !== null && !!device.weightUnitName;
+  }
+
+  hasDisplayMode(device: Device): boolean {
+    return !!device.displayMode;
+  }
+
+  displayModeChanged(device: Device): boolean {
+    return (
+      this.displayModeForm.getRawValue().displayMode !==
+      (device.displayMode ?? 'DISPLAY_MODE_ENVIRONMENT')
+    );
   }
 
   batchName(id: string): string {
@@ -451,7 +487,7 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
         error: (err) => {
           this.pageError.set(
             err?.message ??
-              this.translateService.instant('devices.onboarding.errors.saveThresholds'),
+            this.translateService.instant('devices.onboarding.errors.saveThresholds'),
           );
           this.loading.set(false);
         },
@@ -473,7 +509,7 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
         error: (err) => {
           this.pageError.set(
             err?.message ??
-              this.translateService.instant('devices.onboarding.errors.saveSpecifications'),
+            this.translateService.instant('devices.onboarding.errors.saveSpecifications'),
           );
           this.loading.set(false);
         },
@@ -558,6 +594,28 @@ export class DeviceOnboarding implements OnInit, OnDestroy {
 
   resetTare(): void {
     this.calibrationForm.patchValue({ tareWeight: 0 });
+  }
+
+  saveDisplayMode(): void {
+    if (this.displayModeForm.invalid || !this.currentDevice()) return;
+    this.loading.set(true);
+    this.pageError.set(null);
+    const device = this.currentDevice()!;
+    const { displayMode } = this.displayModeForm.getRawValue();
+
+    this.devicesStore.updateDisplayMode(device.id, displayMode).subscribe({
+      next: (updated) => {
+        this.currentDevice.set(updated);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        this.pageError.set(
+          err?.message ??
+          this.translateService.instant('devices.onboarding.errors.saveDisplayMode'),
+        );
+        this.loading.set(false);
+      },
+    });
   }
 
   openUnlinkConfirm(): void {

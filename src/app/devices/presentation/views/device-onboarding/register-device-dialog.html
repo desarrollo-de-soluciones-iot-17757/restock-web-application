@@ -29,18 +29,6 @@
     }
   </div>
 
-  <div class="field-group mt-16">
-    <label class="field-label">{{ 'devices.registerDialog.displayMode' | translate }}</label>
-    <select formControlName="displayMode" class="form-input">
-      @for (option of displayModeOptions; track option.value) {
-        <option [value]="option.value">{{ option.labelKey | translate }}</option>
-      }
-    </select>
-    @if (form.get('displayMode')?.invalid && form.get('displayMode')?.touched) {
-      <span class="field-error">{{ 'devices.registerDialog.required' | translate }}</span>
-    }
-  </div>
-
   <div class="card-actions">
     <button class="btn-ghost" type="button" (click)="cancel()">{{ 'devices.registerDialog.cancel' | translate }}</button>
     <button class="btn-primary" type="button"
