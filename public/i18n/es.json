@@ -310,8 +310,8 @@
         "tareHint": "Vacía la báscula física antes de aplicar la tara."
       },
       "deviceHistory": {
-        "title": "Registros del dispositivo",
-        "subtitle": "Lecturas de telemetría y diagnósticos de salud registrados por el dispositivo.",
+        "title": "Telemetría del dispositivo",
+        "subtitle": "Lecturas de stock físico, temperatura y humedad registradas por el dispositivo.",
         "weightLog": "Registro de peso",
         "healthLog": "Registro de salud",
         "noWeightRecords": "Aún no hay registros de peso.",

@@ -310,8 +310,8 @@
         "tareHint": "Empty the physical scale before applying tare."
       },
       "deviceHistory": {
-        "title": "Device History Logs",
-        "subtitle": "Telemetry readings and health diagnostics recorded by the device.",
+        "title": "Device Telemetry",
+        "subtitle": "Physical stock, temperature and humidity readings recorded by the device.",
         "weightLog": "Weight Log",
         "healthLog": "Health Log",
         "noWeightRecords": "No weight records yet.",
