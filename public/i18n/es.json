@@ -310,13 +310,22 @@
         "tareHint": "Vacía la báscula física antes de aplicar la tara."
       },
       "deviceHistory": {
-        "title": "Registros del dispositivo",
+        "title": "Telemetría del dispositivo",
+        "subtitle": "Lecturas de stock físico, temperatura y humedad registradas por el dispositivo.",
         "weightLog": "Registro de peso",
         "healthLog": "Registro de salud",
         "noWeightRecords": "Aún no hay registros de peso.",
         "noHealthLogs": "Aún no hay registros de salud.",
         "weightBadge": "Peso",
-        "healthBadge": "Salud"
+        "healthBadge": "Salud",
+        "colTimestamp": "Fecha y hora",
+        "colPhysicalStock": "Stock físico",
+        "colTemperature": "Temperatura",
+        "colHumidity": "Humedad",
+        "colVoltage": "Voltaje",
+        "colCpu": "Uso CPU",
+        "colRam": "RAM libre",
+        "colTempHealth": "Temperatura"
       },
       "assignBatchDialog": {
         "title": "Asignar lote",
