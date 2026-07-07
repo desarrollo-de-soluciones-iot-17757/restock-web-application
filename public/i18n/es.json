@@ -311,12 +311,21 @@
       },
       "deviceHistory": {
         "title": "Registros del dispositivo",
+        "subtitle": "Lecturas de telemetría y diagnósticos de salud registrados por el dispositivo.",
         "weightLog": "Registro de peso",
         "healthLog": "Registro de salud",
         "noWeightRecords": "Aún no hay registros de peso.",
         "noHealthLogs": "Aún no hay registros de salud.",
         "weightBadge": "Peso",
-        "healthBadge": "Salud"
+        "healthBadge": "Salud",
+        "colTimestamp": "Fecha y hora",
+        "colPhysicalStock": "Stock físico",
+        "colTemperature": "Temperatura",
+        "colHumidity": "Humedad",
+        "colVoltage": "Voltaje",
+        "colCpu": "Uso CPU",
+        "colRam": "RAM libre",
+        "colTempHealth": "Temperatura"
       },
       "assignBatchDialog": {
         "title": "Asignar lote",

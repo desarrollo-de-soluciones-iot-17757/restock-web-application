@@ -311,12 +311,21 @@
       },
       "deviceHistory": {
         "title": "Device History Logs",
+        "subtitle": "Telemetry readings and health diagnostics recorded by the device.",
         "weightLog": "Weight Log",
         "healthLog": "Health Log",
         "noWeightRecords": "No weight records yet.",
         "noHealthLogs": "No health logs yet.",
         "weightBadge": "Weight",
-        "healthBadge": "Health"
+        "healthBadge": "Health",
+        "colTimestamp": "Timestamp",
+        "colPhysicalStock": "Physical Stock",
+        "colTemperature": "Temperature",
+        "colHumidity": "Humidity",
+        "colVoltage": "Voltage",
+        "colCpu": "CPU Usage",
+        "colRam": "Free RAM",
+        "colTempHealth": "Temperature"
       },
       "assignBatch": {
         "title": "Assign batch",
