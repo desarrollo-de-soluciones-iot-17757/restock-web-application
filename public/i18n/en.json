@@ -226,7 +226,8 @@
         "hardware": "Hardware",
         "branch": "Branch",
         "alerts": "Alerts",
-        "calibration": "Calibration"
+        "calibration": "Calibration",
+        "displayMode": "Display mode"
       },
       "inventoryAssignment": {
         "title": "Inventory assignment",
@@ -352,7 +353,23 @@
         "completeSpecs": "Please complete all hardware specification fields.",
         "assignBranchFirst": "Please select a branch before saving.",
         "calibrate": "Failed to save calibration. Please try again.",
-        "unlink": "Failed to unlink device. Please try again."
+        "unlink": "Failed to unlink device. Please try again.",
+        "saveDisplayMode": "Failed to update the display mode. Please try again."
+      },
+      "displayMode": {
+        "title": "Display mode",
+        "subtitle": "Choose what the LCD shows during normal operation.",
+        "lockedDesc": "Complete weight calibration before configuring the LCD display mode.",
+        "select": "LCD display mode",
+        "update": "Update display mode",
+        "save": "Save display mode",
+        "options": {
+          "environment": "Environment (temperature & humidity)",
+          "temperature": "Temperature",
+          "humidity": "Humidity",
+          "weight": "Weight",
+          "convertedUnits": "Converted units"
+        }
       }
     },
     "registerDialog": {
@@ -365,16 +382,7 @@
       "required": "Required",
       "cancel": "Cancel",
       "register": "Register Device",
-      "error": "Failed to register device. Please try again.",
-      "displayMode": "LCD Display Mode",
-      "displayModeError": "Device registered, but failed to set the display mode. You can change it later.",
-      "displayModes": {
-        "environment": "Environment (temperature & humidity)",
-        "temperature": "Temperature",
-        "humidity": "Humidity",
-        "weight": "Weight",
-        "convertedUnits": "Converted units"
-      }
+      "error": "Failed to register device. Please try again."
     },
     "status": {
       "registered": "AWAITING SETUP",
