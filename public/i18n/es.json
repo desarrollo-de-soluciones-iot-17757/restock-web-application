@@ -226,7 +226,8 @@
         "hardware": "Hardware",
         "branch": "Sucursal",
         "alerts": "Alertas",
-        "calibration": "Calibración"
+        "calibration": "Calibración",
+        "displayMode": "Modo de pantalla"
       },
       "inventoryAssignment": {
         "title": "Asignación de inventario",
@@ -362,7 +363,23 @@
         "completeSpecs": "Por favor completa todos los campos de especificaciones de hardware.",
         "assignBranchFirst": "Por favor selecciona una sucursal antes de guardar.",
         "calibrate": "Error al guardar la calibración. Inténtalo de nuevo.",
-        "unlink": "Error al desvincular el dispositivo. Inténtalo de nuevo."
+        "unlink": "Error al desvincular el dispositivo. Inténtalo de nuevo.",
+        "saveDisplayMode": "Error al actualizar el modo de pantalla. Inténtalo de nuevo."
+      },
+      "displayMode": {
+        "title": "Modo de pantalla",
+        "subtitle": "Elige qué muestra el LCD durante la operación normal.",
+        "lockedDesc": "Completa la calibración de peso antes de configurar el modo de pantalla del LCD.",
+        "select": "Modo de pantalla LCD",
+        "update": "Actualizar modo de pantalla",
+        "save": "Guardar modo de pantalla",
+        "options": {
+          "environment": "Ambiente (temperatura y humedad)",
+          "temperature": "Temperatura",
+          "humidity": "Humedad",
+          "weight": "Peso",
+          "convertedUnits": "Unidades convertidas"
+        }
       }
     },
     "registerDialog": {
@@ -460,7 +477,8 @@
       "fields": {
         "companyName": "NOMBRE DE EMPRESA",
         "ruc": "RUC / ID FISCAL",
-        "mainLocation": "UBICACIÓN PRINCIPAL"
+        "mainLocation": "UBICACIÓN PRINCIPAL",
+        "picture": "LOGO DEL NEGOCIO"
       },
       "placeholders": {
         "companyName": "ej. Nexus Logistics",
@@ -471,12 +489,6 @@
         "discard": "DESCARTAR",
         "save": "GUARDAR NEGOCIO",
         "uploadPicture": "SUBIR LOGO"
-      },
-      "fields": {
-        "companyName": "NOMBRE DE EMPRESA",
-        "ruc": "RUC / ID FISCAL",
-        "mainLocation": "UBICACIÓN PRINCIPAL",
-        "picture": "LOGO DEL NEGOCIO"
       }
     },
     "branches": {

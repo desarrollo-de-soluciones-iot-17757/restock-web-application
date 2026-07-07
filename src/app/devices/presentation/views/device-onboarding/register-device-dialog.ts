@@ -26,7 +26,10 @@ export class RegisterDeviceDialog {
   readonly error = signal<string | null>(null);
 
   readonly form: FormGroup = this.fb.group({
-    macAddress: ['', [Validators.required, Validators.pattern(/^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$/)]],
+    macAddress: [
+      '',
+      [Validators.required, Validators.pattern(/^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$/)],
+    ],
     description: ['', Validators.required],
   });
 
@@ -39,14 +42,20 @@ export class RegisterDeviceDialog {
     this.loading.set(true);
     this.error.set(null);
     const { macAddress, description } = this.form.value;
-    this.devicesStore.createDevice({ accountId: this.accountId, macAddress, description }).subscribe({
-      next: (device: Device) => this.dialogRef.close(device),
-      error: (err: { message?: string }) => {
-        this.error.set(err?.message ?? this.translateService.instant('devices.registerDialog.error'));
-        this.loading.set(false);
-      },
-    });
+    this.devicesStore
+      .createDevice({ accountId: this.accountId, macAddress, description })
+      .subscribe({
+        next: (device: Device) => this.dialogRef.close(device),
+        error: (err: { message?: string }) => {
+          this.error.set(
+            err?.message ?? this.translateService.instant('devices.registerDialog.error'),
+          );
+          this.loading.set(false);
+        },
+      });
   }
 
-  cancel(): void { this.dialogRef.close(); }
+  cancel(): void {
+    this.dialogRef.close();
+  }
 }

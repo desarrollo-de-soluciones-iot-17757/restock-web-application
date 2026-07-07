@@ -32,8 +32,8 @@
   <div class="card-actions">
     <button class="btn-ghost" type="button" (click)="cancel()">{{ 'devices.registerDialog.cancel' | translate }}</button>
     <button class="btn-primary" type="button"
-      [disabled]="form.invalid || loading()"
-      (click)="register()">
+            [disabled]="form.invalid || loading()"
+            (click)="register()">
       @if (loading()) {
         <mat-spinner diameter="16"></mat-spinner>
       } @else {
