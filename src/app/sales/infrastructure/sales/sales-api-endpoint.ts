@@ -38,7 +38,11 @@ export class SalesApiEndpoint extends ErrorHandlingEnabledBaseType {
 
   create(accountId: string, command: CreateSalesOrderCommand): Observable<SalesOrderEntity> {
     return this.http
-      .post<SalesOrderResource>(this.baseUrl, { branchId: command.branchId }, { params: { accountId } })
+      .post<SalesOrderResource>(
+        this.baseUrl,
+        { branchId: command.branchId },
+        { params: { accountId } },
+      )
       .pipe(
         map((resource) => this.assembler.toEntityFromResource(resource)),
         catchError(this.handleError('Failed to create sales order')),
@@ -47,7 +51,7 @@ export class SalesApiEndpoint extends ErrorHandlingEnabledBaseType {
 
   addItem(command: AddProductToOrderCommand): Observable<SalesOrderEntity> {
     return this.http
-      .post<SalesOrderResource>(`${this.baseUrl}/${command.orderId}/items/add`, {
+      .post<SalesOrderResource>(`${this.baseUrl}/${command.orderId}/items`, {
         productId: command.productId,
         productType: command.productType,
         nameSnapshot: command.nameSnapshot,
@@ -77,21 +81,30 @@ export class SalesApiEndpoint extends ErrorHandlingEnabledBaseType {
    */
   complete(orderId: string, accountId?: string): Observable<SalesOrderEntity> {
     const params = accountId ? { accountId } : undefined;
-    return this.http.patch<SalesOrderResource>(`${this.baseUrl}/${orderId}/complete`, undefined, { params }).pipe(
-      map((resource) => this.assembler.toEntityFromResource(resource)),
-      catchError((error: HttpErrorResponse) => {
-        const body = error.error as InsufficientStockErrorResource | undefined;
-        if (error.status === 422 && body?.customSupplyId) {
-          return throwError(() => new InsufficientStockHttpError(body));
-        }
-        return this.handleError('Failed to complete sales order')(error);
-      }),
-    );
+    return this.http
+      .patch<SalesOrderResource>(
+        `${this.baseUrl}/${orderId}/status`,
+        { status: 'COMPLETED' },
+        { params },
+      )
+      .pipe(
+        map((resource) => this.assembler.toEntityFromResource(resource)),
+        catchError((error: HttpErrorResponse) => {
+          const body = error.error as InsufficientStockErrorResource | undefined;
+          if (error.status === 422 && body?.customSupplyId) {
+            return throwError(() => new InsufficientStockHttpError(body));
+          }
+          return this.handleError('Failed to complete sales order')(error);
+        }),
+      );
   }
 
-  cancel(orderId: string): Observable<void> {
+  cancel(orderId: string): Observable<SalesOrderEntity> {
     return this.http
-      .patch<void>(`${this.baseUrl}/${orderId}/cancel`, {})
-      .pipe(catchError(this.handleError('Failed to cancel sales order')));
+      .patch<SalesOrderResource>(`${this.baseUrl}/${orderId}/status`, { status: 'CANCELLED' })
+      .pipe(
+        map((resource) => this.assembler.toEntityFromResource(resource)),
+        catchError(this.handleError('Failed to cancel sales order')),
+      );
   }
 }
